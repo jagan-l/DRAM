@@ -41,7 +41,7 @@ FUNCTION_DICT = {
                             for j in re.findall(r'\[PF\d\d\d\d\d.\d*\]', x)],  # old pfam format
     "pfam_id": lambda x: [j[1:-1].split(".")[0] for j in re.findall(r"\[PF\d\d\d\d\d.\d*\]", x)],  # new pfam format
     'peptidase_family': lambda x: [j for j in x.split(';')],  # old merops format
-    "merops_id": lambda x: [j for j in x.split(";")],  # new merops format
+    "merops_family": lambda x: [j for j in x.split(";")],  # new merops format
     "methyl_id": lambda x: [i.split(" ")[0].strip() for i in x.split(",")],
 }
 
