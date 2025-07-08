@@ -51,6 +51,10 @@ def fetch_descriptions(chunk, db_name, db_file):
         
         # After extracting for kegg, rename "kegg_orthology" to "kegg_id"
         chunk.rename(columns={"kegg_orthology": "kegg_id"}, inplace=True)
+    elif db_name == "merops":
+        descriptions_dict = {row[0]: row[1] for row in results}
+        chunk[f"{db_name}_description"] = chunk[hits_ids_column].map(lambda x: descriptions_dict.get(x, ""))
+        chunk[f"{db_name}_family"] = chunk[f"{db_name}_description"].str.findall(r"#(\w*.)#").apply(lambda x: ';'.join(x))
     else:
         descriptions_dict = {row[0]: row[1] for row in results}
         chunk[f"{db_name}_description"] = chunk[hits_ids_column].map(lambda x: descriptions_dict.get(x, ""))
