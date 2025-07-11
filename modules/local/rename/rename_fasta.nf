@@ -13,6 +13,7 @@ process RENAME_FASTA {
 
     output:
     path("renamed/*.fna"), emit: renamed_fasta_paths
+    // tuple val(input_fasta), path("*.fna"), emit: renamed_fasta
 
     script:
     // def samples = fasta_names as List
@@ -27,5 +28,6 @@ process RENAME_FASTA {
     """
     mkdir -p renamed
     ${rename_cmds}
+    echo "Renaming completed for ${fasta_names.size()} FASTA files."
     """
 }

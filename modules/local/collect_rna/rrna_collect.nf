@@ -7,7 +7,7 @@ process RRNA_COLLECT {
     container "community.wave.seqera.io/library/python_pandas_barrnap_trnascan-se:ed2ab26abf39304b"
 
     input:
-    file combined_rrnas
+    path combined_rrnas
 
     output:
     path("collected_rrnas.tsv"), emit: rrna_collected_out, optional: true

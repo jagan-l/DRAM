@@ -51,12 +51,20 @@ workflow DRAM {
             .fromPath(file(params.input_fasta) / params.fasta_fmt, checkIfExists: true)
                 .ifEmpty { exit 1, "Cannot find any fasta files matching: ${params.input_fasta}\nNB: Path needs to follow pattern: path/to/directory/" }
 
-        ch_fasta = ch_fasta.map {
-            fasta_name = it.getName().replaceAll(/\.[^.]+$/, '').replaceAll(/\./, '-')
-            tuple(fasta_name, it)
-        }
-        fasta_name = ch_fasta.map { it[0] }
-        fasta_files = ch_fasta.map { it[1] }
+
+        ch_fasta_name = ch_fasta.map {
+                it.getName().replaceAll(/\.[^.]+$/, '').replaceAll(/\./, '-')
+                // fasta_p -> fasta_p.getName().replaceAll(/\.[^.]+$/, '').replaceAll(/\./, '-')
+                }
+                
+        // ch_fasta = ch_fasta.map {
+        //     fasta_name = it.getName().replaceAll(/\.[^.]+$/, '').replaceAll(/\./, '-')
+        //     tuple(fasta_name, it)
+        // }
+        // fasta_name = ch_fasta.map { it[0] }
+        // fasta_files = ch_fasta.map { it[1] }
+
+
     }
 
     def distill_topic_list = ""
@@ -173,20 +181,29 @@ workflow DRAM {
         //
         // Pipeline steps
         //
+        // ch_fasta.collate(100).view()
+
 
         if( params.rename ) {
             // We need to use collect so that we pass all the fasta files to the rename process at once
             // Otherwise, it will try to rename each fasta file one at a time
             // Which since rename is so fast, will clog up job queues
             // so it is faster to rename all at once
-            RENAME_FASTA( fasta_name.toList(), fasta_files.toList() )
-            // we use flatten here to turn a list back into a channel
-            renamed_fasta_paths = RENAME_FASTA.out.renamed_fasta_paths.flatten()
-            // we need to recreate the fasta channel with the renamed fasta files
-            ch_fasta = renamed_fasta_paths.map {
-                fasta_name = it.getName().replaceAll(/\.[^.]+$/, '').replaceAll(/\./, '-')
-                tuple(fasta_name, it)
-            }
+
+            RENAME_FASTA( ch_fasta_name.collate(100), ch_fasta.collate(100) )
+
+            // RENAME_FASTA( ch_fasta.collate(100) )
+            // fasta_files.collate(100).view()
+            // RENAME_FASTA( fasta_files.collate(100) )
+            // ch_fasta = RENAME_FASTA.out.renamed_fasta
+            // We call flatten because collate could group them into lists if size is too small and has to be broken into multiple jobs
+            ch_fasta = RENAME_FASTA.out.renamed_fasta_paths.flatten()
+
+            // // we need to recreate the fasta channel with the renamed fasta files
+            // ch_fasta = renamed_fasta_paths.map {
+            //     fasta_name = it.getName().replaceAll(/\.[^.]+$/, '').replaceAll(/\./, '-')
+            //     tuple(fasta_name, it)
+            // }
         }
 
         ch_quast_stats = default_sheet
@@ -195,8 +212,8 @@ workflow DRAM {
         ch_collected_fna = default_sheet
 
         if (params.call){
-            CALL( ch_fasta )
-            ch_quast_stats = CALL.out.ch_quast_stats
+            CALL( ch_fasta_name, ch_fasta )
+            // ch_quast_stats = CALL.out.ch_quast_stats
             ch_gene_locs = CALL.out.ch_gene_locs
             ch_called_proteins = CALL.out.ch_called_proteins
             ch_collected_fna = CALL.out.ch_collected_fna
@@ -204,11 +221,11 @@ workflow DRAM {
         }
 
         if (params.call || distill_flag){
-            COLLECT_RNA( ch_fasta )
+            COLLECT_RNA( ch_fasta_name, ch_fasta )
         }
 
         if (params.annotate){
-            ANNOTATE( ch_gene_locs, ch_called_proteins, default_sheet )
+            ANNOTATE( ch_gene_locs, ch_called_proteins, ch_fasta_name, default_sheet )
 
         }
 

@@ -64,8 +64,9 @@ include { PARSE_HMM as PARSE_HMM_FEGENIE                } from "${projectDir}/mo
 
 workflow ANNOTATE {
     take:
-    ch_gene_locs  // channel: [ val(input_fasta name), path(gene_locs_tsv) ]
-    ch_called_proteins  // channel: [ val(input_fasta name), path(called_proteins_file.faa) ]
+    ch_gene_locs  // channel: path(gene_locs_tsv)
+    ch_called_proteins  // channel: path(called_proteins_file.faa)
+    ch_fasta_name // channel: val(input_fasta names)
     default_sheet // Path to dummy sheet
 
     main:
@@ -101,12 +102,8 @@ workflow ANNOTATE {
         ch_called_proteins = Channel
             .fromPath(file(params.input_genes) / params.genes_fmt, checkIfExists: true)
             .ifEmpty { exit 1, "If you specify --annotate without --call, you must provide a fasta file of called genes using --input_genes. Cannot find any called gene fasta files matching: ${params.input_genes}\nNB: Path needs to follow pattern: path/to/directory/" }
-            .map {
-                input_fastaName = it.getName().replaceAll(/\.[^.]+$/, '').replaceAll(/\./, '-')
-                tuple(input_fastaName, it)
-            }
 
-        GENE_LOCS( ch_called_proteins)
+        GENE_LOCS( ch_fasta_name, ch_called_proteins)
         ch_gene_locs = GENE_LOCS.out.prodigal_locs_tsv
     }
 
@@ -115,7 +112,7 @@ workflow ANNOTATE {
     // Here we will create mmseqs2 index files for each of the inputs if we are going to do a mmseqs2 database
     if (DB_CHANNEL_SETUP.out.index_mmseqs) {
         // Use MMSEQS2 to index each called genes protein file
-        MMSEQS_INDEX( ch_called_proteins )
+        MMSEQS_INDEX( ch_fasta_name, ch_called_proteins )
         ch_mmseqs_query = MMSEQS_INDEX.out.mmseqs_index_out
     }
 

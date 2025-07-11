@@ -20,23 +20,25 @@ include { QUAST_COLLECT                                 } from "${projectDir}/mo
 
 workflow CALL {
     take:
-    ch_fasta  // channel: [ val(input_fasta name), path(fasta) ]
+    ch_fasta_name // channel: val(input_fasta names)
+    ch_fasta  // channel: path(fasta)
 
     main:
 
     // Call genes using Prodigal on the input fasta file(s) 1-by-1
-    CALL_GENES ( ch_fasta )
-    ch_called_genes = CALL_GENES.out.prodigal_fna
-    ch_called_proteins = CALL_GENES.out.prodigal_faa
-    ch_gene_locs = CALL_GENES.out.prodigal_locs_tsv
-    ch_gene_gff = CALL_GENES.out.prodigal_gff
-    ch_filtered_fasta = CALL_GENES.out.prodigal_filtered_fasta
+    CALL_GENES ( ch_fasta_name.collate(params.call_collate_size), ch_fasta.collate(params.call_collate_size) )
 
-    // Collect all individual fasta to pass to quast
-    ch_called_proteins
-        .map { tuple -> tuple[1] }  // Extract only the file path from each tuple
-        .collect()                  // Collect all paths into a list
-        .set { ch_collected_faa }   // Set the resulting list to ch_collected_faa
+    // We call flatten because collate could group them into lists if size is too small and has to be broken into multiple jobs
+    ch_called_genes = CALL_GENES.out.prodigal_fna.flatten()
+    ch_called_proteins = CALL_GENES.out.prodigal_faa.flatten()
+    ch_gene_locs = CALL_GENES.out.prodigal_locs_tsv.flatten()
+    ch_gene_gff = CALL_GENES.out.prodigal_gff.flatten()
+    ch_filtered_fasta = CALL_GENES.out.prodigal_filtered_fasta.flatten()
+
+    // // Collect all individual fasta to pass to quast
+    // ch_called_proteins
+    //     .collect()                  // Collect all paths into a list
+    //     .set { ch_collected_faa }   // Set the resulting list to ch_collected_faa
 
     // Collect all individual fasta to pass to quast
     Channel.empty()
@@ -55,11 +57,11 @@ workflow CALL {
     ch_quast_stats = QUAST.out.quast_collected_out
 
     emit:
-    ch_quast_stats
-    ch_gene_locs  // channel: [ val(input_fasta name), path(gene_locs_tsv) ]
-    ch_called_genes // channel: [ val(input_fasta name), path(called_genes_file.fna) ]
-    ch_called_proteins  // channel: [ val(input_fasta name), path(called_proteins_file.faa) ]
-    ch_collected_faa  
+    // ch_quast_stats
+    ch_gene_locs  // channel: path(gene_locs_tsv)
+    ch_called_genes // channel: path(called_genes_file.fna)
+    ch_called_proteins  // channel: path(called_proteins_file.faa)
+    // ch_collected_faa  
     ch_collected_fna
     ch_collected_fasta
 }

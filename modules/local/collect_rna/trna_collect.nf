@@ -9,7 +9,7 @@ process TRNA_COLLECT {
     container "community.wave.seqera.io/library/python_pandas_barrnap_trnascan-se:ed2ab26abf39304b"
 
     input:
-    file combined_trnas
+    path combined_trnas
 
     output:
     path("collected_trnas.tsv"), emit: trna_collected_out, optional: true

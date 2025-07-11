@@ -9,10 +9,11 @@ process RRNA_SCAN {
     tag { input_fasta }
 
     input:
-    tuple val(input_fasta), path(fasta)
+    val input_fasta
+    path fasta
 
     output:
-    tuple val(input_fasta), path("${input_fasta}_processed_rrnas.tsv"), emit: rrna_scan_out, optional: true
+    path("${input_fasta}_processed_rrnas.tsv"), emit: rrna_scan_out, optional: true
 
     script:
     """

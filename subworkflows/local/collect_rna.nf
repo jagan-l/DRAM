@@ -21,7 +21,8 @@ include { RRNA_COLLECT                                  } from "${projectDir}/mo
 
 workflow COLLECT_RNA {
     take:
-    ch_fasta  // channel: [ val(input_fasta name), path(fasta) ]
+    ch_fasta_name // channel: val(input_fasta names)
+    ch_fasta  // channel: path(fasta)
 
     main:
 
@@ -39,7 +40,7 @@ workflow COLLECT_RNA {
             .set { ch_collected_rRNAs }
     } else { // If we did run call then we need to generate the rrnas and trnas from the fastas
         // Run tRNAscan-SE on each fasta to identify tRNAs
-        TRNA_SCAN( ch_fasta )
+        TRNA_SCAN( ch_fasta_name, ch_fasta )
         ch_trna_scan = TRNA_SCAN.out.trna_scan_out
         // Collect all input_fasta formatted tRNA files
         Channel.empty()
@@ -47,7 +48,7 @@ workflow COLLECT_RNA {
             .collect()
             .set { ch_collected_tRNAs }
         // Run barrnap on each fasta to identify rRNAs
-        RRNA_SCAN( ch_fasta )
+        RRNA_SCAN( ch_fasta_name, ch_fasta )
         ch_rrna_scan = RRNA_SCAN.out.rrna_scan_out
         Channel.empty()
             .mix( ch_rrna_scan )
