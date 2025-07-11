@@ -182,26 +182,26 @@ workflow DRAM {
         // Pipeline steps
         //
 
-        if( params.rename ) {
-            RENAME_FASTA( ch_fasta_name.collate(params.batch_limit_sm_jobs), ch_fasta.collate(params.batch_limit_sm_jobs) )
+        // if( params.rename ) {
+        //     RENAME_FASTA( ch_fasta_name.collate(params.batch_limit_sm_jobs_limit), ch_fasta.collate(params.batch_limit_sm_jobs_limit) )
 
-            // We call flatten because collate could group them into lists if size is too small and has to be broken into multiple jobs
-            ch_fasta = RENAME_FASTA.out.renamed_fasta_paths.flatten()
+        //     // We call flatten because collate could group them into lists if size is too small and has to be broken into multiple jobs
+        //     ch_fasta = RENAME_FASTA.out.renamed_fasta_paths.flatten()
 
-        }
+        // }
 
         ch_quast_stats = default_sheet
         ch_gene_locs = default_sheet
         ch_called_proteins = default_sheet
         ch_collected_fna = default_sheet
 
-        if (params.call){
+        if (params.call || params.rename){
             CALL( ch_fasta_name, ch_fasta )
             // ch_quast_stats = CALL.out.ch_quast_stats
             ch_gene_locs = CALL.out.ch_gene_locs
             ch_called_proteins = CALL.out.ch_called_proteins
             ch_collected_fna = CALL.out.ch_collected_fna
-
+            ch_fasta = CALL.out.ch_fasta // If the user has specified --rename, we will have renamed the fasta files
         }
 
         if (params.call || distill_flag){

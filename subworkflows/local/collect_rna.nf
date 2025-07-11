@@ -12,6 +12,7 @@ include { TRNA_SCAN                                     } from "${projectDir}/mo
 include { RRNA_SCAN                                     } from "${projectDir}/modules/local/collect_rna/rrna_scan.nf"
 include { TRNA_COLLECT                                  } from "${projectDir}/modules/local/collect_rna/trna_collect.nf"
 include { RRNA_COLLECT                                  } from "${projectDir}/modules/local/collect_rna/rrna_collect.nf"
+include { getCollateSize                                } from "${projectDir}/subworkflows/local/utils_pipeline_management.nf"
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -26,7 +27,6 @@ workflow COLLECT_RNA {
 
     main:
 
-
     // If we didn't run call 
     if (!params.call) {
         // the user provided rrnas or trnas 
@@ -39,8 +39,9 @@ workflow COLLECT_RNA {
             .collect()
             .set { ch_collected_rRNAs }
     } else { // If we did run call then we need to generate the rrnas and trnas from the fastas
+        def collate_size = getCollateSize("small", ch_fasta_name)
         // Run tRNAscan-SE on each fasta to identify tRNAs
-        TRNA_SCAN( ch_fasta_name.collate(params.batch_limit_sm_jobs), ch_fasta.collate(params.batch_limit_sm_jobs) )
+        TRNA_SCAN( ch_fasta_name.collate(collate_size), ch_fasta.collate(collate_size) )
         // We call flatten because collate could group them into lists if size is too small and has to be broken into multiple jobs
         ch_trna_scan = TRNA_SCAN.out.trna_scan_out.flatten()
         // Collect all input_fasta formatted tRNA files
@@ -49,7 +50,7 @@ workflow COLLECT_RNA {
             .collect()
             .set { ch_collected_tRNAs }
         // Run barrnap on each fasta to identify rRNAs
-        RRNA_SCAN( ch_fasta_name.collate(params.batch_limit_sm_jobs), ch_fasta.collate(params.batch_limit_sm_jobs) )
+        RRNA_SCAN( ch_fasta_name.collate(collate_size), ch_fasta.collate(collate_size) )
         // We call flatten because collate could group them into lists if size is too small and has to be broken into multiple jobs
         ch_rrna_scan = RRNA_SCAN.out.rrna_scan_out.flatten()
         Channel.empty()

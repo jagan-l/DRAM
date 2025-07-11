@@ -1,6 +1,5 @@
 process RENAME_FASTA {
     label 'process_tiny'
-    label 'process_short'
 
     conda "${moduleDir}/environment.yml"
     container "community.wave.seqera.io/library/bbmap:801715ef64484762"
@@ -14,7 +13,6 @@ process RENAME_FASTA {
     // tuple val(input_fasta), path("*.fna"), emit: renamed_fasta
 
     script:
-    assert fastas.size() == fasta_names.size() : "Fasta paths and names must have the same length."
 
     def rename_cmds = fasta_names.indices.collect { i ->
         def name = fasta_names[i]

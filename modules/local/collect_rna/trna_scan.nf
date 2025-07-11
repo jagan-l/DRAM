@@ -14,7 +14,6 @@ process TRNA_SCAN {
     path("*_processed_trnas.tsv"), emit: trna_scan_out, optional: true
 
     script:
-    assert fastas.size() == fasta_names.size() : "Fasta paths and names must have the same length. "
     
     def fasta_paths = ""
     def names = ""
