@@ -3,8 +3,10 @@ import argparse
 import pandas as pd
 import subprocess
 import os
+import click
 
 from utils.logger import get_logger
+from utils.click_utils import validate_comma_separated
 
 
 logger = get_logger()
@@ -67,24 +69,24 @@ def process_trnascan_output(input_file, output_file, input_fasta_name):
         with open(output_file, "w") as f:
             f.write("NULL")
 
-
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Run tRNAscan-SE and process its output.")
-    parser.add_argument("--fasta_name", help="input fasta name")
-    parser.add_argument("--fasta", help="input fasta file path")
-    parser.add_argument("--output", help="Where the processed tRNAs will be saved", type=str, default="processed_trnas.tsv")
-    parser.add_argument("--threads", help="Number of threads for parallel processing", type=int, default=4)
-    args = parser.parse_args()
-    
-    if args.fasta_name and args.fasta:
-        # combine_annotations(args.annotations, args.output, args.threads)
+@click.command()
+@click.option("--fasta_name", help="Input fasta name. Can include more than one as a comma seperated list", default=[], callback=validate_comma_separated, required=True)
+@click.option("--fasta", help="Input fasta file path.  Can include more than one as a comma seperated list", default=[], callback=validate_comma_separated, required=True)
+@click.option("--threads", help="Number of threads for parallel processing", type=int, default=4)
+def main(fasta_name, fasta, threads):
+    """Run tRNAscan-SE and process its output."""
+    assert len(fasta_name) == len(fasta), "fasta_name and fasta must have the same number of elements"
+    for name, file in zip(fasta_name, fasta):
+        assert name, "fasta_name cannot be empty"
+        assert file, "fasta cannot be empty"
         # Run tRNAscan-SE with the necessary input to avoid prompts
-        trna_out = f"{args.fasta_name}_trna_out.txt"
-        subprocess.run(["tRNAscan-SE", "-G", "-o", trna_out, "--thread", f"{args.threads}", f"{args.fasta}"], input=b'O\n', check=True)
+        trna_out = f"{name}_trna_out.txt"
+        subprocess.run(["tRNAscan-SE", "-G", "-o", trna_out, "--thread", f"{threads}", f"{file}"], input=b'O\n', check=True)
 
+        output = f"{name}_processed_trnas.tsv"
         # Process tRNAscan-SE output
-        process_trnascan_output(trna_out, args.output, args.fasta_name)
-        logger.debug(f"Processed tRNAscan-SE output and saved to {args.output}")
-
-    else:
-        logger.error("Missing required arguments. Use --help for usage information.")
+        process_trnascan_output(trna_out, output, name)
+        logger.debug(f"Processed tRNAscan-SE output and saved to {output}")
+        
+if __name__ == "__main__":
+    main()

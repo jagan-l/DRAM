@@ -181,29 +181,13 @@ workflow DRAM {
         //
         // Pipeline steps
         //
-        // ch_fasta.collate(100).view()
-
 
         if( params.rename ) {
-            // We need to use collect so that we pass all the fasta files to the rename process at once
-            // Otherwise, it will try to rename each fasta file one at a time
-            // Which since rename is so fast, will clog up job queues
-            // so it is faster to rename all at once
+            RENAME_FASTA( ch_fasta_name.collate(params.batch_limit_sm_jobs), ch_fasta.collate(params.batch_limit_sm_jobs) )
 
-            RENAME_FASTA( ch_fasta_name.collate(100), ch_fasta.collate(100) )
-
-            // RENAME_FASTA( ch_fasta.collate(100) )
-            // fasta_files.collate(100).view()
-            // RENAME_FASTA( fasta_files.collate(100) )
-            // ch_fasta = RENAME_FASTA.out.renamed_fasta
             // We call flatten because collate could group them into lists if size is too small and has to be broken into multiple jobs
             ch_fasta = RENAME_FASTA.out.renamed_fasta_paths.flatten()
 
-            // // we need to recreate the fasta channel with the renamed fasta files
-            // ch_fasta = renamed_fasta_paths.map {
-            //     fasta_name = it.getName().replaceAll(/\.[^.]+$/, '').replaceAll(/\./, '-')
-            //     tuple(fasta_name, it)
-            // }
         }
 
         ch_quast_stats = default_sheet

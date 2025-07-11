@@ -4,7 +4,7 @@ process QUAST {
     errorStrategy 'finish'
 
     conda "${moduleDir}/environment.yml"
-    container "community.wave.seqera.io/library/python_pandas_scikit-bio_hmmer_pruned:ef64c488c99048d6"
+    container "community.wave.seqera.io/library/python_pandas_scikit-bio_hmmer_pruned:8167823ba0a9349d"
 
     input:
     path (collected_fasta_gff)

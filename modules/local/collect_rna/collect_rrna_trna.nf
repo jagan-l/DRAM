@@ -1,29 +1,21 @@
-process CALL_GENES {
+process COLLECT_RRNA_TRNA {
     label 'process_low'
 
     errorStrategy 'finish'
 
     conda "${moduleDir}/environment.yml"
-    container "community.wave.seqera.io/library/python_pandas_scikit-bio_hmmer_pruned:8167823ba0a9349d"
+    container "community.wave.seqera.io/library/python_pandas_barrnap_trnascan-se_click:1673b0631658b61b"
+
+    tag { input_fasta }
 
     input:
     val fasta_names
     path fastas
-    // tuple val( input_fasta ), path( fasta )
 
     output:
-    // path("renamed/*.fna"), emit: renamed_fasta_paths, optional: true
-    path( "*.fna" ), emit: prodigal_fna, optional: true
-    path( "*.faa" ), emit: prodigal_faa, optional: true
-    path( "*.tsv" ), emit: prodigal_locs_tsv, optional: true
-    path( "*.fa" ), emit: prodigal_filtered_fasta, optional: true
-    path( "*.gff" ), emit: prodigal_gff, optional: true
-
+    path("${input_fasta}_processed_rrnas.tsv"), emit: rrna_scan_out, optional: true
 
     script:
-
-    assert fastas.size() == fasta_names.size() : "Fasta paths and names must have the same length."
-
     def call_prodigal_cmds = fasta_names.indices.collect { i ->
         def name = fasta_names[i]
         def fasta_file = fastas[i]
@@ -61,6 +53,9 @@ process CALL_GENES {
     }.join("\n")
 
     """
-    ${call_prodigal_cmds}
+    # export constants for script
+    export FASTA_COLUMN="${params.CONSTANTS.FASTA_COLUMN}"
+
+    rrna_scan.py --fasta_name "${input_fasta}" --fasta "${fasta}" --output "${input_fasta}_processed_rrnas.tsv" --threads ${params.threads}
     """
 }

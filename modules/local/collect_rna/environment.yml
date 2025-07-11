@@ -7,4 +7,5 @@ dependencies:
   - pandas=1.5.2
   - barrnap=0.9
   - trnascan-se=2.0.12
+  - click<9.0
   

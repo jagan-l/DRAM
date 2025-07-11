@@ -40,21 +40,22 @@ workflow COLLECT_RNA {
             .set { ch_collected_rRNAs }
     } else { // If we did run call then we need to generate the rrnas and trnas from the fastas
         // Run tRNAscan-SE on each fasta to identify tRNAs
-        TRNA_SCAN( ch_fasta_name, ch_fasta )
-        ch_trna_scan = TRNA_SCAN.out.trna_scan_out
+        TRNA_SCAN( ch_fasta_name.collate(params.batch_limit_sm_jobs), ch_fasta.collate(params.batch_limit_sm_jobs) )
+        // We call flatten because collate could group them into lists if size is too small and has to be broken into multiple jobs
+        ch_trna_scan = TRNA_SCAN.out.trna_scan_out.flatten()
         // Collect all input_fasta formatted tRNA files
         Channel.empty()
             .mix( ch_trna_scan )
             .collect()
             .set { ch_collected_tRNAs }
         // Run barrnap on each fasta to identify rRNAs
-        RRNA_SCAN( ch_fasta_name, ch_fasta )
-        ch_rrna_scan = RRNA_SCAN.out.rrna_scan_out
+        RRNA_SCAN( ch_fasta_name.collate(params.batch_limit_sm_jobs), ch_fasta.collate(params.batch_limit_sm_jobs) )
+        // We call flatten because collate could group them into lists if size is too small and has to be broken into multiple jobs
+        ch_rrna_scan = RRNA_SCAN.out.rrna_scan_out.flatten()
         Channel.empty()
             .mix( ch_rrna_scan )
             .collect()
             .set { ch_collected_rRNAs }
-
     }
 
     // Create sheet for trnas from the collected tRNAs or provided tRNAs

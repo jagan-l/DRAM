@@ -26,7 +26,7 @@ workflow CALL {
     main:
 
     // Call genes using Prodigal on the input fasta file(s) 1-by-1
-    CALL_GENES ( ch_fasta_name.collate(params.call_collate_size), ch_fasta.collate(params.call_collate_size) )
+    CALL_GENES ( ch_fasta_name.collate(params.batch_limit_sm_jobs), ch_fasta.collate(params.batch_limit_sm_jobs) )
 
     // We call flatten because collate could group them into lists if size is too small and has to be broken into multiple jobs
     ch_called_genes = CALL_GENES.out.prodigal_fna.flatten()

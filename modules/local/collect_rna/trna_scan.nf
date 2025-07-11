@@ -4,22 +4,32 @@ process TRNA_SCAN {
     errorStrategy 'finish'
 
     conda "${moduleDir}/environment.yml"
-    container "community.wave.seqera.io/library/python_pandas_barrnap_trnascan-se:ed2ab26abf39304b"
-
-    tag { input_fasta }
+    container "community.wave.seqera.io/library/python_pandas_barrnap_trnascan-se_click:1673b0631658b61b"
 
     input:
-    val input_fasta
-    path fasta
+    val fasta_names
+    path fastas
 
     output:
-    path("${input_fasta}_processed_trnas.tsv"), emit: trna_scan_out, optional: true
+    path("*_processed_trnas.tsv"), emit: trna_scan_out, optional: true
 
     script:
+    assert fastas.size() == fasta_names.size() : "Fasta paths and names must have the same length. "
+    
+    def fasta_paths = ""
+    def names = ""
+
+    fasta_names.indices.collect { i ->
+        fasta_paths += "${fastas[i]},"
+        names += "${fasta_names[i]},"
+    }
+    fasta_paths = fasta_paths[0..-2] // remove trailing comma
+    names = names[0..-2] // remove trailing comma
+
     """
     # export constants for script
     export FASTA_COLUMN="${params.CONSTANTS.FASTA_COLUMN}"
 
-    trna_scan.py --fasta_name "${input_fasta}" --fasta "${fasta}" --output "${input_fasta}_processed_trnas.tsv" --threads ${params.threads}
+    trna_scan.py --fasta_name "${names}" --fasta "${fasta_paths}" --threads ${params.threads}
     """
 }
