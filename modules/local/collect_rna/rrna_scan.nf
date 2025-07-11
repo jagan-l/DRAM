@@ -17,52 +17,9 @@ process RRNA_SCAN {
 
     script:
     """
-    #!/usr/bin/env python
+    # export constants for script
+    export FASTA_COLUMN="${params.CONSTANTS.FASTA_COLUMN}"
 
-    import pandas as pd
-    import subprocess
-    import io
-    from sys import stderr
-
-    FASTA_COLUMN="${params.CONSTANTS.FASTA_COLUMN}"
-
-    def run_barrnap(fasta, input_fasta_name, threads, verbose=True):
-        barrnap_command = [
-            "barrnap",
-            "--threads", str(threads),
-            "--kingdom", "bacteria",  # Adjust as necessary
-            fasta
-        ]
-        result = subprocess.run(barrnap_command, capture_output=True, text=True)
-        raw_rrna_str = result.stdout
-
-        if not raw_rrna_str.strip():
-            print(f"No rRNAs were detected for {input_fasta_name}.", file=stderr)
-            return pd.DataFrame(columns=[FASTA_COLUMN, "query_id", "type", "begin", "end", "strand", "e-value", "note"])  # Ensure this matches RRNA_COLUMNS
-
-        try:
-            rrna_df = pd.read_csv(
-                io.StringIO(raw_rrna_str),
-                sep="\t",
-                header=None,
-                names=["query_id", "tool_name", "type", "begin", "end", "strand", "e-value", "score", "note"],
-                usecols=["query_id", "type", "begin", "end", "strand", "e-value", "note"],
-                comment='#'  # This will skip lines starting with '#', including the '##gff-version 3' line
-            )
-            rrna_df.insert(0, FASTA_COLUMN, input_fasta_name)
-            return rrna_df
-        except pd.errors.ParserError:
-            print(f"Parser error processing barrnap output for {input_fasta_name}. Output may not be in the expected format.", file=stderr)
-            return pd.DataFrame(columns=[FASTA_COLUMN, "query_id", "type", "begin", "end", "strand", "e-value", "note"])
-
-
-    rrna_df = run_barrnap("${fasta}", "${input_fasta}", threads=${params.threads}, verbose=True)
-
-    if not rrna_df.empty:
-        rrna_df.to_csv(f"${input_fasta}_processed_rrnas.tsv", sep="\t", index=False)
-    else:
-        with open(f"${input_fasta}_processed_rrnas.tsv", "w") as file:
-            file.write("NULL")
-
+    rrna_scan.py --fasta_name "${input_fasta}" --fasta "${fasta}" --output "${input_fasta}_processed_rrnas.tsv" --threads ${params.threads}
     """
 }
