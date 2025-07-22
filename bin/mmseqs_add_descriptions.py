@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import sys
 import pandas as pd
+from pathlib import Path
 
 def assign_rank(row, a_rank, b_rank, db_name_bit_score):
     """Assign rank based on bit score and provided thresholds."""
@@ -13,17 +14,14 @@ def assign_rank(row, a_rank, b_rank, db_name_bit_score):
     else:
         return None
 
-def main(input_fasta, db_name, descriptions_path, bit_score_threshold, gene_locs_path):
-    print(f"Starting processing for input_fasta: {input_fasta}, database: {db_name}")
+def main(input_file, db_name, descriptions_path, bit_score_threshold, gene_locs_path):
+    print(f"Starting processing for input_file: {input_file}, database: {db_name}")
 
-    mmseqs_path = f"mmseqs_out/{input_fasta}_mmseqs_{db_name}.tsv"
-    print(f"Loading MMseqs output from {mmseqs_path}")
-    
     df_gene_locs = pd.read_csv(gene_locs_path, sep='\t', header=None, names=['query_id', 'start_position', 'stop_position'])
     print("Gene locations loaded. Sample rows:")
     print(df_gene_locs.head())
     
-    df_mmseqs = pd.read_csv(mmseqs_path, sep='\t', header=None, usecols=[0, 1, 11])
+    df_mmseqs = pd.read_csv(input_file, sep='\t', header=None, usecols=[0, 1, 11])
     df_mmseqs.columns = ['query_id', f'{db_name}_id', f'{db_name}_bitScore']
     print("MMseqs data loaded and columns renamed. Sample rows:")
     print(df_mmseqs.head())
@@ -57,16 +55,16 @@ def main(input_fasta, db_name, descriptions_path, bit_score_threshold, gene_locs
         
         # Drop A_rank and B_rank columns as they should not be output
         df_merged.drop(columns=['A_rank', 'B_rank'], inplace=True, errors='ignore')
-
-    output_path = f"mmseqs_out/{input_fasta}_mmseqs_{db_name}_formatted.csv"
-    df_merged.to_csv(output_path, index=False)
+    
+    output_path = input_file.parent / f"{input_file.stem}_formatted.csv"
+    df_merged.to_csv(output_path , index=False)
     print("Merged DataFrame saved to", output_path)
 
 if __name__ == "__main__":
-    input_fasta = sys.argv[1]
+    input_file = Path(sys.argv[1])
     db_name = sys.argv[2]
     descriptions_path = sys.argv[3]
     bit_score_threshold = float(sys.argv[4])
     gene_locs_path = sys.argv[5]
 
-    main(input_fasta, db_name, descriptions_path, bit_score_threshold, gene_locs_path)
+    main(input_file, db_name, descriptions_path, bit_score_threshold, gene_locs_path)

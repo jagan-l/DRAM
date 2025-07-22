@@ -29,6 +29,7 @@ workflow CALL {
     // Call genes using Prodigal on the input fasta file(s) 1-by-1
     def collate_size = getCollateSize("small", ch_fasta_name)
     CALL_GENES ( ch_fasta_name.collate(collate_size), ch_fasta.collate(collate_size) )
+    // CALL_GENES ( ch_fasta.collate(1).transpose() )
     // CALL_GENES ( ch_fasta_name.collate(1), ch_fasta.collate(1) )
 
     // We call flatten because collate could group them into lists if size is too small and has to be broken into multiple jobs
@@ -37,6 +38,7 @@ workflow CALL {
     ch_gene_locs = CALL_GENES.out.prodigal_locs_tsv.flatten()
     ch_gene_gff = CALL_GENES.out.prodigal_gff.flatten()
     ch_filtered_fasta = CALL_GENES.out.prodigal_filtered_fasta.flatten()
+    ch_combined_call_gene_output = CALL_GENES.out.ch_combined_call_gene_output
 
     Channel.empty()
         .mix( ch_called_genes  )
@@ -52,18 +54,18 @@ workflow CALL {
     if (params.rename) {
         ch_fasta = CALL_GENES.out.renamed_fasta_paths.flatten()
     }
-    if (params.call) {
-        // // Collect all individual fasta to pass to quast
-        // ch_called_proteins
-        //     .collect()                  // Collect all paths into a list
-        //     .set { ch_collected_faa }   // Set the resulting list to ch_collected_faa
+    // if (params.call) {
+    //     // // Collect all individual fasta to pass to quast
+    //     // ch_called_proteins
+    //     //     .collect()                  // Collect all paths into a list
+    //     //     .set { ch_collected_faa }   // Set the resulting list to ch_collected_faa
 
-        // Collect all individual fasta to pass to quast
+    //     // Collect all individual fasta to pass to quast
 
-        // Run QUAST on individual FASTA file combined with respective GFF
-        QUAST( ch_collected_fasta )
-        ch_quast_stats = QUAST.out.quast_collected_out
-    }
+    //     // Run QUAST on individual FASTA file combined with respective GFF
+    //     QUAST( ch_collected_fasta )
+    //     ch_quast_stats = QUAST.out.quast_collected_out
+    // }
 
     emit:
     // ch_quast_stats
@@ -74,4 +76,5 @@ workflow CALL {
     ch_collected_fna
     ch_collected_fasta
     ch_fasta
+    ch_combined_call_gene_output
 }

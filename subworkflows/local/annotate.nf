@@ -56,6 +56,8 @@ include { PARSE_HMM as PARSE_HMM_CANTHYD                } from "${projectDir}/mo
 include { PARSE_HMM as PARSE_HMM_SULFUR                 } from "${projectDir}/modules/local/annotate/parse_hmmsearch.nf"
 include { PARSE_HMM as PARSE_HMM_FEGENIE                } from "${projectDir}/modules/local/annotate/parse_hmmsearch.nf"
 
+include { getCollateSize                                } from "${projectDir}/subworkflows/local/utils_pipeline_management.nf"
+
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     SUBWORKFLOW TO ANNOTATE
@@ -67,6 +69,7 @@ workflow ANNOTATE {
     ch_gene_locs  // channel: path(gene_locs_tsv)
     ch_called_proteins  // channel: path(called_proteins_file.faa)
     ch_fasta_name // channel: val(input_fasta names)
+    ch_combined_call_gene_output
     default_sheet // Path to dummy sheet
 
     main:
@@ -98,27 +101,38 @@ workflow ANNOTATE {
     vogdb_name = "vogdb"
 
 
+    def sm_collate_size = getCollateSize("small", ch_fasta_name)
+    // We call flatten below everywhere after collate because collate could group them into lists if size is too small and has to be broken into multiple jobs
     if (!params.call) {
         ch_called_proteins = Channel
             .fromPath(file(params.input_genes) / params.genes_fmt, checkIfExists: true)
             .ifEmpty { exit 1, "If you specify --annotate without --call, you must provide a fasta file of called genes using --input_genes. Cannot find any called gene fasta files matching: ${params.input_genes}\nNB: Path needs to follow pattern: path/to/directory/" }
-
-        GENE_LOCS( ch_fasta_name, ch_called_proteins)
-        ch_gene_locs = GENE_LOCS.out.prodigal_locs_tsv
+        GENE_LOCS( ch_fasta_name.collate(sm_collate_size), ch_called_proteins.collate(sm_collate_size))
+        ch_gene_locs = GENE_LOCS.out.prodigal_locs_tsv.flatten()
     }
 
     def formattedOutputChannels = channel.of()
 
+    def annotate_collate_size = getCollateSize("other", ch_fasta_name)
     // Here we will create mmseqs2 index files for each of the inputs if we are going to do a mmseqs2 database
     if (DB_CHANNEL_SETUP.out.index_mmseqs) {
         // Use MMSEQS2 to index each called genes protein file
-        MMSEQS_INDEX( ch_fasta_name, ch_called_proteins )
+        // MMSEQS_INDEX( ch_called_proteins )
+        MMSEQS_INDEX( ch_combined_call_gene_output )
         ch_mmseqs_query = MMSEQS_INDEX.out.mmseqs_index_out
+        log.info("ch_gene_locs: ")
+        ch_gene_locs.view()
+        log.info("ch_mmseqs_query: ")
+        ch_mmseqs_query.view()
     }
+    log.info("params.use_kegg: ${params.use_kegg}")
 
     // KEGG annotation
     if (params.use_kegg) {
-        ch_combined_query_locs_kegg = ch_mmseqs_query.join(ch_gene_locs)
+        // ch_combined_query_locs_kegg = ch_mmseqs_query.join(ch_gene_locs)
+        ch_combined_query_locs_kegg = MMSEQS_INDEX.out.mmseqs_index_out_tuple
+        // log.info("ch_combined_query_locs_kegg: ")
+        ch_combined_query_locs_kegg.view()
         MMSEQS_SEARCH_KEGG( ch_combined_query_locs_kegg, DB_CHANNEL_SETUP.out.ch_kegg_db, params.bit_score_threshold, params.rbh_bit_score_threshold, default_sheet, kegg_name )
         ch_kegg_unformatted = MMSEQS_SEARCH_KEGG.out.mmseqs_search_formatted_out
 

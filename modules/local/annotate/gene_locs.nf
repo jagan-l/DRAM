@@ -6,19 +6,27 @@ process GENE_LOCS {
     conda "${moduleDir}/environment.yml"
     container "community.wave.seqera.io/library/python_pandas_hmmer_mmseqs2_pruned:f459942a75c71501"
     
-    tag { input_fasta }
-
     input:
-    val input_fasta
+    val fasta_names
     path genes
 
     output:
-    tuple val( input_fasta ), path( "${input_fasta}_called_genes_table.tsv" ), emit: prodigal_locs_tsv
+    path( "*_called_genes_table.tsv" ), emit: prodigal_locs_tsv
 
 
     script:
 
+    def gen_faa_cmds = fasta_names.indices.collect { i ->
+        def name = fasta_names[i]
+        def file = genes[i]
+        """
+        generate_faa_gene_loc_tsv.py ${file} "${name}_called_genes_table.tsv"
+        echo "Gene locations TSV generated for ${name} from ${file}"
+        """
+    }.join("\n")
+
     """
-    generate_faa_gene_loc_tsv.py ${genes} "${input_fasta}_called_genes_table.tsv"
+    ${gen_faa_cmds}
+    echo "Gene locations TSV generation completed for ${fasta_names.size()} FASTA files."
     """
 }

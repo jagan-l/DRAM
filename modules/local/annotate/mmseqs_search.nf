@@ -8,10 +8,8 @@ process MMSEQS_SEARCH {
     conda "${moduleDir}/environment.yml"
     container "community.wave.seqera.io/library/python_pandas_hmmer_mmseqs2_pruned:f459942a75c71501"
 
-    tag { input_fasta }
-
     input:
-    tuple( val(input_fasta), 
+    tuple(
         path( query_database, stageAs: "query_database/" ), 
         path( prodigal_locs_tsv, stageAs: "gene_locs.tsv" )
         )
@@ -23,9 +21,9 @@ process MMSEQS_SEARCH {
 
 
     output:
-    tuple val( input_fasta ), path("mmseqs_out/${input_fasta}_mmseqs_${db_name}.tsv"), emit: mmseqs_search_raw_out, optional: true
-    tuple val( input_fasta ), path("mmseqs_out/${input_fasta}_mmseqs_${db_name}_formatted.csv"), emit: mmseqs_search_formatted_out, optional: true
-    //tuple val( input_fasta ), path("mmseqs_out/${input_fasta}_mmseqs_rbh_${db_name}.tsv "), emit: mmseqs_search_rbh_formatted_out, optional: true
+    path("mmseqs_out/*_mmseqs_${db_name}.tsv"), emit: mmseqs_search_raw_out, optional: true
+    path("mmseqs_out/*_mmseqs_${db_name}_formatted.csv"), emit: mmseqs_search_formatted_out, optional: true
+    // path("mmseqs_out/${input_fasta}_mmseqs_rbh_${db_name}.tsv "), emit: mmseqs_search_rbh_formatted_out, optional: true
 
     script:
     """
@@ -36,32 +34,32 @@ process MMSEQS_SEARCH {
 
     if [ "${db_name}" != "pfam" ]; then
         # Perform search
-        mmseqs search query_database/${input_fasta}.mmsdb ${db_name}.mmsdb mmseqs_out/${input_fasta}_${db_name}.mmsdb mmseqs_out/tmp --threads ${params.threads}
+        mmseqs search query_database/combined_genes.mmsdb ${db_name}.mmsdb mmseqs_out/combined_genes_${db_name}.mmsdb mmseqs_out/tmp --threads ${params.threads}
 
         # Filter to only best hit
-        mmseqs filterdb mmseqs_out/${input_fasta}_${db_name}.mmsdb mmseqs_out/${input_fasta}_${db_name}_tophit.mmsdb --extract-lines 1
+        mmseqs filterdb mmseqs_out/combined_genes_${db_name}.mmsdb mmseqs_out/combined_genes_${db_name}_tophit.mmsdb --extract-lines 1
 
         # Filter to only hits with minimum bit score
-        mmseqs filterdb --filter-column 2 --comparison-operator ge --comparison-value ${bit_score_threshold} --threads ${params.threads} mmseqs_out/${input_fasta}_${db_name}_tophit.mmsdb mmseqs_out/${input_fasta}_${db_name}_tophit_minbitscore${bit_score_threshold}.mmsdb
+        mmseqs filterdb --filter-column 2 --comparison-operator ge --comparison-value ${bit_score_threshold} --threads ${params.threads} mmseqs_out/combined_genes_${db_name}_tophit.mmsdb mmseqs_out/combined_genes_${db_name}_tophit_minbitscore${bit_score_threshold}.mmsdb
 
         # Convert results to BLAST outformat 6
-        mmseqs convertalis query_database/${input_fasta}.mmsdb ${db_name}.mmsdb  mmseqs_out/${input_fasta}_${db_name}_tophit_minbitscore${bit_score_threshold}.mmsdb mmseqs_out/${input_fasta}_mmseqs_${db_name}.tsv --threads ${params.threads}
+        mmseqs convertalis query_database/combined_genes.mmsdb ${db_name}.mmsdb  mmseqs_out/combined_genes_${db_name}_tophit_minbitscore${bit_score_threshold}.mmsdb mmseqs_out/combined_genes_${task.index}_mmseqs_${db_name}.tsv --threads ${params.threads}
 
         # if statement for kegg rbh goes here
     elif [ "${db_name}" == "pfam" ]; then
         # Do profile search:
-        mmseqs search query_database/${input_fasta}.mmsdb ${db_name}.mmspro mmseqs_out/${input_fasta}_${db_name}.mmsdb mmseqs_out/tmp -k 5 -s 7  --threads ${params.threads}
+        mmseqs search query_database/combined_genes.mmsdb ${db_name}.mmspro mmseqs_out/combined_genes_${db_name}.mmsdb mmseqs_out/tmp -k 5 -s 7  --threads ${params.threads}
 
         # Convert results to BLAST outformat 6
-        mmseqs convertalis query_database/${input_fasta}.mmsdb ${db_name}.mmspro mmseqs_out/${input_fasta}_${db_name}.mmsdb mmseqs_out/${input_fasta}_mmseqs_${db_name}.tsv --threads ${params.threads}
+        mmseqs convertalis query_database/combined_genes.mmsdb ${db_name}.mmspro mmseqs_out/combined_genes_${db_name}.mmsdb mmseqs_out/combined_genes_${task.index}_mmseqs_${db_name}.tsv --threads ${params.threads}
     fi
 
-    # Check if the mmseqs_out/${input_fasta}_mmseqs_${db_name}.tsv file is empty
-    if [ ! -s "mmseqs_out/${input_fasta}_mmseqs_${db_name}.tsv" ]; then
-        echo "The file mmseqs_out/${input_fasta}_mmseqs_${db_name}.tsv is empty. Skipping further processing."
+    # Check if the mmseqs_out/combined_genes_${task.index}_mmseqs_${db_name}.tsv file is empty
+    if [ ! -s "mmseqs_out/combined_genes_${task.index}_mmseqs_${db_name}.tsv" ]; then
+        echo "The file mmseqs_out/combined_genes_${task.index}_mmseqs_${db_name}.tsv is empty. Skipping further processing."
     else
         # Call Python script for further processing
-        mmseqs_add_descriptions.py "${input_fasta}" "${db_name}" "db_descriptions.tsv" "${bit_score_threshold}" "gene_locs.tsv"
+        mmseqs_add_descriptions.py "mmseqs_out/combined_genes_${task.index}_mmseqs_${db_name}.tsv" "${db_name}" "db_descriptions.tsv" "${bit_score_threshold}" "gene_locs.tsv"
     fi
 
     """
@@ -70,7 +68,7 @@ process MMSEQS_SEARCH {
 /*  Code for kegg RBH - this mayt or may not work, it takes FOREVER to do the reverse search... will test later on riviera
         if [ "${db_name}" == "kegg" ]; then
             # Perform Reverse Best Hit search
-            mmseqs search ${db_name}.mmsdb query_database/${input_fasta}.mmsdb  mmseqs_out/${input_fasta}_rbh_${db_name}.mmsdb mmseqs_out/tmp --threads ${params.threads}
+            mmseqs search ${db_name}.mmsdb query_database/combined_genes.mmsdb  mmseqs_out/${input_fasta}_rbh_${db_name}.mmsdb mmseqs_out/tmp --threads ${params.threads}
 
             # Filter Reverse Best Hit to only best hit
             mmseqs filterdb mmseqs_out/${input_fasta}_rbh_${db_name}.mmsdb mmseqs_out/${input_fasta}_${db_name}_rbh_tophit.mmsdb --extract-lines 1
@@ -79,7 +77,7 @@ process MMSEQS_SEARCH {
             mmseqs filterdb --filter-column 2 --comparison-operator ge --comparison-value ${rbh_bit_score_threshold} --threads ${params.threads} mmseqs_out/${input_fasta}_${db_name}_rbh_tophit.mmsdb mmseqs_out/${input_fasta}_${db_name}_tophit_rbh_minbitscore${bit_score_threshold}.mmsdb
 
             # Convert Reverse Best Hit  results to BLAST outformat 6
-            mmseqs convertalis ${db_name}.mmsdb query_database/${input_fasta}.mmsdb mmseqs_out/${input_fasta}_${db_name}_tophit_rbh_minbitscore${bit_score_threshold}.mmsdb mmseqs_out/${input_fasta}_mmseqs_rbh_${db_name}.tsv --threads ${params.threads}
+            mmseqs convertalis ${db_name}.mmsdb query_database/combined_genes.mmsdb mmseqs_out/${input_fasta}_${db_name}_tophit_rbh_minbitscore${bit_score_threshold}.mmsdb mmseqs_out/${input_fasta}_mmseqs_rbh_${db_name}.tsv --threads ${params.threads}
         
             # Need additional processing for KEGG RBH
             rbh_mmseqs_filter.py filterdb "mmseqs_out/${input_fasta}_mmseqs_${db_name}.tsv" --reverse "mmseqs_out/${input_fasta}_mmseqs_rbh_${db_name}.tsv" --output "mmseqs_out/${input_fasta}_mmseqs_rbh_${db_name}_combined.tsv"

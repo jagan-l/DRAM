@@ -57,10 +57,10 @@ workflow DRAM {
                 // fasta_p -> fasta_p.getName().replaceAll(/\.[^.]+$/, '').replaceAll(/\./, '-')
                 }
                 
-        // ch_fasta = ch_fasta.map {
-        //     fasta_name = it.getName().replaceAll(/\.[^.]+$/, '').replaceAll(/\./, '-')
-        //     tuple(fasta_name, it)
-        // }
+        ch_fasta_tuple = ch_fasta.map {
+            fasta_name = it.getName().replaceAll(/\.[^.]+$/, '').replaceAll(/\./, '-')
+            tuple(fasta_name, it)
+        }
         // fasta_name = ch_fasta.map { it[0] }
         // fasta_files = ch_fasta.map { it[1] }
 
@@ -194,22 +194,25 @@ workflow DRAM {
         ch_gene_locs = default_sheet
         ch_called_proteins = default_sheet
         ch_collected_fna = default_sheet
+        ch_combined_call_gene_output = default_sheet
 
         if (params.call || params.rename){
             CALL( ch_fasta_name, ch_fasta )
+            // CALL( ch_fasta_tuple )
             // ch_quast_stats = CALL.out.ch_quast_stats
             ch_gene_locs = CALL.out.ch_gene_locs
             ch_called_proteins = CALL.out.ch_called_proteins
             ch_collected_fna = CALL.out.ch_collected_fna
             ch_fasta = CALL.out.ch_fasta // If the user has specified --rename, we will have renamed the fasta files
+            ch_combined_call_gene_output = CALL.out.ch_combined_call_gene_output
         }
 
-        if (params.call || distill_flag){
-            COLLECT_RNA( ch_fasta_name, ch_fasta )
-        }
+        // if (params.call || distill_flag){
+        //     COLLECT_RNA( ch_fasta_name, ch_fasta )
+        // }
 
         if (params.annotate){
-            ANNOTATE( ch_gene_locs, ch_called_proteins, ch_fasta_name, default_sheet )
+            ANNOTATE( ch_gene_locs, ch_called_proteins, ch_fasta_name, ch_combined_call_gene_output, default_sheet )
 
         }
 
