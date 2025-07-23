@@ -4,11 +4,11 @@ process COMBINE_ANNOTATIONS {
     errorStrategy 'finish'
 
     conda "${moduleDir}/environment.yml"
-    container "community.wave.seqera.io/library/python_pandas_hmmer_mmseqs2_pruned:4a55e4bf58e4a06b"
+    container "community.wave.seqera.io/library/python_pandas_hmmer_mmseqs2_pruned:f459942a75c71501"
 
     input:
-    val all_annotations
-    val all_genes
+    path(fastas)
+    path(genes)
     // tuple val( input_fasta ), path( fasta )
 
     output:
@@ -26,7 +26,7 @@ process COMBINE_ANNOTATIONS {
     touch logs/combine_annotations.log
     log_file="logs/combine_annotations.log"
 
-    combine_annotations.py --annotations ${all_annotations} --threads ${params.threads} --output "raw-annotations.tsv" >> \$log_file 2>&1 --genes-faa ${all_genes}
+    combine_annotations.py --annotations "${fastas}" --threads "${params.threads}" --output "raw-annotations.tsv" >> \$log_file 2>&1 --genes_faa "${genes}"
 
     """
 }

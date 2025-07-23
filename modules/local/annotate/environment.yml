@@ -9,3 +9,4 @@ dependencies:
   - mmseqs2==13.45111
   - scikit-bio=0.5.7
   - scipy=1.8.1
+  - click<9.0

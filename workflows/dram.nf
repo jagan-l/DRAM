@@ -52,7 +52,7 @@ workflow DRAM {
                 .ifEmpty { exit 1, "Cannot find any fasta files matching: ${params.input_fasta}\nNB: Path needs to follow pattern: path/to/directory/" }
 
         ch_fasta = ch_fasta.map {
-            fasta_name = it.getName().replaceAll(/\.[^.]+$/, '').replaceAll(/\./, '-')
+            fasta_name = it.getBaseName().replaceAll(/\./, '-')
             tuple(fasta_name, it)
         }
         fasta_name = ch_fasta.map { it[0] }
@@ -184,7 +184,7 @@ workflow DRAM {
             renamed_fasta_paths = RENAME_FASTA.out.renamed_fasta_paths.flatten()
             // we need to recreate the fasta channel with the renamed fasta files
             ch_fasta = renamed_fasta_paths.map {
-                fasta_name = it.getName().replaceAll(/\.[^.]+$/, '').replaceAll(/\./, '-')
+                fasta_name = it.getBaseName().replaceAll(/\./, '-')
                 tuple(fasta_name, it)
             }
         }
