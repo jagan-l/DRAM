@@ -26,7 +26,7 @@ process COMBINE_ANNOTATIONS {
     touch logs/combine_annotations.log
     log_file="logs/combine_annotations.log"
 
-    combine_annotations.py --annotations "${fastas}" --threads "${params.threads}" --output "raw-annotations.tsv" >> \$log_file 2>&1 --genes_faa "${genes}"
+    combine_annotations.py --annotations "${fastas}" --threads "${params.threads}" --output "raw-annotations.tsv" --genes_faa "${genes}" >> \$log_file 2>&1
 
     """
 }
