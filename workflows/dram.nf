@@ -41,6 +41,7 @@ workflow DRAM {
 
     ch_versions = Channel.empty()
     ch_multiqc_files = Channel.empty()
+    n_fastas = 0
 
     default_sheet = file(params.distill_dummy_sheet)
     // ch_fasta = getFastaChannel(params.input_fasta, params.fasta_fmt)
@@ -57,6 +58,8 @@ workflow DRAM {
         }
         fasta_name = ch_fasta.map { it[0] }
         fasta_files = ch_fasta.map { it[1] }
+
+        n_fastas = file("$params.input_fasta/${params.fasta_fmt}").size()
     }
 
     def distill_topic_list = ""
@@ -208,7 +211,7 @@ workflow DRAM {
         }
 
         if (params.annotate){
-            ANNOTATE( ch_gene_locs, ch_called_proteins, default_sheet )
+            ANNOTATE( ch_gene_locs, ch_called_proteins, default_sheet, n_fastas )
 
         }
 

@@ -67,6 +67,7 @@ workflow ANNOTATE {
     ch_gene_locs  // channel: [ val(input_fasta name), path(gene_locs_tsv) ]
     ch_called_proteins  // channel: [ val(input_fasta name), path(called_proteins_file.faa) ]
     default_sheet // Path to dummy sheet
+    n_fastas // Number of FASTA files to process
 
     main:
 
@@ -108,6 +109,7 @@ workflow ANNOTATE {
 
         GENE_LOCS( ch_called_proteins)
         ch_gene_locs = GENE_LOCS.out.prodigal_locs_tsv
+        n_fastas = file("$params.input_genes/${params.genes_fmt}").size()
     }
 
     def formattedOutputChannels = channel.of()
@@ -315,7 +317,7 @@ workflow ANNOTATE {
 
     
 
-    COMBINE_ANNOTATIONS( fastas.collate(1000), genes.collate(1000) )
+    COMBINE_ANNOTATIONS( fastas.collate(n_fastas), genes.collate(n_fastas) )
     ch_combined_annotations = COMBINE_ANNOTATIONS.out.combined_annotations_out
 
 
