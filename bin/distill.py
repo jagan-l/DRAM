@@ -30,7 +30,7 @@ DISTILATE_SORT_ORDER_COLUMNS = [COL_HEADER, COL_SUBHEADER, COL_MODULE, COL_GENE_
 EXCEL_MAX_CELL_SIZE = 32767
 
 FASTA_COLUMN = os.getenv('FASTA_COLUMN')
-DISTILL_DIR = Path(__file__).parent.parent / "assets/forms/distill_sheets"
+DISTILL_DIR = Path(__file__).parent / "assets/forms/distill_sheets"
 
 
 def check_columns(data, logger):
@@ -241,7 +241,6 @@ def distill(input_file, trna_path=None, rrna_path=None, distil_topics=None, dist
         rrna_frame = pd.read_csv(rrna_path, sep='\t')
 
 
-    distil_dir = Path(__file__).parent.parent / "assets/forms/distill_sheets"
     distil_sheets_names = []
     if "default" in distil_topics:
         distil_sheets_names = [
