@@ -299,25 +299,10 @@ workflow ANNOTATE {
 
         formattedOutputChannels = formattedOutputChannels.mix(ch_viral_formatted)
     }
-    fastas = formattedOutputChannels.map { it[1] }
-    genes = ch_called_proteins.map { it[1] }
-
-    // Collect all formatted annotation output files
-    // Channel.empty()
-    //     .mix( formattedOutputChannels )
-    //     .collect()
-    //     .set { collected_formatted_hits }
-
-    // // COMBINE_ANNOTATIONS collects all annotations files across ALL databases
-    // // COMBINE_ANNOTATIONS( collected_formatted_hits )
-    // Channel.empty()
-    //     .mix( ch_called_proteins )
-    //     .collect()
-    //     .set { collected_called_proteins }
-
+    fastas = formattedOutputChannels.map { it[1] }.collect()
+    genes = ch_called_proteins.map { it[1] }.collect()
     
-
-    COMBINE_ANNOTATIONS( fastas.collate(n_fastas), genes.collate(n_fastas) )
+    COMBINE_ANNOTATIONS( fastas, genes )
     ch_combined_annotations = COMBINE_ANNOTATIONS.out.combined_annotations_out
 
 

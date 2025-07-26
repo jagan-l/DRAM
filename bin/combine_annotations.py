@@ -14,7 +14,8 @@ FASTA_COLUMN = os.getenv('FASTA_COLUMN')
 logger = get_logger()
 
 def read_and_preprocess(path: Path):
-    input_fasta = path.stem.replace(".", "-")
+    # We design input fastas from intermediate steps to be named like: "input_fasta___some_information_annotation_file.tsv"
+    input_fasta = path.stem.split("___")[0].replace(".", "-")
     try:
         df = pd.read_csv(path)
         df[FASTA_COLUMN] = input_fasta  # Add input_fasta column

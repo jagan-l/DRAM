@@ -13,12 +13,12 @@ process CAMPER_HMM_FORMATTER {
     file( ch_camper_list )
 
     output:
-    tuple val( input_fasta ), path ( "${input_fasta}_formatted_camper_hits.csv" ), emit: camper_formatted_hits
+    tuple val( input_fasta ), path ( "${input_fasta}___formatted_camper_hits.csv" ), emit: camper_formatted_hits
 
 
     script:
     """
-    camper_hmm_formatter.py --hits_csv ${hits_file} --ch_camper_list ${ch_camper_list} --gene_locs ${prodigal_locs_tsv} --output "${input_fasta}_formatted_camper_hits.csv"
+    camper_hmm_formatter.py --hits_csv ${hits_file} --ch_camper_list ${ch_camper_list} --gene_locs ${prodigal_locs_tsv} --output "${input_fasta}___formatted_camper_hits.csv"
     
     """
 }

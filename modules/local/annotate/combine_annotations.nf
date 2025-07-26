@@ -9,7 +9,10 @@ process COMBINE_ANNOTATIONS {
     input:
     path(fastas)
     path(genes)
-    // tuple val( input_fasta ), path( fasta )
+
+    // tuple val( input_fasta ), path( fastas )
+    // tuple val( input_fasta_again ), path( genes )
+    // tuple path(fastas), path(genes)
 
     output:
     path "raw-annotations.tsv", emit: combined_annotations_out

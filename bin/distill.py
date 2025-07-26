@@ -271,7 +271,8 @@ def distill(input_file, trna_path=None, rrna_path=None, distil_topics=None, dist
     if "camper_id" in annotations and ("default" in distil_topics or "camper" in distil_topics):
         distil_sheets_names.append(DISTILL_DIR / "distill_camper.tsv")
         
-        
+    logger.info(f"Distillate dir: {DISTILL_DIR}")
+    logger.info(f"Distillate sheets to be used: {distil_sheets_names}")
     if custom_distillate:
         for custom_sheet in custom_distillate:
             distil_sheets_names.append(custom_sheet)
