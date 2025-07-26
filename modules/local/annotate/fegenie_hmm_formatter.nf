@@ -4,7 +4,7 @@ process FEGENIE_HMM_FORMATTER {
     errorStrategy 'finish'
 
     conda "${moduleDir}/environment.yml"
-    container "community.wave.seqera.io/library/python_pandas_hmmer_mmseqs2_pruned:4a55e4bf58e4a06b"
+    container "community.wave.seqera.io/library/python_pandas_hmmer_mmseqs2_pruned:f459942a75c71501"
     
     tag { input_fasta }
 
@@ -12,12 +12,12 @@ process FEGENIE_HMM_FORMATTER {
     tuple val( input_fasta ), path( hits_file ), path( prodigal_locs_tsv, stageAs: "gene_locs.tsv" )
 
     output:
-    tuple val( input_fasta ), path ( "${input_fasta}_formatted_fegenie_hits.csv" ), emit: fegenie_formatted_hits
+    tuple val( input_fasta ), path ( "${input_fasta}___formatted_fegenie_hits.csv" ), emit: fegenie_formatted_hits
 
 
     script:
     """
-    fegenie_hmm_formatter.py --hits_csv ${hits_file} --gene_locs ${prodigal_locs_tsv} --output "${input_fasta}_formatted_fegenie_hits.csv"
+    fegenie_hmm_formatter.py --hits_csv ${hits_file} --gene_locs ${prodigal_locs_tsv} --output "${input_fasta}___formatted_fegenie_hits.csv"
     
     """
 }

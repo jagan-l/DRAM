@@ -6,7 +6,7 @@ process MMSEQS_SEARCH {
     errorStrategy 'finish'
 
     conda "${moduleDir}/environment.yml"
-    container "community.wave.seqera.io/library/python_pandas_hmmer_mmseqs2_pruned:4a55e4bf58e4a06b"
+    container "community.wave.seqera.io/library/python_pandas_hmmer_mmseqs2_pruned:f459942a75c71501"
 
     tag { input_fasta }
 
@@ -23,9 +23,9 @@ process MMSEQS_SEARCH {
 
 
     output:
-    tuple val( input_fasta ), path("mmseqs_out/${input_fasta}_mmseqs_${db_name}.tsv"), emit: mmseqs_search_raw_out, optional: true
-    tuple val( input_fasta ), path("mmseqs_out/${input_fasta}_mmseqs_${db_name}_formatted.csv"), emit: mmseqs_search_formatted_out, optional: true
-    //tuple val( input_fasta ), path("mmseqs_out/${input_fasta}_mmseqs_rbh_${db_name}.tsv "), emit: mmseqs_search_rbh_formatted_out, optional: true
+    tuple val( input_fasta ), path("mmseqs_out/${input_fasta}___mmseqs_${db_name}.tsv"), emit: mmseqs_search_raw_out, optional: true
+    tuple val( input_fasta ), path("mmseqs_out/${input_fasta}___mmseqs_${db_name}_formatted.csv"), emit: mmseqs_search_formatted_out, optional: true
+    //tuple val( input_fasta ), path("mmseqs_out/${input_fasta}___mmseqs_rbh_${db_name}.tsv "), emit: mmseqs_search_rbh_formatted_out, optional: true
 
     script:
     """
@@ -45,7 +45,7 @@ process MMSEQS_SEARCH {
         mmseqs filterdb --filter-column 2 --comparison-operator ge --comparison-value ${bit_score_threshold} --threads ${params.threads} mmseqs_out/${input_fasta}_${db_name}_tophit.mmsdb mmseqs_out/${input_fasta}_${db_name}_tophit_minbitscore${bit_score_threshold}.mmsdb
 
         # Convert results to BLAST outformat 6
-        mmseqs convertalis query_database/${input_fasta}.mmsdb ${db_name}.mmsdb  mmseqs_out/${input_fasta}_${db_name}_tophit_minbitscore${bit_score_threshold}.mmsdb mmseqs_out/${input_fasta}_mmseqs_${db_name}.tsv --threads ${params.threads}
+        mmseqs convertalis query_database/${input_fasta}.mmsdb ${db_name}.mmsdb  mmseqs_out/${input_fasta}_${db_name}_tophit_minbitscore${bit_score_threshold}.mmsdb mmseqs_out/${input_fasta}___mmseqs_${db_name}.tsv --threads ${params.threads}
 
         # if statement for kegg rbh goes here
     elif [ "${db_name}" == "pfam" ]; then
@@ -53,15 +53,15 @@ process MMSEQS_SEARCH {
         mmseqs search query_database/${input_fasta}.mmsdb ${db_name}.mmspro mmseqs_out/${input_fasta}_${db_name}.mmsdb mmseqs_out/tmp -k 5 -s 7  --threads ${params.threads}
 
         # Convert results to BLAST outformat 6
-        mmseqs convertalis query_database/${input_fasta}.mmsdb ${db_name}.mmspro mmseqs_out/${input_fasta}_${db_name}.mmsdb mmseqs_out/${input_fasta}_mmseqs_${db_name}.tsv --threads ${params.threads}
+        mmseqs convertalis query_database/${input_fasta}.mmsdb ${db_name}.mmspro mmseqs_out/${input_fasta}_${db_name}.mmsdb mmseqs_out/${input_fasta}___mmseqs_${db_name}.tsv --threads ${params.threads}
     fi
 
-    # Check if the mmseqs_out/${input_fasta}_mmseqs_${db_name}.tsv file is empty
-    if [ ! -s "mmseqs_out/${input_fasta}_mmseqs_${db_name}.tsv" ]; then
-        echo "The file mmseqs_out/${input_fasta}_mmseqs_${db_name}.tsv is empty. Skipping further processing."
+    # Check if the mmseqs_out/${input_fasta}___mmseqs_${db_name}.tsv file is empty
+    if [ ! -s "mmseqs_out/${input_fasta}___mmseqs_${db_name}.tsv" ]; then
+        echo "The file mmseqs_out/${input_fasta}___mmseqs_${db_name}.tsv is empty. Skipping further processing."
     else
         # Call Python script for further processing
-        mmseqs_add_descriptions.py "${input_fasta}" "${db_name}" "db_descriptions.tsv" "${bit_score_threshold}" "gene_locs.tsv"
+        mmseqs_add_descriptions.py "${input_fasta}" "${db_name}" "db_descriptions.tsv" "${bit_score_threshold}" "gene_locs.tsv" "mmseqs_out/${input_fasta}___mmseqs_${db_name}.tsv" "mmseqs_out/${input_fasta}___mmseqs_${db_name}_formatted.csv"
     fi
 
     """
@@ -79,11 +79,11 @@ process MMSEQS_SEARCH {
             mmseqs filterdb --filter-column 2 --comparison-operator ge --comparison-value ${rbh_bit_score_threshold} --threads ${params.threads} mmseqs_out/${input_fasta}_${db_name}_rbh_tophit.mmsdb mmseqs_out/${input_fasta}_${db_name}_tophit_rbh_minbitscore${bit_score_threshold}.mmsdb
 
             # Convert Reverse Best Hit  results to BLAST outformat 6
-            mmseqs convertalis ${db_name}.mmsdb query_database/${input_fasta}.mmsdb mmseqs_out/${input_fasta}_${db_name}_tophit_rbh_minbitscore${bit_score_threshold}.mmsdb mmseqs_out/${input_fasta}_mmseqs_rbh_${db_name}.tsv --threads ${params.threads}
+            mmseqs convertalis ${db_name}.mmsdb query_database/${input_fasta}.mmsdb mmseqs_out/${input_fasta}_${db_name}_tophit_rbh_minbitscore${bit_score_threshold}.mmsdb mmseqs_out/${input_fasta}___mmseqs_rbh_${db_name}.tsv --threads ${params.threads}
         
             # Need additional processing for KEGG RBH
-            rbh_mmseqs_filter.py filterdb "mmseqs_out/${input_fasta}_mmseqs_${db_name}.tsv" --reverse "mmseqs_out/${input_fasta}_mmseqs_rbh_${db_name}.tsv" --output "mmseqs_out/${input_fasta}_mmseqs_rbh_${db_name}_combined.tsv"
-            mv mmseqs_out/${input_fasta}_mmseqs_rbh_${db_name}_combined.tsv mmseqs_out/${input_fasta}_mmseqs_${db_name}.tsv
+            rbh_mmseqs_filter.py filterdb "mmseqs_out/${input_fasta}___mmseqs_${db_name}.tsv" --reverse "mmseqs_out/${input_fasta}___mmseqs_rbh_${db_name}.tsv" --output "mmseqs_out/${input_fasta}___mmseqs_rbh_${db_name}_combined.tsv"
+            mv mmseqs_out/${input_fasta}___mmseqs_rbh_${db_name}_combined.tsv mmseqs_out/${input_fasta}___mmseqs_${db_name}.tsv
         fi
 
 */

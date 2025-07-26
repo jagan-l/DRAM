@@ -67,6 +67,7 @@ workflow ANNOTATE {
     ch_gene_locs  // channel: [ val(input_fasta name), path(gene_locs_tsv) ]
     ch_called_proteins  // channel: [ val(input_fasta name), path(called_proteins_file.faa) ]
     default_sheet // Path to dummy sheet
+    n_fastas // Number of FASTA files to process
 
     main:
 
@@ -102,12 +103,13 @@ workflow ANNOTATE {
             .fromPath(file(params.input_genes) / params.genes_fmt, checkIfExists: true)
             .ifEmpty { exit 1, "If you specify --annotate without --call, you must provide a fasta file of called genes using --input_genes. Cannot find any called gene fasta files matching: ${params.input_genes}\nNB: Path needs to follow pattern: path/to/directory/" }
             .map {
-                input_fastaName = it.getName().replaceAll(/\.[^.]+$/, '').replaceAll(/\./, '-')
+                input_fastaName = it.getBaseName().replaceAll(/\./, '-')
                 tuple(input_fastaName, it)
             }
 
         GENE_LOCS( ch_called_proteins)
         ch_gene_locs = GENE_LOCS.out.prodigal_locs_tsv
+        n_fastas = file("$params.input_genes/${params.genes_fmt}").size()
     }
 
     def formattedOutputChannels = channel.of()
@@ -297,22 +299,10 @@ workflow ANNOTATE {
 
         formattedOutputChannels = formattedOutputChannels.mix(ch_viral_formatted)
     }
-
-
-    // Collect all formatted annotation output files
-    Channel.empty()
-        .mix( formattedOutputChannels )
-        .collect()
-        .set { collected_formatted_hits }
-
-    // COMBINE_ANNOTATIONS collects all annotations files across ALL databases
-    // COMBINE_ANNOTATIONS( collected_formatted_hits )
-    Channel.empty()
-        .mix( ch_called_proteins )
-        .collect()
-        .set { collected_called_proteins }
-
-    COMBINE_ANNOTATIONS( collected_formatted_hits, collected_called_proteins )
+    fastas = formattedOutputChannels.map { it[1] }.collect()
+    genes = ch_called_proteins.map { it[1] }.collect()
+    
+    COMBINE_ANNOTATIONS( fastas, genes )
     ch_combined_annotations = COMBINE_ANNOTATIONS.out.combined_annotations_out
 
 

@@ -41,6 +41,7 @@ workflow DRAM {
 
     ch_versions = Channel.empty()
     ch_multiqc_files = Channel.empty()
+    n_fastas = 0
 
     default_sheet = file(params.distill_dummy_sheet)
     // ch_fasta = getFastaChannel(params.input_fasta, params.fasta_fmt)
@@ -52,11 +53,13 @@ workflow DRAM {
                 .ifEmpty { exit 1, "Cannot find any fasta files matching: ${params.input_fasta}\nNB: Path needs to follow pattern: path/to/directory/" }
 
         ch_fasta = ch_fasta.map {
-            fasta_name = it.getName().replaceAll(/\.[^.]+$/, '').replaceAll(/\./, '-')
+            fasta_name = it.getBaseName().replaceAll(/\./, '-')
             tuple(fasta_name, it)
         }
         fasta_name = ch_fasta.map { it[0] }
         fasta_files = ch_fasta.map { it[1] }
+
+        n_fastas = file("$params.input_fasta/${params.fasta_fmt}").size()
     }
 
     def distill_topic_list = ""
@@ -184,7 +187,7 @@ workflow DRAM {
             renamed_fasta_paths = RENAME_FASTA.out.renamed_fasta_paths.flatten()
             // we need to recreate the fasta channel with the renamed fasta files
             ch_fasta = renamed_fasta_paths.map {
-                fasta_name = it.getName().replaceAll(/\.[^.]+$/, '').replaceAll(/\./, '-')
+                fasta_name = it.getBaseName().replaceAll(/\./, '-')
                 tuple(fasta_name, it)
             }
         }
@@ -208,7 +211,7 @@ workflow DRAM {
         }
 
         if (params.annotate){
-            ANNOTATE( ch_gene_locs, ch_called_proteins, default_sheet )
+            ANNOTATE( ch_gene_locs, ch_called_proteins, default_sheet, n_fastas )
 
         }
 

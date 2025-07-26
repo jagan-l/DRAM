@@ -1,23 +1,27 @@
 #!/usr/bin/env python
 import argparse
 import pandas as pd
-import logging
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from skbio.io import read as read_sequence
 import os
-
-# Configure the logger
-logging.basicConfig(filename="logs/combine_annotations.log", level=logging.INFO, format='%(levelname)s: %(message)s')
+from pathlib import Path
+from utils.logger import get_logger
+import click
+from utils.click_utils import validate_comma_separated
 
 FASTA_COLUMN = os.getenv('FASTA_COLUMN')
 
-def read_and_preprocess(input_fasta, path):
+logger = get_logger()
+
+def read_and_preprocess(path: Path):
+    # We design input fastas from intermediate steps to be named like: "input_fasta___some_information_annotation_file.tsv"
+    input_fasta = path.stem.split("___")[0].replace(".", "-")
     try:
         df = pd.read_csv(path)
         df[FASTA_COLUMN] = input_fasta  # Add input_fasta column
         return df
     except Exception as e:
-        logging.error(f"Error loading DataFrame for input_fasta {input_fasta}: {str(e)}")
+        logger.error(f"Error loading DataFrame for input_fasta {input_fasta}: {str(e)}")
         return pd.DataFrame()  # Return an empty DataFrame in case of error
 
 def assign_rank(row):
@@ -63,27 +67,32 @@ def organize_columns(df, special_columns=None):
     final_columns_order = base_columns + kegg_columns + sorted_other_columns + special_columns
     return df[final_columns_order]
 
-
-def combine_annotations(annotation_files, output_file, threads, genes_faa=None):
-    input_fastas_and_paths = [(annotation_files[i].strip('[], '), annotation_files[i + 1].strip('[], ')) for i in range(0, len(annotation_files), 2)]
-    if genes_faa:
-        genes_faa = [(genes_faa[i].strip('[], '), genes_faa[i + 1].strip('[], ')) for i in range(0, len(genes_faa), 2)]
+@click.command()
+@click.option("--annotations", default=[], callback=validate_comma_separated, help="List of annotation files, comma seperated or space seperated")
+@click.option("--output", help="Output file path for the combined annotations.")
+@click.option("--threads", help="Number of threads for parallel processing", type=int, default=4)
+@click.option("--genes_faa", default=[], callback=validate_comma_separated, help="Precalled genes faa file path, comma seperated or space seperated")
+def combine_annotations(annotations, output, threads, genes_faa=None):
+    """Combine annotation files with ranks and avoid duplicating specific columns."""
+    
+    # input_fastas_and_paths = [(annotation_files[i].strip('[], '), annotation_files[i + 1].strip('[], ')) for i in range(0, len(annotation_files), 2)]
     
     with ThreadPoolExecutor(max_workers=threads) as executor:
-        futures = [executor.submit(read_and_preprocess, input_fasta, path) for input_fasta, path in input_fastas_and_paths]
+        # futures = [executor.submit(read_and_preprocess, input_fasta, path) for input_fasta, path in input_fastas_and_paths]
+        futures = [executor.submit(read_and_preprocess, Path(path)) for path in annotations]
         data_frames = [future.result() for future in as_completed(futures)]
     
     combined_data = pd.concat(data_frames, ignore_index=True)
     if genes_faa:
         motif_count_dict = dict()
-        for input_fasta, gene_path in genes_faa:
+        for gene_path in genes_faa:
             count_motifs(gene_path, "(C..CH)", motif_count_dict=motif_count_dict)
         df = pd.DataFrame.from_dict(
             motif_count_dict,
             orient="index", columns=["heme_regulatory_motif_count"]
         )
         df.index.name = 'query_id'
-        logging.info(df)
+        logger.info(df)
         
         combined_data = pd.merge(combined_data, df, how="left", on="query_id")
                 
@@ -110,21 +119,10 @@ def combine_annotations(annotation_files, output_file, threads, genes_faa=None):
 
     combined_data.drop(columns=['base_query_id'], inplace=True)  # Cleanup
 
-    combined_data.to_csv(output_file, index=False, sep='\t')
-    logging.info(f"Combined annotations saved to {output_file}, with corrected gene numbers.")
+    combined_data.to_csv(output, index=False, sep='\t')
+    logger.info(f"Combined annotations saved to {output}, with corrected gene numbers.")
 
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Combine annotation files with ranks and avoid duplicating specific columns.")
-    parser.add_argument("--annotations", nargs='+', help="List of annotation files and input_fasta names, alternating.")
-    parser.add_argument("--threads", help="Number of threads for parallel processing", type=int, default=4)
-    parser.add_argument("--output", help="Output file path for the combined annotations.")
-    parser.add_argument("--genes-faa", nargs='+', help="Precalled genes faa file path.")
-    args = parser.parse_args()
-    
-    if args.annotations and args.output:
-        # combine_annotations(args.annotations, args.output, args.threads)
-        combine_annotations(args.annotations, args.output, args.threads, args.genes_faa)
-    else:
-        logging.error("Missing required arguments. Use --help for usage information.")
+    combine_annotations()

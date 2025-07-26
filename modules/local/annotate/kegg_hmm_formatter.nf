@@ -4,7 +4,7 @@ process KEGG_HMM_FORMATTER {
     errorStrategy 'finish'
 
     conda "${moduleDir}/environment.yml"
-    container "community.wave.seqera.io/library/python_pandas_hmmer_mmseqs2_pruned:4a55e4bf58e4a06b"
+    container "community.wave.seqera.io/library/python_pandas_hmmer_mmseqs2_pruned:f459942a75c71501"
 
     tag { input_fasta }
 
@@ -14,10 +14,10 @@ process KEGG_HMM_FORMATTER {
     val( top_hit )
 
     output:
-    tuple val( input_fasta ), path ( "${input_fasta}_formatted_kegg_hits.csv" ), emit: formatted_hits
+    tuple val( input_fasta ), path ( "${input_fasta}___formatted_kegg_hits.csv" ), emit: formatted_hits
 
     script:
     """
-    kegg_hmm_formatter.py --hits_csv ${hits_file} --hmm_info_path ${hmm_info_path} --top_hit "${top_hit}" --output "${input_fasta}_formatted_kegg_hits.csv"
+    kegg_hmm_formatter.py --hits_csv ${hits_file} --hmm_info_path ${hmm_info_path} --top_hit "${top_hit}" --output "${input_fasta}___formatted_kegg_hits.csv"
     """
 }

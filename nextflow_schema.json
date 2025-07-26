@@ -264,46 +264,6 @@
                     "exists": true,
                     "description": "Path to annotations tsv to distill. Required if running without annotate"
                 },
-                "distill_carbon_sheet": {
-                    "type": "string",
-                    "hidden": true,
-                    "description": "File path to distill carbon sheet."
-                },
-                "distill_energy_sheet": {
-                    "type": "string",
-                    "hidden": true,
-                    "description": "File path to distill energy sheet."
-                },
-                "distill_misc_sheet": {
-                    "type": "string",
-                    "hidden": true,
-                    "description": "File path to distill misc sheet."
-                },
-                "distill_nitrogen_sheet": {
-                    "type": "string",
-                    "hidden": true,
-                    "description": "File path to distill nitrogen sheet."
-                },
-                "distill_transport_sheet": {
-                    "type": "string",
-                    "hidden": true,
-                    "description": "File path to distill transport sheet."
-                },
-                "distill_camper_sheet": {
-                    "type": "string",
-                    "hidden": true,
-                    "description": "File path to distill camper sheet."
-                },
-                "distill_eng_sys_sheet": {
-                    "type": "string",
-                    "hidden": true,
-                    "description": "File path to distill energy ecosystem sheet."
-                },
-                "distill_ag_sheet": {
-                    "type": "string",
-                    "hidden": true,
-                    "description": "File path to distill agriculture ecosystem sheet."
-                },
                 "distill_dummy_sheet": {
                     "type": "string",
                     "hidden": true,
