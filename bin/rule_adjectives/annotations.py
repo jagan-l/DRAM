@@ -8,42 +8,15 @@ import pandas as pd
 from collections import Counter
 from itertools import chain
 import os
+from dram_viz.definitions import (
+    ID_FUNCTION_DICT as FUNCTION_DICT,
+    SULFUR_ID,
+    FEGENIE_ID
+)
 # import dask.dataframe as dd
 
 FASTA_COLUMN = os.getenv('FASTA_COLUMN')
 
-SULFUR_ID = 'sulfur_id'
-FEGENIE_ID = 'fegenie_id'
-FUNCTION_DICT = {
-    'camper_id': lambda x: [x],
-    'camper_EC': lambda x: [i[1:-1] for i in
-                           re.findall(r'\[EC:\d*.\d*.\d*.\d*\]', x)],
-    FEGENIE_ID: lambda x: [x],
-    SULFUR_ID: lambda x: [x],
-    'kegg_genes_id': lambda x: [x],
-    'ko_id': lambda x: [j for j in x.split(',')],
-    'kegg_id': lambda x: [j for j in x.split('/')],
-    'kegg_EC': lambda x: [i[1:-1] for i in
-                           re.findall(r'\[EC:\d*.\d*.\d*.\d*\]', x)],
-    'kofam_genes_id': lambda x: [x],
-    'kofam_id': lambda x: [j for j in x.split('/')],
-    'kofam_EC': lambda x: [i[1:-1] for i in
-                           re.findall(r'\[EC:\d*.\d*.\d*.\d*\]', x)],
-    'cazy_hits': lambda x: [f"{i[1:3]}:{i[4:-1]}" for i in  # Old formats for Cazy
-                            re.findall(r'\(EC [\d+\.]+[\d-]\)', x)],
-    'cazy_subfam_ec': lambda x: [f"EC:{i}" for i in
-                                 re.findall(r'[\d+\.]+[\d-]', x)],
-    "cazy_best_hit": lambda x: [x.split("_")[0]],
-    "dbcan_id": lambda x: [x.split("_")[0]],  # new cazy formats
-    'dbcan_EC': lambda x: [f"EC:{i}" for i in
-                           re.findall(r'[\d+\.]+[\d-]', x)],
-    'pfam_hits': lambda x: [j[1:-1].split('.')[0]
-                            for j in re.findall(r'\[PF\d\d\d\d\d.\d*\]', x)],  # old pfam format
-    "pfam_id": lambda x: [j[1:-1].split(".")[0] for j in re.findall(r"\[PF\d\d\d\d\d.\d*\]", x)],  # new pfam format
-    'peptidase_family': lambda x: [j for j in x.split(';')],  # old merops format
-    "merops_family": lambda x: [j for j in x.split(";")],  # new merops format
-    "methyl_id": lambda x: [i.split(" ")[0].strip() for i in x.split(",")],
-}
 
 def get_ids_from_annotations_by_row(data):
     missing = [i for i in FUNCTION_DICT if i not in data.columns]
