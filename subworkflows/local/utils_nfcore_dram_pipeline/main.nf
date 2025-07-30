@@ -84,7 +84,7 @@ workflow PIPELINE_INITIALISATION {
     }
 
     if (params.use_pfam) {
-        error("PFAM database is currently disabled in this pipeline due to a bug in the DRAM2 implementation with the PFAM database. It will be re-enabled in the next release.")
+        error("PFAM database is currently disabled in this pipeline due to a bug in the DRAM2 implementation with the PFAM database. It will be re-enabled in a future release.")
     }
 
     //
