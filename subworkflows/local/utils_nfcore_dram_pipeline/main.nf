@@ -68,8 +68,8 @@ workflow PIPELINE_INITIALISATION {
         if (params.call) {
             error("Input genes file cannot be used with --call. Input genes is used when you are running annotate without call.")
         }
-        if (!params.annotate) {
-            error("Input genes file must be used with --annotate. Input genes is used when you are running annotate without call.")
+        if (!params.annotate && !params.generate_gff && !params.generate_gbk) {
+            error("Input genes file must be used with --annotate or --generate_gff --generate_gbk.")
         }
     }
 

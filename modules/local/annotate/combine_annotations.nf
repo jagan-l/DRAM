@@ -1,5 +1,5 @@
 process COMBINE_ANNOTATIONS {
-    label 'process_low'
+    label 'process_small'
 
     errorStrategy 'finish'
 
@@ -16,20 +16,14 @@ process COMBINE_ANNOTATIONS {
 
     output:
     path "raw-annotations.tsv", emit: combined_annotations_out
+    path( "*.log" ), emit: log
 
     script:
     """
     # export constants for script
     export FASTA_COLUMN="${params.CONSTANTS.FASTA_COLUMN}"
 
-    # Create a log directory if it doesn't exist
-    mkdir logs
-
-    # Define the log file path
-    touch logs/combine_annotations.log
-    log_file="logs/combine_annotations.log"
-
-    combine_annotations.py --annotations "${fastas}" --threads "${params.threads}" --output "raw-annotations.tsv" --genes_faa "${genes}" >> \$log_file 2>&1
+    combine_annotations.py --annotations "${fastas}" --threads "${params.threads}" --output "raw-annotations.tsv" --genes_faa "${genes}"
 
     """
 }

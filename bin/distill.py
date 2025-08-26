@@ -239,6 +239,12 @@ def distill(input_file, trna_path=None, rrna_path=None, distil_topics=None, dist
         rrna_frame = None
     else:
         rrna_frame = pd.read_csv(rrna_path, sep='\t')
+    # Check NF DRAM didn't pass an empty sheet to signal no tRNAs or rRNAs
+    if rrna_frame.empty:
+        rrna_frame = None
+    if trna_frame.empty:
+        trna_frame = None
+        
 
 
     distil_sheets_names = []

@@ -21,7 +21,7 @@ process DISTILL {
     # export constants for script
     export FASTA_COLUMN="${params.CONSTANTS.FASTA_COLUMN}"
 
-    distill.py -i ${ch_combined_annotations} --rrna_path ${ch_rrna_combined} --trna_path ${ch_trna_combined} --distil_topics "${params.distill_topic}" --distil_ecosystem "${params.distill_ecosystem}" --custom_distillate "${params.distill_custom}"
+    distill.py -i ${ch_combined_annotations} --rrna_path '${ch_rrna_combined}' --trna_path '${ch_trna_combined}' --distil_topics "${params.distill_topic}" --distil_ecosystem "${params.distill_ecosystem}" --custom_distillate "${params.distill_custom}"
 
     """
 }

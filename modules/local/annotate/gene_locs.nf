@@ -10,7 +10,6 @@ process GENE_LOCS {
 
     input:
     tuple val( input_fasta ), path( genes )
-    path( ch_called_genes_loc_script_faa )
 
     output:
     tuple val( input_fasta ), path( "${input_fasta}_called_genes_table.tsv" ), emit: prodigal_locs_tsv

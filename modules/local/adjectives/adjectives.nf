@@ -1,10 +1,10 @@
 process ADJECTIVES {
-    label 'process_low'
+    label 'process_small'
 
     errorStrategy 'finish'
 
     conda "${moduleDir}/environment.yml"
-    container "community.wave.seqera.io/library/python_pandas_click_graphviz_pruned:34469eb76a8384ac"
+    container "community.wave.seqera.io/library/python_pandas_click_graphviz_pruned:9cc2e19fdda0e3ed"
 
     input:
     path( ch_combined_annotations, stageAs: "raw-annotations.tsv" )

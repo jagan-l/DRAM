@@ -9,3 +9,4 @@ dependencies:
   - graphviz
   - python-graphviz
   - networkx=2.8.8
+  - dram-viz=0.1.8
