@@ -41,6 +41,7 @@ workflow DRAM {
 
     ch_versions = Channel.empty()
     ch_multiqc_files = Channel.empty()
+    ch_fasta = Channel.empty()
     n_fastas = 0
 
     default_sheet = file(params.distill_dummy_sheet)
@@ -128,7 +129,9 @@ workflow DRAM {
         }
 
         if (!params.use_kegg && !params.use_kofam && !params.use_dbcan && !params.use_merops) {
-            error("Error: If you are using --distill_<topic|ecosystem|custom>, you must also use --use_kegg, --use_kofam, --use_dbcan, or --use_merops.")
+            if (!params.annotations) {
+                error("Error: If you are using --distill_<topic|ecosystem|custom>, you must also use --use_kegg, --use_kofam, --use_dbcan, or --use_merops.")
+            }
         }
     }
 
@@ -207,7 +210,7 @@ workflow DRAM {
         }
 
         if (params.call || distill_flag){
-            COLLECT_RNA( ch_fasta )
+            COLLECT_RNA( ch_fasta, default_sheet )
         }
 
         if (params.annotate){
@@ -216,7 +219,7 @@ workflow DRAM {
         }
 
         ch_final_annots = null
-        if (params.annotate || distill_flag){
+        if (params.annotate || distill_flag || params.generate_gff || params.generate_gbk) {
             if (params.annotate){ // If the user has specified --annotate, us the outputted annotations
                 ch_combined_annotations = ANNOTATE.out.ch_combined_annotations
             } else {  // If the user has not specified --annotate, use the provided annotations

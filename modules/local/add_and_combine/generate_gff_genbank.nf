@@ -10,7 +10,6 @@ process GENERATE_GFF_GENBANK {
     val( all_genes_fna )
     val( databases_list )
     path( raw_annotations, stageAs: "raw-annotations.tsv" )
-    path( ch_generate_gff_gbk )
 
     output:
     path( "GFF/" ), emit: output_gff, optional: true

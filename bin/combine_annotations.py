@@ -11,11 +11,11 @@ from utils.click_utils import validate_comma_separated
 
 FASTA_COLUMN = os.getenv('FASTA_COLUMN')
 
-logger = get_logger()
+logger = get_logger(filename=Path(__file__).stem + ".log")
 
 def read_and_preprocess(path: Path):
     # We design input fastas from intermediate steps to be named like: "input_fasta___some_information_annotation_file.tsv"
-    input_fasta = path.stem.split("___")[0].replace(".", "-")
+    input_fasta = input_fasta_from_filepath(path)
     try:
         df = pd.read_csv(path)
         df[FASTA_COLUMN] = input_fasta  # Add input_fasta column
@@ -23,6 +23,9 @@ def read_and_preprocess(path: Path):
     except Exception as e:
         logger.error(f"Error loading DataFrame for input_fasta {input_fasta}: {str(e)}")
         return pd.DataFrame()  # Return an empty DataFrame in case of error
+
+def input_fasta_from_filepath(file_path: Path):
+    return file_path.stem.split("___")[0].replace(".", "-")
 
 def assign_rank(row):
     rank = 'E'
@@ -92,17 +95,18 @@ def combine_annotations(annotations, output, threads, genes_faa=None):
             orient="index", columns=["heme_regulatory_motif_count"]
         )
         df.index.name = 'query_id'
-        logger.info(df)
+
+        # we use outer to get any genes that don't have hits
+        combined_data = pd.merge(combined_data, df, how="outer", on="query_id")
         
-        combined_data = pd.merge(combined_data, df, how="left", on="query_id")
+        combined_data.loc[combined_data[FASTA_COLUMN].isna(), FASTA_COLUMN] = ""
                 
     combined_data = convert_bit_scores_to_numeric(combined_data)
-    
+
     aggregation_functions = {col: 'first' for col in combined_data.columns if col not in ['query_id', FASTA_COLUMN]}
     for col in ['Completeness', 'Contamination', 'taxonomy']:
         if col in combined_data.columns:
             aggregation_functions[col] = 'max'
-    
     combined_data = combined_data.groupby(['query_id', FASTA_COLUMN], as_index=False).agg(aggregation_functions)
     # After aggregating data
     combined_data['rank'] = combined_data.apply(assign_rank, axis=1)

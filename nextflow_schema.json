@@ -264,6 +264,18 @@
                     "exists": true,
                     "description": "Path to annotations tsv to distill. Required if running without annotate"
                 },
+                "rrnas": {
+                    "type": "string",
+                    "format": "file-path",
+                    "exists": true,
+                    "description": "Path to folder containing individual rRNA files generated with tRNAscan-SE. Can be used when running distill without call to add additional information."
+                },
+                "trnas": {
+                    "type": "string",
+                    "format": "file-path",
+                    "exists": true,
+                    "description": "Path to folder containging individual tRNA files generated with tRNAscan-SE. Can be used when running distill without call to add additional information."
+                },
                 "distill_dummy_sheet": {
                     "type": "string",
                     "hidden": true,
@@ -295,26 +307,6 @@
                     "description": "A comma seperated list of adjectives ('adj1,adj2,adj3'), by name, to evaluate. This limits the number of adjectives that are evaluated and is faster."
                 }
 
-            }
-        },
-        "rna_options": {
-            "title": "RNA Options",
-            "type": "object",
-            "fa_icon": "fas fa-database",
-            "description": "rRNA and tRNA input sheets, used when running DRAM distill without --call",
-            "properties": {
-                "rrnas": {
-                    "type": "string",
-                    "format": "file-path",
-                    "exists": true,
-                    "description": "Path to rRNA tsv."
-                },
-                "trnas": {
-                    "type": "string",
-                    "format": "file-path",
-                    "exists": true,
-                    "description": "Path to tRNA tsv."
-                }
             }
         },
         "bin_and_taxa_options": {
@@ -576,6 +568,19 @@
                 "slurm_node": {
                     "type": "string",
                     "description": "Name of the SLURM Node to use for job submission. If not provided, the default node will be used."
+                }
+            }
+        },        
+        "process_options": {
+            "title": "Process Options",
+            "type": "object",
+            "fa_icon": "fas fa-dna",
+            "description": "Total resource limits for a single process. Not the limit to the total resources available to the pipeline. Up to queue_size processes can run in parallel, of various sizes",
+            "properties": {
+                "tiny_cpus_limit": {
+                    "type": "integer",
+                    "default": 1,
+                    "description": "Maximum number of CPUs to use/provision for a tiny labeled process. This is the smallest process size and is used for processes that do not require much CPU power."
                 },
                 "queue_size": {
                     "type": "integer",
@@ -778,9 +783,6 @@
             "$ref": "#/defs/distill_options"
         },
         {
-            "$ref": "#/defs/rna_options"
-        },
-        {
             "$ref": "#/defs/bin_and_taxa_options"
         },
         {
@@ -797,6 +799,9 @@
         },
         {
             "$ref": "#/defs/slurm_options"
+        },        
+        {
+            "$ref": "#/defs/process_options"
         },
         {
             "$ref": "#/defs/institutional_config_options"

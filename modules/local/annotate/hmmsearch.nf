@@ -1,5 +1,5 @@
 process HMM_SEARCH {
-    label 'process_low'
+    label 'process_small'
 
     errorStrategy 'finish'
 

@@ -1,5 +1,5 @@
 process CALL_GENES {
-    label 'process_low'
+    label 'process_small'
 
     errorStrategy 'finish'
 
