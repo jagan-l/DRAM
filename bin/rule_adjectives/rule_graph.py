@@ -9,7 +9,7 @@ import graphviz
 from rule_adjectives.annotations import Annotations, SULFUR_ID, FEGENIE_ID, FUNCTION_DICT
 
 FASTA_COLUMN = os.getenv('FASTA_COLUMN')
-LEAF_NODES = ['ko', 'camper', 'fegenie', 'sulfur', 'PF', 'ec', 'columnvalue']
+LEAF_NODES = ['ko', 'camper', 'fegenie', 'sulfur', 'PF', 'cazy', 'ec', 'columnvalue']
 
 def parse_ands(logic:str):
     depth = 0
@@ -118,6 +118,10 @@ def pf_func(pf:str, annotations):
     return pf in annotations
 
 
+def cazy_func(ko:str, annotations):
+    return ko in annotations
+
+
 class RuleParser():
 
     def __init__(self, rule_path:str, verbose:bool=False,
@@ -222,6 +226,13 @@ class RuleParser():
                             function=pf_func, genomes={})
             self.G.add_edge(parent, nodeid)
             return
+        if re.match(r'^(GH|GT|PL|CE|AA|CBM)\d+', logic):
+        # if re.match(r'^GH\d+', logic):
+            nodeid = logic
+            self.G.add_node(nodeid, display=nodeid, type='cazy',
+                            function=cazy_func, genomes={})
+            self.G.add_edge(parent, nodeid)
+            return
         if re.match(r'^EC[0-9,\.]+[0-9,-]$', logic):
             nodeid = f"{logic[:2]}:{logic[2:]}"
             self.G.add_node(nodeid, display=nodeid, type='ec',
@@ -262,6 +273,12 @@ class RuleParser():
             nodeid = f"{parent}-False"
             self.G.add_node(nodeid, display="False", type='False',
                             function=None, genomes={})
+            self.G.add_edge(parent, nodeid)
+            return
+        if not logic.strip():
+            nodeid = f"error = blank node! Check if you have a trailing operator somewhere (|,&,etc.), or a double operator (||)"
+            self.G.add_node(nodeid, display="error", type='error',
+                function=None, genomes={})
             self.G.add_edge(parent, nodeid)
             return
         self.G.add_node(f"error = {logic}", display="error", type='error',
@@ -441,6 +458,8 @@ class RuleParser():
             case  'fegenie':
                 return self.G.nodes[node]['function'](node, annotations)
             case  'pf':
+                return self.G.nodes[node]['function'](node, annotations)
+            case  'cazy':
                 return self.G.nodes[node]['function'](node, annotations)
             case  'or':
                 return np.any([self.check_node(i, genome_name, annotations)
