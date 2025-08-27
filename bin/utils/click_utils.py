@@ -1,5 +1,4 @@
 def validate_comma_separated(ctx, param, value, split=(",", " ")):
-    print(value)
     if not value:
         return []
     if isinstance(value, (list, tuple)):
