@@ -36,7 +36,6 @@
                 "distill_ecosystem": {
                     "type": "string",
                     "description": "Ecosystem to distill. Options: <eng_sys|ag> If more than one ecosystem included, they must be seperated by a comma (--distill_ecosystem eng_sys,ag or --distill_ecosystem 'eng_sys,ag')."
-
                 },
                 "distill_custom": {
                     "type": "string",
@@ -111,7 +110,6 @@
                     "fa_,icon": "fas fa-plus"
                 }
             }
-
         },
         "call_prodigal_options": {
             "title": "Call Prodigal Options",
@@ -221,6 +219,9 @@
                     "type": "boolean",
                     "description": "Use the UniRef database for annotation."
                 },
+                "use_vog": {
+                    "type": "boolean"
+                },
                 "add_annotations": {
                     "type": "string",
                     "format": "file-path",
@@ -293,7 +294,6 @@
                     "type": "string",
                     "description": "Column to to group by in the annotations file for etc and function groupings. Defaults to DRAM's annotation output fasta column name."
                 }
-
             }
         },
         "adjectives_options": {
@@ -306,7 +306,6 @@
                     "type": "string",
                     "description": "A comma seperated list of adjectives ('adj1,adj2,adj3'), by name, to evaluate. This limits the number of adjectives that are evaluated and is faster."
                 }
-
             }
         },
         "bin_and_taxa_options": {
@@ -349,7 +348,6 @@
                     "type": "string",
                     "default": "${launchDir}/databases/pfam/mmseqs/",
                     "hidden": true
-
                 },
                 "merops_db": {
                     "type": "string",
@@ -559,7 +557,6 @@
                 "slurm": {
                     "type": "boolean",
                     "description": "Launch the pipeline using the SLURM executor. Without this option, the pipeline will run in your current shell/environment."
-
                 },
                 "partition": {
                     "type": "string",
@@ -568,9 +565,21 @@
                 "slurm_node": {
                     "type": "string",
                     "description": "Name of the SLURM Node to use for job submission. If not provided, the default node will be used."
+                },
+                "cpu_provision_limit": {
+                    "type": "string",
+                    "description": "The largest numbers of CPUs you can provision in 1 job. Not the total CPU limit. You can control that with process size or provision limit and queue_size"
+                },
+                "mem_gb_provision_limit": {
+                    "type": "string",
+                    "description": "The largest amount of memory you can provision in 1 job. Not the total memory limit. You can control that with process size or provision limit and queue_size"
+                },
+                "time_hr_provision_limit": {
+                    "type": "string",
+                    "description": "The longest time a job should be provisioned for. Not the total length cutoff for all jobs. You can control that with process size or provision limit and queue_size"
                 }
             }
-        },        
+        },
         "process_options": {
             "title": "Process Options",
             "type": "object",
@@ -579,8 +588,63 @@
             "properties": {
                 "tiny_cpus_limit": {
                     "type": "integer",
-                    "default": 1,
-                    "description": "Maximum number of CPUs to use/provision for a tiny labeled process. This is the smallest process size and is used for processes that do not require much CPU power."
+                    "description": "Maximum number of CPUs to use/provision for a this job size."
+                },
+                "small_cpus_limit": {
+                    "type": "integer",
+                    "description": "Maximum number of CPUs to use/provision for a this job size."
+                },
+                "medium_cpus_limit": {
+                    "type": "integer",
+                    "description": "Maximum number of CPUs to use/provision for a this job size."
+                },
+                "big_cpus_limit": {
+                    "type": "integer",
+                    "description": "Maximum number of CPUs to use/provision for a this job size."
+                },
+                "huge_cpus_limit": {
+                    "type": "integer",
+                    "description": "Maximum number of CPUs to use/provision for a this job size."
+                },
+                "tiny_gb_mem_limit": {
+                    "type": "integer",
+                    "description": "Maximum memory to use/provision for a this job size."
+                },
+                "small_gb_mem_limit": {
+                    "type": "integer",
+                    "description": "Maximum memory to use/provision for a this job size."
+                },
+                "medium_gb_mem_limit": {
+                    "type": "integer",
+                    "description": "Maximum memory to use/provision for a this job size."
+                },
+                "big_gb_mem_limit": {
+                    "type": "integer",
+                    "description": "Maximum memory to use/provision for a this job size."
+                },
+                "huge_gb_mem_limit": {
+                    "type": "integer",
+                    "description": "Maximum memory to use/provision for a this job size."
+                },
+                "tiny_hr_time_limit": {
+                    "type": "integer",
+                    "description": "Maximum time in hours to use/provision for a this job size."
+                },
+                "small_hr_time_limit": {
+                    "type": "integer",
+                    "description": "Maximum time in hours to use/provision for a this job size."
+                },
+                "medium_hr_time_limit": {
+                    "type": "integer",
+                    "description": "Maximum time in hours to use/provision for a this job size."
+                },
+                "big_hr_time_limit": {
+                    "type": "integer",
+                    "description": "Maximum time in hours to use/provision for a this job size."
+                },
+                "huge_hr_time_limit": {
+                    "type": "integer",
+                    "description": "Maximum time in hours to use/provision for a this job size."
                 },
                 "queue_size": {
                     "type": "integer",
@@ -679,7 +743,6 @@
                     "pattern": "^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5})$",
                     "hidden": true
                 },
-
                 "email_on_fail": {
                     "type": "string",
                     "description": "Email address for completion summary, only when pipeline fails.",
@@ -799,7 +862,7 @@
         },
         {
             "$ref": "#/defs/slurm_options"
-        },        
+        },
         {
             "$ref": "#/defs/process_options"
         },

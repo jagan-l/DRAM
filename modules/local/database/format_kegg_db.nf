@@ -1,6 +1,5 @@
 process FORMAT_KEGG_DB {
-    label 'process_big'
-    label 'process_big_memory'
+    label 'process_huge'
 
     errorStrategy 'finish'
 
