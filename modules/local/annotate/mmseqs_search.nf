@@ -1,7 +1,5 @@
 process MMSEQS_SEARCH {
-    label 'process_big'
-    label 'process_week'
-    label 'process_big_memory'
+    label 'process_huge'
 
     errorStrategy 'finish'
 

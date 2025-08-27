@@ -1,6 +1,5 @@
 process RENAME_FASTA {
     label 'process_tiny'
-    label 'process_short'
 
     tag { "renaming_fastas" }
 
