@@ -4,8 +4,6 @@ All notable changes to this project will be documented in this file.
 
 ## 2.0.0-beta15 - 2025-08-27
 
-[27a8584](27a8584bf87c410619aa2184f55d482be0b748cf)...[216f992](216f99253b1fbdb2d00e70ccabeb35d71f55ab91)
-
 ### What's Changed
 * Bugfixes with passing in already called genes by @madeline-scyphers in https://github.com/WrightonLabCSU/DRAM/pull/439
   -  Bugfixes with passing in rrna sheets and trna sheets
@@ -14,13 +12,7 @@ All notable changes to this project will be documented in this file.
 * Allow job limits (cpu, mem, time) be controlled by config by @madeline-scyphers in https://github.com/WrightonLabCSU/DRAM/pull/440
 * Add adjectives CAZy parsing and ability to pass in custom rules sheet by @madeline-scyphers in https://github.com/WrightonLabCSU/DRAM/pull/441
 
-## 2.0.0-beta14 - 2025-07-30
-
-[c1620f1](c1620f149e13c7f192b72077e065cea2348f54cf)...[27a8584](27a8584bf87c410619aa2184f55d482be0b748cf)
-
 ## 2.0.0-beta13 - 2025-07-29
-
-[17e6c52](17e6c526a68cc0c6949c5dbf359535a359edad4a)...[c1620f1](c1620f149e13c7f192b72077e065cea2348f54cf)
 
 ### Bug Fixes
 
@@ -32,21 +24,15 @@ All notable changes to this project will be documented in this file.
 
 ## 2.0.0-beta12 - 2025-07-08
 
-[399dcca](399dcca2f5682bf77d084c5c6a3254db6391d63c)...[17e6c52](17e6c526a68cc0c6949c5dbf359535a359edad4a)
-
 ### What's Changed
 * Fix bug where merops annotation didn't extract family and distill didn't have family to use by @madeline-scyphers in https://github.com/WrightonLabCSU/DRAM/pull/433
 
 ## 2.0.0-beta11 - 2025-06-11
 
-[2db6e5a](2db6e5aa87040682ef49255f6e89b5b1384da640)...[399dcca](399dcca2f5682bf77d084c5c6a3254db6391d63c)
-
 ### What's Changed
 * Add slurm_node config option (nodelist) by @madeline-scyphers in https://github.com/WrightonLabCSU/DRAM/pull/429
 
 ## 2.0.0-beta10 - 2025-06-07
-
-[1a573d9](1a573d970ea59f12bdbc0b0272545cfd111d298f)...[2db6e5a](2db6e5aa87040682ef49255f6e89b5b1384da640)
 
 ### What's Changed
 * Feature/adjectives MVP - Add in adjectives minimum viable product by @madeline-scyphers in https://github.com/WrightonLabCSU/DRAM/pull/423
@@ -56,20 +42,12 @@ All notable changes to this project will be documented in this file.
 
 ## 2.0.0-beta9 - 2025-05-22
 
-[bb0eb9c](bb0eb9cfb49f1d94e1d593cb2556d730a3c746db)...[1a573d9](1a573d970ea59f12bdbc0b0272545cfd111d298f)
-
 ### Bugfix
 
 * In the last version of DRAM2, due to column renames not making it to dram_vix, cazy (dbcan), merops, and pfam all were not being process correctly from DRAM2's annotation file. This led to them just not showing up in the resulting product. Now they should show up, but still have support for the older format that is outputted in DRAM1.
   * Update dram_viz to 0.1.7 because of product bugfix about column names. See dram_viz [release 0.1.7](https://github.com/WrightonLabCSU/dram-viz/releases/tag/0.1.7)
 
-## 2.0.0-beta8 - 2025-05-22
-
-[0a82b03](0a82b03ea577debd5d83d0e355c61a53697f69ad)...[bb0eb9c](bb0eb9cfb49f1d94e1d593cb2556d730a3c746db)
-
 ## 2.0.0-beta7 - 2025-05-12
-
-[8584ede](8584eded77e32f8fb9597edfaf6dc7c53916eeb4)...[0a82b03](0a82b03ea577debd5d83d0e355c61a53697f69ad)
 
 ### What's Changed
 * Prodigal mode update and quast L50 output by @madeline-scyphers in 0a82b03ea577debd5d83d0e355c61a53697f69ad
@@ -81,8 +59,6 @@ All notable changes to this project will be documented in this file.
 * Update config for nf-schema and readthedocs by @madeline-scyphers in https://github.com/WrightonLabCSU/DRAM/pull/418
 
 ## 2.0.0-beta6 - 2025-04-03
-
-[42fdba0](42fdba01108598af073b048f12a6501f92de5b73)...[8584ede](8584eded77e32f8fb9597edfaf6dc7c53916eeb4)
 
 ### What's Changed
 * Replace sample with input_fasta for output by @madeline-scyphers in https://github.com/WrightonLabCSU/DRAM/pull/404
@@ -150,8 +126,6 @@ Fix typo causing bug in main script
 * Feature/kegg pep directory by @madeline-scyphers in https://github.com/WrightonLabCSU/DRAM/pull/387
 
 ## 2.0.0-beta3 - 2024-10-15
-
-[7735a04](7735a04e58c300d53f9d3611a583b48e507bb843)...[c94d0d4](c94d0d4c5010d9885506915e6c1b37d64f3c7f83)
 
 ### What's Changed
 
