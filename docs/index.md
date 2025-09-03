@@ -12,7 +12,7 @@ The WrightonLabCSU/dram documentation is split into the following pages:
   - An overview of the different results produced by the pipeline and how to interpret them.
 - [Contributing](contributing.md)
   - An overview of the basics on how to add new scripts and process to DRAM2 in Nextflow
-- [Changelog](../CHANGELOG.md)
+- [Changelog](changelog_include.md)
   - Changelog of all changes
 
 # Indices and tables
