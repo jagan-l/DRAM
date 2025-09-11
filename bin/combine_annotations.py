@@ -25,7 +25,7 @@ def read_and_preprocess(path: Path):
         return pd.DataFrame()  # Return an empty DataFrame in case of error
 
 def input_fasta_from_filepath(file_path: Path):
-    return file_path.stem.split("___")[0].replace(".", "-")
+    return file_path.stem.split("___")[0]
 
 def assign_rank(row):
     rank = 'E'
@@ -45,12 +45,33 @@ def convert_bit_scores_to_numeric(df):
             df[col] = pd.to_numeric(df[col], errors='coerce')
     return df
 
-def count_motifs(gene_faa, motif="(C..CH)", motif_count_dict=None):
-    if motif_count_dict is None:
-        motif_count_dict = dict()
+def count_motifs(gene_faa, motif="(C..CH)", genes_faa_dict=None):
+    if genes_faa_dict is None:
+        genes_faa_dict = dict()
     for seq in read_sequence(gene_faa, format="fasta"):
-        motif_count_dict[seq.metadata["id"]] = len(list(seq.find_with_regex(motif)))
-    return motif_count_dict
+        if seq.metadata["id"] not in genes_faa_dict:
+            genes_faa_dict[seq.metadata["id"]] = {}
+        
+        genes_faa_dict[seq.metadata["id"]]["heme_regulatory_motif_count"] = len(list(seq.find_with_regex(motif)))
+    return genes_faa_dict
+
+def set_gene_data(gene_faa, genes_faa_dict=None):
+    if genes_faa_dict is None:
+        genes_faa_dict = dict()
+    for seq in read_sequence(gene_faa, format="fasta"):
+        if seq.metadata["id"] not in genes_faa_dict:
+            genes_faa_dict[seq.metadata["id"]] = {}
+
+        split_label = seq.metadata["id"].split("_")
+        gene_position = split_label[-1]
+        start_position, end_position, strandedness = seq.metadata["description"].split("#")[1:4]
+
+        genes_faa_dict[seq.metadata["id"]][FASTA_COLUMN] = os.path.commonprefix([Path(gene_faa).stem, seq.metadata["id"]]).rstrip("_")
+        genes_faa_dict[seq.metadata["id"]]["gene_number"] = int(gene_position)
+        genes_faa_dict[seq.metadata["id"]]["start_position"] = int(start_position)
+        genes_faa_dict[seq.metadata["id"]]["stop_position"] = int(end_position)
+        genes_faa_dict[seq.metadata["id"]]["strandedness"] = int(strandedness)
+    return genes_faa_dict
 
 def organize_columns(df, special_columns=None):
     if special_columns is None:
@@ -74,12 +95,10 @@ def organize_columns(df, special_columns=None):
 @click.option("--annotations", default=[], callback=validate_comma_separated, help="List of annotation files, comma seperated or space seperated")
 @click.option("--output", help="Output file path for the combined annotations.")
 @click.option("--threads", help="Number of threads for parallel processing", type=int, default=4)
-@click.option("--genes_faa", default=[], callback=validate_comma_separated, help="Precalled genes faa file path, comma seperated or space seperated")
-def combine_annotations(annotations, output, threads, genes_faa=None):
+@click.option("--genes_faa", default=[], callback=validate_comma_separated, help="Precalled genes faa file paths from prodigal, comma seperated or space seperated")
+def combine_annotations(annotations, output, threads, genes_faa=None, gene_locs=None):
     """Combine annotation files with ranks and avoid duplicating specific columns."""
-    
-    # input_fastas_and_paths = [(annotation_files[i].strip('[], '), annotation_files[i + 1].strip('[], ')) for i in range(0, len(annotation_files), 2)]
-    
+
     with ThreadPoolExecutor(max_workers=threads) as executor:
         # futures = [executor.submit(read_and_preprocess, input_fasta, path) for input_fasta, path in input_fastas_and_paths]
         futures = [executor.submit(read_and_preprocess, Path(path)) for path in annotations]
@@ -87,20 +106,20 @@ def combine_annotations(annotations, output, threads, genes_faa=None):
     
     combined_data = pd.concat(data_frames, ignore_index=True)
     if genes_faa:
-        motif_count_dict = dict()
+        genes_faa_dict = dict()
         for gene_path in genes_faa:
-            count_motifs(gene_path, "(C..CH)", motif_count_dict=motif_count_dict)
-        df = pd.DataFrame.from_dict(
-            motif_count_dict,
-            orient="index", columns=["heme_regulatory_motif_count"]
-        )
+            genes_faa_dict
+            count_motifs(gene_path, "(C..CH)", genes_faa_dict=genes_faa_dict)
+            set_gene_data(gene_path, genes_faa_dict)
+        df = pd.DataFrame.from_dict(genes_faa_dict, orient='index')
+        combined_data = combined_data.drop(columns=df.columns, errors='ignore')
         df.index.name = 'query_id'
 
         # we use outer to get any genes that don't have hits
         combined_data = pd.merge(combined_data, df, how="outer", on="query_id")
         
         combined_data.loc[combined_data[FASTA_COLUMN].isna(), FASTA_COLUMN] = ""
-                
+    
     combined_data = convert_bit_scores_to_numeric(combined_data)
 
     aggregation_functions = {col: 'first' for col in combined_data.columns if col not in ['query_id', FASTA_COLUMN]}

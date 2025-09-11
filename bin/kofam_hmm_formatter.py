@@ -14,15 +14,6 @@ def extract_ec_numbers(definition):
     formatted_ec_numbers = '; '.join([f"EC:{ec.strip()}" for ec_block in ec_numbers for ec in ec_block.split()])
     return formatted_ec_numbers
 
-def calculate_strandedness(strandedness):
-    """Calculate strandedness based on the strandedness information."""
-    if strandedness == '1':
-        return '1'
-    elif strandedness == '-1':
-        return '-1'
-    else:
-        return strandedness
-
 def calculate_bit_score(row):
     """Calculate bit score for each row."""
     return row['full_score'] / row['domain_number']
@@ -59,13 +50,9 @@ def main():
     print("Loading HMM search results CSV file...")
     hits_df = pd.read_csv(args.hits_csv)
 
-    # Calculate strandedness
-    print("Calculating strandedness...")
-    hits_df['strandedness'] = hits_df['strandedness'].apply(calculate_strandedness)
-
     # Load gene locations TSV file
     print("Loading gene locations TSV file...")
-    gene_locs_df = pd.read_csv(args.gene_locs, sep='\t', header=None, names=['query_id', 'start_position', 'stop_position'])
+    gene_locs_df = pd.read_csv(args.gene_locs, sep='\t', usecols=['query_id', 'start_position', 'stop_position'])
 
     # Merge hits_df with gene_locs_df
     hits_df = pd.merge(hits_df, gene_locs_df, on='query_id', how='left')

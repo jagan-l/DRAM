@@ -175,6 +175,15 @@ workflow PIPELINE_COMPLETION {
         if (hook_url) {
             imNotification(summary_params, hook_url)
         }
+
+        def logFile = file('.nextflow.log')
+        if (outdir && logFile.exists()) {
+            def newLoc = file(outdir) / "pipeline_info" / ".nextflow.log"
+            log.debug("Moving .nextflow.log to: ${newLoc}")
+            nextflow.extension.FilesEx.copyTo(logFile, newLoc)
+        }
+
+
     }
 
     workflow.onError {

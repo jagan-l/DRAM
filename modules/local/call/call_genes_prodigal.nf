@@ -45,7 +45,7 @@ process CALL_GENES {
             echo "Sample ${input_fasta} - Warning: called genes GFF file is empty or does not exist."
             # Consider managing absent output files for downstream processes here
         else
-            generate_gene_loc_tsv.py "${input_fasta}_called_genes.gff" > "${input_fasta}_called_genes_table.tsv"
+            generate_gene_loc_tsv.py "${input_fasta}_called_genes.gff" "${input_fasta}_called_genes_table.tsv"
         fi
     fi
     """

@@ -34,6 +34,7 @@ docs/code_reference/api
 
 test_data/
 data/
+!tests/data
 results/
 testing/
 testing*
@@ -41,7 +42,9 @@ null/
 output*
 nextflow-LOCAL.config
 .nextflow.log*
+.nf-test.log*
 .nextflow/history
+.nf-test
 .Rhistory
 .nextflow*
 databases/
