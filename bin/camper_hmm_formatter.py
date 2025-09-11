@@ -3,10 +3,6 @@ import pandas as pd
 import argparse
 import re
 
-def calculate_strandedness(row):
-    """Calculate strandedness based on the strandedness information."""
-    return row['strandedness']  # Assuming 'strandedness' is a column in the DataFrame
-
 def calculate_bit_score(row):
     """Calculate bit score for each row."""
     return row['full_score'] / row['domain_number']
@@ -64,7 +60,7 @@ def main():
     hits_df = pd.read_csv(args.hits_csv)
 
     print("Loading gene locations TSV file...")
-    gene_locs_df = pd.read_csv(args.gene_locs, sep='\t', header=None, names=['query_id', 'start_position', 'stop_position'])
+    gene_locs_df = pd.read_csv(args.gene_locs, sep='\t', usecols=['query_id', 'start_position', 'stop_position'])
 
     print("Loading ch_camper_list file...")
     descriptions_df = pd.read_csv(args.ch_camper_list, sep="\t")
@@ -78,7 +74,6 @@ def main():
 
     # Calculate additional fields
     print("Calculating additional fields...")
-    merged_df['strandedness'] = merged_df.apply(calculate_strandedness, axis=1)
     merged_df['bitScore'] = merged_df.apply(calculate_bit_score, axis=1)
     merged_df['score_rank'] = merged_df.apply(calculate_rank, axis=1)
     merged_df.dropna(subset=['score_rank'], inplace=True)

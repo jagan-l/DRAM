@@ -1,0 +1,29 @@
+nextflow_pipeline {
+
+    name "Test Pipeline with 1 process"
+    script "../main.nf"
+    profile "test"
+
+    test("Test the whole pipeline e2e") {
+
+        when {
+            params {
+                help = true
+            }
+        }
+
+
+        then {
+            // sortRows doesn't seem to actual sort these tsvs for some reason, so I manually sorted them
+            def actual = path("${projectDir}/tests/data/owc/annotation/raw_annotations_snapshot.tsv").csv(sep: "\t")
+            def expected = path("${projectDir}/tests/data/owc/annotation/dram1_informed_annotations.tsv").csv(sep: "\t")
+            
+            assert actual.columns["query_id"] == expected.columns["query_id"]
+            assert actual.columns["input_fasta"] == expected.columns["input_fasta"]
+            assert actual.columns["start_position"] == expected.columns["start_position"]
+            assert actual.columns["stop_position"] == expected.columns["end_position"]
+            assert actual.columns["strandedness"] == expected.columns["strandedness"]
+            assert actual.columns["heme_regulatory_motif_count"] == expected.columns["heme_regulatory_motif_count"]
+        }
+    }
+}

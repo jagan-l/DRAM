@@ -10,11 +10,6 @@ def calculate_rank(row):
     """Calculate rank for each row."""
     return row['score_rank'] if 'score_rank' in row and row['full_score'] > row['score_rank'] else row['full_score']
 
-def calculate_strandedness(row):
-    """Calculate strandedness based on the strandedness information."""
-    return row['strandedness']  # Assuming 'strandedness' is a column in the DataFrame
-
-
 def find_best_vog_hit(df):
     """Find the best hit based on E-value and coverage."""
     df['perc_cov'] = (df['target_end'] - df['target_start']) / df['target_length']
@@ -40,14 +35,10 @@ def main():
 
     # Load gene locations TSV file
     print("Loading gene locations TSV file...")
-    gene_locs_df = pd.read_csv(args.gene_locs, sep='\t', header=None, names=['query_id', 'start_position', 'stop_position'])
+    gene_locs_df = pd.read_csv(args.gene_locs, sep='\t', usecols=['query_id', 'start_position', 'stop_position'])
 
     # Merge hits_df with gene_locs_df on query_id
     merged_df = pd.merge(hits_df, gene_locs_df, on='query_id', how='left')
-
-    # Calculate strandedness
-    print("Calculating strandedness...")
-    hits_df['strandedness'] = hits_df.apply(calculate_strandedness, axis=1)
 
     # Process HMM search results
     print("Processing HMM search results...")

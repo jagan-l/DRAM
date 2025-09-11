@@ -1,0 +1,30 @@
+nextflow_pipeline {
+
+    name "Test pipeline"
+    script "../main.nf"
+    tag "pipeline"
+
+    test("Test the whole pipeline e2e") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+        }
+
+
+        then {
+            assert workflow.success
+            def actual = path("${params.outdir}/RAW/raw-annotations.tsv").csv(sep: "\t").sort()
+            def expected = path("${projectDir}/tests/data/owc/annotation/dram1_informed_annotations.tsv").csv(sep: "\t")
+
+            assert actual.columns["query_id"] == expected.columns["query_id"]
+            assert actual.columns["input_fasta"] == expected.columns["input_fasta"]
+            assert actual.columns["start_position"] == expected.columns["start_position"]
+            assert actual.columns["stop_position"] == expected.columns["end_position"]
+            assert actual.columns["strandedness"] == expected.columns["strandedness"]
+            assert actual.columns["heme_regulatory_motif_count"] == expected.columns["heme_regulatory_motif_count"]
+            // assertTableEquals actual, expected
+        }
+    }
+}

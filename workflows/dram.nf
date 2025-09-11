@@ -54,7 +54,7 @@ workflow DRAM {
                 .ifEmpty { exit 1, "Cannot find any fasta files matching: ${params.input_fasta}\nNB: Path needs to follow pattern: path/to/directory/" }
 
         ch_fasta = ch_fasta.map {
-            fasta_name = it.getBaseName().replaceAll(/\./, '-')
+            fasta_name = it.getBaseName()
             tuple(fasta_name, it)
         }
         fasta_name = ch_fasta.map { it[0] }

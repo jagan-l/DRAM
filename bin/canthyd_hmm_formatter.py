@@ -10,10 +10,6 @@ def calculate_rank(row):
     """Calculate rank for each row."""
     return row['score_rank'] if 'score_rank' in row and row['full_score'] > row['score_rank'] else row['full_score']
 
-def calculate_strandedness(row):
-    """Calculate strandedness based on the strandedness information."""
-    return row['strandedness']
-
 def assign_canthyd_rank(row, a_rank, b_rank):
     """Assign canthyd rank based on bit score and provided thresholds."""
     if pd.isna(row['bitScore']):
@@ -34,7 +30,7 @@ def main():
     args = parser.parse_args()
 
     hits_df = pd.read_csv(args.hits_csv)
-    gene_locs_df = pd.read_csv(args.gene_locs, sep='\t', header=None, names=['query_id', 'start_position', 'stop_position'])
+    gene_locs_df = pd.read_csv(args.gene_locs, sep='\t', usecols=['query_id', 'start_position', 'stop_position'])
     ch_canthyd_ko_df = pd.read_csv(args.ch_canthyd_ko, sep="\t")
 
     # Rename the first column of ch_canthyd_ko_df to 'target_id' if it's named differently
@@ -42,7 +38,6 @@ def main():
 
     hits_df['bitScore'] = hits_df.apply(calculate_bit_score, axis=1)
     hits_df['score_rank'] = hits_df.apply(calculate_rank, axis=1)
-    hits_df['strandedness'] = hits_df.apply(calculate_strandedness, axis=1)
 
     # Merge hits_df with ch_canthyd_ko_df on 'target_id'
     merged_df = pd.merge(hits_df, ch_canthyd_ko_df, on='target_id', how='left')

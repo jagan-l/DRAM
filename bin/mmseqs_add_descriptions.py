@@ -18,7 +18,7 @@ def main(input_fasta, db_name, descriptions_path, bit_score_threshold, gene_locs
 
     print(f"Loading MMseqs output from {raw_mmseqs_path}")
     
-    df_gene_locs = pd.read_csv(gene_locs_path, sep='\t', header=None, names=['query_id', 'start_position', 'stop_position'])
+    df_gene_locs = pd.read_csv(gene_locs_path, sep='\t', usecols=['query_id', 'start_position', 'stop_position'])
     print("Gene locations loaded. Sample rows:")
     print(df_gene_locs.head())
     

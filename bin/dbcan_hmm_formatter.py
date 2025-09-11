@@ -14,10 +14,6 @@ def calculate_perc_cov(row):
     """Calculate percent coverage for each row."""
     return (row['target_end'] - row['target_start']) / row['target_length']
 
-def calculate_strandedness(strandedness):
-    """Calculate strandedness based on the strandedness information."""
-    return strandedness
-
 def main():
     parser = argparse.ArgumentParser(description="Format HMM search results and include gene location data.")
     parser.add_argument("--hits_csv", type=str, help="Path to the HMM search results CSV file.")
@@ -29,15 +25,11 @@ def main():
     hits_df = pd.read_csv(args.hits_csv)
 
     print("Loading gene locations TSV file...")
-    gene_locs_df = pd.read_csv(args.gene_locs, sep='\t', header=None, names=['query_id', 'start_position', 'stop_position'])
+    gene_locs_df = pd.read_csv(args.gene_locs, sep='\t', usecols=['query_id', 'start_position', 'stop_position'])
 
     print("Processing HMM search results...")
     # Merge gene locations into the hits dataframe
     hits_df = pd.merge(hits_df, gene_locs_df, on='query_id', how='left')
-
-    print("Calculating strandedness...")
-    # Calculate strandedness based on the strandedness column
-    hits_df['strandedness'] = hits_df['strandedness'].apply(calculate_strandedness)
 
     # Calculate bitScore, score_rank, and perc_cov
     hits_df['bitScore'] = hits_df.apply(calculate_bit_score, axis=1)

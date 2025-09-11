@@ -1,31 +1,26 @@
 #!/usr/bin/env python
 import sys
+from skbio.io import read as read_sequence
+import pandas as pd
 
-def parse_prodigal_output(prod_out_file):
-    gene_counter = {}  # Initialize a dictionary to keep track of gene counts per scaffold
+def parse_prodigal_output(prod_out_file, output_path):
+    rows = []
+    for seq_id, im in read_sequence(prod_out_file, format="gff3"):
+        for i, iv in enumerate(im.query(metadata={'type': 'CDS'})):
+            start0, end0 = iv.bounds[0]
+            gene_number = i + 1
+            rows.append({
+                "query_id": f"{seq_id}_{gene_number}",
+                "start_position": start0 + 1,     # 1-based inclusive
+                "stop_position": end0,             # 1-based inclusive end
+                "strandedness": 1 if iv.metadata.get("strand", ".") == "+" else -1,
+                "gene_number": gene_number,
+            })
 
-    with open(prod_out_file, 'r') as file:
-        for line in file:
-            if line.startswith('#') or line.strip() == '':
-                continue
-            parts = line.strip().split('\t')
-            if parts[2] == 'CDS':
-                scaffold = parts[0]
-                
-                # Increment gene counter for the current scaffold
-                if scaffold not in gene_counter:
-                    gene_counter[scaffold] = 1
-                else:
-                    gene_counter[scaffold] += 1
-                
-                start = parts[3]
-                stop = parts[4]
-                
-                # Append gene counter to scaffold name to create unique query_id
-                query_id = f"{scaffold}_{gene_counter[scaffold]}"
-                
-                print(f"{query_id}\t{start}\t{stop}")
+    df = pd.DataFrame(rows)
+    df.to_csv(output_path, sep='\t', index=False)
 
 if __name__ == "__main__":
     prodigal_output_file = sys.argv[1]
-    parse_prodigal_output(prodigal_output_file)
+    output_path = sys.argv[2]
+    parse_prodigal_output(prodigal_output_file, output_path)
