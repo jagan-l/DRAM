@@ -92,13 +92,14 @@ def organize_columns(df, special_columns=None):
     return df[final_columns_order]
 
 @click.command()
-@click.option("--annotations", default=[], callback=validate_comma_separated, help="List of annotation files, comma seperated or space seperated")
+@click.option("--annotations_dir", default="", help="Directory of annotation files")
+@click.option("--genes_dir", default="", help="Directory genes faa file paths from prodigal")
 @click.option("--output", help="Output file path for the combined annotations.")
 @click.option("--threads", help="Number of threads for parallel processing", type=int, default=4)
-@click.option("--genes_faa", default=[], callback=validate_comma_separated, help="Precalled genes faa file paths from prodigal, comma seperated or space seperated")
-def combine_annotations(annotations, output, threads, genes_faa=None, gene_locs=None):
+def combine_annotations(annotations_dir, genes_dir, output, threads):
     """Combine annotation files with ranks and avoid duplicating specific columns."""
-
+    annotations = Path(annotations_dir).glob("*")
+    genes_faa = Path(genes_dir).glob("*")
     with ThreadPoolExecutor(max_workers=threads) as executor:
         # futures = [executor.submit(read_and_preprocess, input_fasta, path) for input_fasta, path in input_fastas_and_paths]
         futures = [executor.submit(read_and_preprocess, Path(path)) for path in annotations]
@@ -108,6 +109,7 @@ def combine_annotations(annotations, output, threads, genes_faa=None, gene_locs=
     if genes_faa:
         genes_faa_dict = dict()
         for gene_path in genes_faa:
+            gene_path = str(gene_path)
             genes_faa_dict
             count_motifs(gene_path, "(C..CH)", genes_faa_dict=genes_faa_dict)
             set_gene_data(gene_path, genes_faa_dict)
