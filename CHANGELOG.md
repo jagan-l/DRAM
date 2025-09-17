@@ -2,6 +2,33 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2.0.0-beta16 - 2025-09-17
+
+[216f992](216f99253b1fbdb2d00e70ccabeb35d71f55ab91)...[47e3eaa](47e3eaad03d476596725e3d6a398b68184e094e1)
+
+### Features
+
+- Add nf-test ([6f801af](6f801af84314424d1d3e5b1df083e36e59605f10))
+
+Add nf-test to check DRAM2 vs DRAM1 output
+as well as a way to snapshot test DRAM2 changes
+for major changes in the future.
+First tests include annotation.tsv checks and fixes.
+
+### Bug
+
+- Fix TRNA_COLLECT and COMBINE_ANNOTATIONS for large # inputs ([319ba9b](319ba9b7b54e756cab09c76eb3b412f93d6e7da9))
+
+rewrite TRNA_COLLECT to use pandas vectorized functions instead of
+embedded for loops to significantly streamline creation of
+collected_trnas.tsv with large # of inputs. Now instead of taking
+hours or days, it will run in seconds or minutes.
+
+rewrite COMBINTE_ANNOTATIONS to take directories of inputs instead
+of a cli list of files so that when you have thousands and
+thousands of mags or assemblies you don't run into your system's
+ARG_MAX.
+
 ## 2.0.0-beta15 - 2025-08-27
 
 ### What's Changed
