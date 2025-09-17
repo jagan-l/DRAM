@@ -4,11 +4,11 @@ All notable changes to this project will be documented in this file.
 
 ## 2.0.0-beta16 - 2025-09-17
 
-[216f992](216f99253b1fbdb2d00e70ccabeb35d71f55ab91)...[47e3eaa](47e3eaad03d476596725e3d6a398b68184e094e1)
+[216f992](https://github.com/WrightonLabCSU/DRAM/commit/216f99253b1fbdb2d00e70ccabeb35d71f55ab91)...[47e3eaa](https://github.com/WrightonLabCSU/DRAM/commit/47e3eaad03d476596725e3d6a398b68184e094e1)
 
 ### Features
 
-- Add nf-test ([6f801af](6f801af84314424d1d3e5b1df083e36e59605f10))
+- Add nf-test ([6f801af](https://github.com/WrightonLabCSU/DRAM/commit/6f801af84314424d1d3e5b1df083e36e59605f10))
 
 Add nf-test to check DRAM2 vs DRAM1 output
 as well as a way to snapshot test DRAM2 changes
@@ -17,7 +17,7 @@ First tests include annotation.tsv checks and fixes.
 
 ### Bug
 
-- Fix TRNA_COLLECT and COMBINE_ANNOTATIONS for large # inputs ([319ba9b](319ba9b7b54e756cab09c76eb3b412f93d6e7da9))
+- Fix TRNA_COLLECT and COMBINE_ANNOTATIONS for large # inputs ([319ba9b](https://github.com/WrightonLabCSU/DRAM/commit/319ba9b7b54e756cab09c76eb3b412f93d6e7da9))
 
 rewrite TRNA_COLLECT to use pandas vectorized functions instead of
 embedded for loops to significantly streamline creation of
