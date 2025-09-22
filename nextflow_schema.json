@@ -245,11 +245,11 @@
                 },
                 "generate_gff": {
                     "type": "boolean",
-                    "description": "Generate GFF output for each input_fasta."
+                    "description": "Generate GFF output for each input_fasta. This option is in development right now and may not work properly, and may not work with large numbers of inputs."
                 },
                 "generate_gbk": {
                     "type": "boolean",
-                    "description": "Generate GBK output for each input_fasta."
+                    "description": "Generate GBK output for each input_fasta. This option is in development right now and may not work properly, and may not work with large numbers of inputs."
                 }
             }
         },
