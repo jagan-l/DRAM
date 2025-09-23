@@ -32,6 +32,8 @@ process CALL_GENES {
         echo "Sample ${input_fasta} - Error: no contigs after filtering for minimum contig length (${params.min_contig_len})"
         exit 1
     else
+
+        # First we run prodigal
         prodigal \\
         -i "${input_fasta}_${params.min_contig_len}.fa" \\
         -o "${input_fasta}_called_genes.gff" \\
@@ -45,7 +47,15 @@ process CALL_GENES {
             echo "Sample ${input_fasta} - Warning: called genes GFF file is empty or does not exist."
             # Consider managing absent output files for downstream processes here
         else
-            generate_gene_loc_tsv.py "${input_fasta}_called_genes.gff" "${input_fasta}_called_genes_table.tsv"
+            # With prodigal GFF output:
+
+            # We parse the GFF to create a summary TSV for later use
+            parse_gff.sh "${input_fasta}_called_genes.gff" "${input_fasta}_called_genes_table.tsv"
+
+            # Next we need to convert all metadata ID fields from generated unique 
+            # IDS (1_1, 1_2, 2_1, etc.) to SeqID_GeneNumber (Bin7_1, Bin7_2, etc.)
+            gff_replace_id_with_scaffold_gene_number.sh "${input_fasta}_called_genes.gff" "${input_fasta}_called_genes_renamed.gff"
+            mv "${input_fasta}_called_genes_renamed.gff" "${input_fasta}_called_genes.gff"
         fi
     fi
     """
