@@ -2,6 +2,34 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2.0.0-beta17 - 2025-09-23
+
+[1ede0d5](https://github.com/WrightonLabCSU/DRAM/commit/1ede0d53641fdd286218ea3a4b5c6a832b951905)...[ab7b133](https://github.com/WrightonLabCSU/DRAM/commit/ab7b1330ca290887d7b8d435c9b135355980689e)
+
+### Bug Fixes
+
+- Allow calling quast with arbitrary large no of inputs ([e965d31](https://github.com/WrightonLabCSU/DRAM/commit/e965d3100f3543aebc6d24e6a6e186522e456c09))
+
+Quast requires passing inputs as a space seperated list of files,
+instead of a dir or other methods. This can run into ARG_MAX limits
+So change it to passing a glob, such as `*.fa` instead. This should
+fix the problem. We might need to move to batching at some point
+for performance reasons.
+
+### Features
+
+- Rename ID col in GFF file ([690cff7](https://github.com/WrightonLabCSU/DRAM/commit/690cff78c978d40f5e814a2949c23ce5a8549116))
+
+In the Prodigal GFF file, the metadata ID field is a generated
+unique ID that is in the format 1_1, 1_2, 2_1, 2_2, etc.
+This is a problem if people concatenate all the GFFs together since
+then the unique IDs aren't unique. In DRAM1, the IDs were repalced
+with the SeqID_Genenumber. So that is what we are doing here
+
+We also replaced the python script that parsed the GFF into a summary
+TSV for later use in DRAM2 into a tsv and replaced with with bash
+parsing. Which benchmarking showed to be around 10-50 times faster.
+
 ## 2.0.0-beta16 - 2025-09-17
 
 [216f992](https://github.com/WrightonLabCSU/DRAM/commit/216f99253b1fbdb2d00e70ccabeb35d71f55ab91)...[47e3eaa](https://github.com/WrightonLabCSU/DRAM/commit/47e3eaad03d476596725e3d6a398b68184e094e1)
