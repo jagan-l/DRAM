@@ -12,6 +12,7 @@ process QUAST {
     output:
     path("quast_results/report.tsv"), emit: quast_tsv
     path("collected_quast.tsv"), emit: quast_collected_out
+    path( "*.log" ), emit: log
 
     script:
     """

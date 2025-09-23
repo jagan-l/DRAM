@@ -13,7 +13,7 @@ process DISTILL {
 
     output:
     path( "distillate.xlsx" ), emit: distillate
-    path( "dram.log" ), emit: distill_log
+    path( "*.log" ), emit: log
     path( "summarized_genomes.tsv" ), emit: summarized_genomes
 
     script:

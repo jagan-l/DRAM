@@ -1,12 +1,9 @@
 #!/usr/bin/env python
 """This is the script that distills the genomes"""
-import logging
 from collections import Counter
 from itertools import chain
 import pandas as pd
 from collections import Counter, defaultdict
-import re
-import numpy as np
 import click
 import os
 from pathlib import Path
@@ -19,7 +16,7 @@ from rule_adjectives.annotations import FUNCTION_DICT
 # TODO: add flag to output table and not xlsx
 # TODO: add flag to output heatmap table
 
-logger = get_logger()
+logger = get_logger(filename=Path(__file__).stem)
 
 COL_GENE_ID, COL_GENE_DESCRIPTION, COL_MODULE, COL_SHEET, COL_HEADER, COL_SUBHEADER = 'gene_id', 'gene_description', 'pathway', 'topic_ecosystem','category', 'subcategory'
 FRAME_COLUMNS = [COL_GENE_ID, COL_GENE_DESCRIPTION, COL_MODULE, COL_SHEET, COL_HEADER, COL_SUBHEADER]

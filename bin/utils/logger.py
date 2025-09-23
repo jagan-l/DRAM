@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import logging
 import os
+from pathlib import Path
 
 
 DEFAULT_LOG_LEVEL: int = logging.INFO
@@ -24,6 +25,9 @@ def get_logger(name: str = ROOT_LOGGER_NAME, level: int = DEFAULT_LOG_LEVEL, fil
     Returns:
         The logging.Logger object.
     """
+    if not str(filename).endswith(".log"):
+        filename += ".log"
+
     logger = logging.getLogger(name)
     logger = set_handlers(logger=logger, level=level, filename=filename)
     logger.setLevel(level)
