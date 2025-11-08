@@ -1,6 +1,6 @@
 include { RENAME_FASTA           } from "${projectDir}/modules/local/rename/rename_fasta.nf"
 include { CALL                   } from "${projectDir}/subworkflows/local/call.nf"
-include { COLLECT_RNA            } from "${projectDir}/subworkflows/local/collect_rna.nf"
+include { QC                     } from "${projectDir}/subworkflows/local/qc.nf"
 include { DB_SEARCH              } from "${projectDir}/subworkflows/local/db_search.nf"
 
 /*
@@ -13,7 +13,7 @@ workflow ANNOTATE {
     take:
     ch_fasta  // channel: [ val(input_fasta name), path(fasta) ]
     default_sheet // Path to dummy sheet
-    n_fastas // Number of FASTA files to process
+    call     // boolean: whether gene calling flag is set
 
     main:
     n_fastas = 0
@@ -21,7 +21,7 @@ workflow ANNOTATE {
     ch_trna_combined = default_sheet
     ch_combined_annotations = default_sheet
 
-    if (params.rename || params.call) {
+    if (params.rename || call) {
         fasta_name = ch_fasta.map { it[0] }
         fasta_files = ch_fasta.map { it[1] }
 
@@ -48,7 +48,7 @@ workflow ANNOTATE {
     ch_called_proteins = default_sheet
     ch_collected_fna = default_sheet
 
-    if (params.call){
+    if (call){
         CALL( ch_fasta )
         ch_quast_stats = CALL.out.ch_quast_stats
         ch_gene_locs = CALL.out.ch_gene_locs
@@ -57,16 +57,19 @@ workflow ANNOTATE {
 
     }
 
-    if (params.call || distill_flag){
-        COLLECT_RNA( ch_fasta, default_sheet )
-        ch_rrna_combined = COLLECT_RNA.out.ch_rrna_combined
-        ch_trna_combined = COLLECT_RNA.out.ch_trna_combined
-    }
-
+ 
     if (params.annotate){
-        DB_SEARCH( ch_gene_locs, ch_called_proteins, default_sheet, n_fastas )
+        DB_SEARCH( ch_gene_locs, ch_called_proteins, default_sheet, n_fastas, call )
         ch_combined_annotations = DB_SEARCH.out.ch_combined_annotations
     }
+
+    if (params.qc){
+        QC( ch_fasta, default_sheet, ch_combined_annotations, ch_collected_fna, call )
+        ch_rrna_combined = QC.out.ch_rrna_combined
+        ch_trna_combined = QC.out.ch_trna_combined
+        ch_combined_annotations = QC.out.ch_final_annots
+    }
+
     emit:
     ch_rrna_combined
     ch_trna_combined

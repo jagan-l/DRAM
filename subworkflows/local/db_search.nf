@@ -9,7 +9,6 @@
 */
 
 include { CALL                                          } from "${projectDir}/subworkflows/local/call.nf"
-include { COLLECT_RNA                                   } from "${projectDir}/subworkflows/local/collect_rna.nf"
 
 include { GENE_LOCS                                     } from "${projectDir}/modules/local/annotate/gene_locs.nf"
 
@@ -61,7 +60,7 @@ include { PARSE_HMM as PARSE_HMM_FEGENIE                } from "${projectDir}/mo
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    SUBWORKFLOW TO ANNOTATE
+    SUBWORKFLOW TO DB_SEARCH
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
@@ -71,6 +70,7 @@ workflow DB_SEARCH {
     ch_called_proteins  // channel: [ val(input_fasta name), path(called_proteins_file.faa) ]
     default_sheet // Path to dummy sheet
     n_fastas // Number of FASTA files to process
+    call     // boolean: whether gene calling flag is set
 
     main:
 
@@ -101,7 +101,7 @@ workflow DB_SEARCH {
     vogdb_name = "vogdb"
 
 
-    if (!params.call) {
+    if (!call) {
         ch_called_proteins = Channel
             .fromPath(file(params.input_genes) / params.genes_fmt, checkIfExists: true)
             .ifEmpty { exit 1, "If you specify --annotate without --call, you must provide a fasta file of called genes using --input_genes. Cannot find any called gene fasta files matching: ${params.input_genes}\nNB: Path needs to follow pattern: path/to/directory/" }

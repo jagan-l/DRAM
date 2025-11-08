@@ -11,7 +11,7 @@ process RENAME_FASTA {
     path fastas
 
     output:
-    path("renamed/*.fna"), emit: renamed_fasta_paths
+    path("*.fna"), emit: renamed_fasta_paths
 
     script:
     // def samples = fasta_names as List
@@ -19,12 +19,11 @@ process RENAME_FASTA {
     def rename_cmds = fasta_names.indices.collect { i ->
         def name = fasta_names[i]
         def file = fastas[i]
-        "rename.sh in=${file} out=renamed/${name}.fna prefix=${name} addprefix=t"
+        "rename.sh in=${file} out=${name}.fna prefix=${name} addprefix=t"
     }.join("\n")
 
 
     """
-    mkdir -p renamed
     ${rename_cmds}
     """
 }

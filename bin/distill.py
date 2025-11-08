@@ -292,7 +292,7 @@ def distill(input_file, trna_path=None, rrna_path=None, distil_topics=None, dist
     genome_summary_form = genome_summary_form.reset_index(drop=True)
 
     # make genome metabolism summary
-    genome_summary = 'distillate.xlsx'
+    genome_summary = 'metabolism_summary.xlsx'
     if distillate_gene_names:
         logger.info(f'distillate_gene_names flag is {distillate_gene_names}. Giving gene names instead of counts in genome metabolism summary')
         summarized_genomes = fill_genome_summary_frame_gene_names(annotations, genome_summary_form, groupby_column, logger)

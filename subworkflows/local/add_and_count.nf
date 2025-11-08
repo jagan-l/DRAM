@@ -24,6 +24,7 @@ include { GENERATE_GFF_GENBANK                          } from "${projectDir}/mo
 workflow ADD_AND_COUNT {
     take:
     ch_combined_annotations  // channel: [ path(combined_annotations_out) ]
+    call                     // boolean: whether gene calling flag is set
 
     main:
 
@@ -82,7 +83,7 @@ workflow ADD_AND_COUNT {
 
     if( params.generate_gff || params.generate_gbk ){
 
-        if (!params.call) {
+        if (!call) {
             ch_called_genes = Channel
                 .fromPath(file(params.input_genes) / params.genes_fna_fmt, checkIfExists: true)
                 .ifEmpty { exit 1, "If you specify --generate_gff or --generate_gbk without --call, you must provide a fasta file of called genes using --input_genes and --genes_fna_fmt,. Cannot find any called gene fasta files matching: ${params.input_genes} and ${params.genes_fna_fmt}\nNB: Path needs to follow pattern: path/to/directory/" }

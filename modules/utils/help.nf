@@ -137,7 +137,7 @@ Annotate options:
     --generate_gbk          OPTION  Will generate an output GBK for each sample based on the raw-annotations.tsv.
 """
 
-DISTILL_OPTIONS = """
+SUMMARIZE_OPTIONS = """
 Distill options:
     --distill                          Distill the annotations into a multi-sheet distillate.xlsx
 
@@ -295,7 +295,7 @@ Usage:
         nextflow run $workflow.manifest.name --annotate --input_fasta <path/to/called/genes/directory> --use_kofam
 """
 
-DISTILL_DESCRIPTION = """
+SUMMARIZE_DESCRIPTION = """
 Distill description:    The purpose of $workflow.manifest.name --distill is to distill down annotations based on curated distillation summary form(s).
                         User's may also provide a custom distillate via --distill_custom <path/to/file> (TSV forms).
                         Distill can be ran independent of --call and --annotate however, annotations must be provided (--annotations <path/to/annotations.tsv>).
@@ -368,7 +368,7 @@ ${MAIN_HELP}
 ${REQUIRED_OPTIONS}
 ${CALL_OPTIONS}
 ${ANNOTATE_OPTIONS}
-${DISTILL_OPTIONS}
+${SUMMARIZE_OPTIONS}
 ${PRODUCT_OPTIONS}
 ${TREE_OPTIONS}
 ${FORMAT_KEGG_DB_OPTIONS}
@@ -402,9 +402,9 @@ def distillHelpMessage() {
 log.info """
 ${DNA_HEADER}
 ${LICENSE}
-${DISTILL_DESCRIPTION}
+${SUMMARIZE_DESCRIPTION}
 ${REQUIRED_OPTIONS}
-${DISTILL_OPTIONS}
+${SUMMARIZE_OPTIONS}
 ${GENERAL_OPTIONS}
 """
 }

@@ -11,7 +11,7 @@ process RRNA_COLLECT {
 
     output:
     path("collected_rrnas.tsv"), emit: rrna_collected_out, optional: true
-    path("combined_rrna_scan.tsv"), emit: rrna_combined_out, optional: true
+    path("raw_rrna_scan.tsv"), emit: rrna_combined_out, optional: true
 
     script:
     """
@@ -49,7 +49,7 @@ process RRNA_COLLECT {
 
     if all_files_null:
         with open('collected_rrnas.tsv', 'w') as f: f.write('NULL')
-        with open('combined_rrna_scan.tsv', 'w') as f: f.write('NULL')
+        with open('raw_rrna_scan.tsv', 'w') as f: f.write('NULL')
     else:
         collected_data = []
         for gene_id, input_fastas_counts in gene_type_counts.items():
@@ -59,6 +59,6 @@ process RRNA_COLLECT {
         collected_df = pd.DataFrame(collected_data)
         collected_df.to_csv('collected_rrnas.tsv', sep='\\t', index=False)
         combined_df = pd.concat(combined_data, ignore_index=True)
-        combined_df.to_csv('combined_rrna_scan.tsv', sep='\\t', index=False)
+        combined_df.to_csv('raw_rrna_scan.tsv', sep='\\t', index=False)
     """
 }

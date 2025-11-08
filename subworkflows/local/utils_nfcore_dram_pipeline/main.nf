@@ -79,7 +79,7 @@ workflow PIPELINE_INITIALISATION {
         }
     }
 
-    if (params.adjectives && (!params.use_kegg || !params.use_fegenie || !params.use_sulfur)) {
+    if ((params.adjectives || params.visualize) && (!params.use_kegg || !params.use_fegenie || !params.use_sulfur)) {
         // If they are using a premade annotations file, we just trust that they used kegg, fegenies, or sulfur
         if (!params.annotations) {
             error("When using Adjectives, make sure you use Kegg, FeGenie, and Sulfur Databases")

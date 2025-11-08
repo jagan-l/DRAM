@@ -1,4 +1,4 @@
-process COMBINE_DISTILL {
+process COMBINE_SUMMARIZE {
     label 'process_tiny'
 
     errorStrategy 'finish'
