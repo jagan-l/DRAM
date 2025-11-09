@@ -13,7 +13,7 @@ process TRNA_COLLECT {
 
     output:
     path("collected_trnas.tsv"), emit: trna_collected_out, optional: true
-    path("combined_trna_scan.tsv"), emit: trna_combined_out, optional: true
+    path("raw_trna_scan.tsv"), emit: trna_combined_out, optional: true
 
     script:
     """
@@ -25,9 +25,9 @@ process TRNA_COLLECT {
 
     # we use backslash here to excape nf/groovy interpolation and use bash {# feature
     if ((\${#files[@]})); then
-        awk '(NR==1) || (FNR>1)' "\${files[@]}" > combined_trna_scan.tsv
+        awk '(NR==1) || (FNR>1)' "\${files[@]}" > raw_trna_scan.tsv
     else
-        touch combined_trna_scan.tsv
+        touch raw_trna_scan.tsv
     fi
     trna_collect.py
     """

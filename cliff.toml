@@ -66,6 +66,7 @@ commit_parsers = [
     { message = "^chore\\(pull\\)", skip = true },
     { message = "^chore\\(release\\): prepare for", skip = true },
     { message = "^chore|^ci", group = "Miscellaneous Tasks" },
+    { message = "^package", group = "Package" },
     { body = ".*security", group = "Security" },
 ]
 # Exclude commits that are not matched by any commit parser.

@@ -11,7 +11,7 @@ from utils.click_utils import validate_comma_separated
 
 FASTA_COLUMN = os.getenv('FASTA_COLUMN')
 
-logger = get_logger(filename=Path(__file__).stem + ".log")
+logger = get_logger(filename=Path(__file__).stem)
 
 def read_and_preprocess(path: Path):
     # We design input fastas from intermediate steps to be named like: "input_fasta___some_information_annotation_file.tsv"

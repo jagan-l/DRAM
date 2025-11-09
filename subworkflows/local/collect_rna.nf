@@ -8,10 +8,10 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { TRNA_SCAN                                     } from "${projectDir}/modules/local/collect_rna/trna_scan.nf"
-include { RRNA_SCAN                                     } from "${projectDir}/modules/local/collect_rna/rrna_scan.nf"
-include { TRNA_COLLECT                                  } from "${projectDir}/modules/local/collect_rna/trna_collect.nf"
-include { RRNA_COLLECT                                  } from "${projectDir}/modules/local/collect_rna/rrna_collect.nf"
+include { TRNA_SCAN                                     } from "../../modules/local/collect_rna/trna_scan.nf"
+include { RRNA_SCAN                                     } from "../../modules/local/collect_rna/rrna_scan.nf"
+include { TRNA_COLLECT                                  } from "../../modules/local/collect_rna/trna_collect.nf"
+include { RRNA_COLLECT                                  } from "../../modules/local/collect_rna/rrna_collect.nf"
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -23,6 +23,7 @@ workflow COLLECT_RNA {
     take:
     ch_fasta  // channel: [ val(input_fasta name), path(fasta) ]
     default_sheet // Path to dummy sheet
+    call          // boolean: whether gene calling flag is set
 
     main:
 
@@ -30,7 +31,7 @@ workflow COLLECT_RNA {
     run_trna_collect = false
 
     // If we didn't run call 
-    if (!params.call) {
+    if (!call) {
         if (params.rrnas) {
             Channel.fromPath("${params.rrnas}/*.tsv", checkIfExists: true)
                 .ifEmpty { exit 1, "If you specify --distill_<topic|ecosystem|custom> without --call, you must provide individual rRNA files generated with barrnap. Cannot find any files at: ${params.rrnas}\nNB: Path needs to follow pattern: path/to/directory" }

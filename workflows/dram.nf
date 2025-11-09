@@ -12,17 +12,15 @@ include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_dram
 include { getFastaChannel        } from '../subworkflows/local/utils_pipeline_setup.nf'
 
 // Pipeline steps
-include { ADJECTIVES           } from "${projectDir}/modules/local/adjectives/adjectives.nf"
-include { RENAME_FASTA           } from "${projectDir}/modules/local/rename/rename_fasta.nf"
-include { PRODUCT_HEATMAP        } from "${projectDir}/modules/local/product/product_heatmap.nf"
-include { CAT_KEGG_PEP           } from "${projectDir}/modules/local/database/cat_kegg_pep.nf"
-include { FORMAT_KEGG_DB         } from "${projectDir}/modules/local/database/format_kegg_db.nf"
-include { CALL                   } from "${projectDir}/subworkflows/local/call.nf"
-include { COLLECT_RNA            } from "${projectDir}/subworkflows/local/collect_rna.nf"
-include { MERGE                  } from "${projectDir}/subworkflows/local/merge.nf"
-include { ANNOTATE               } from "${projectDir}/subworkflows/local/annotate.nf"
-include { ADD_AND_COUNT        } from "${projectDir}/subworkflows/local/add_and_count.nf"
-include { DISTILL                } from "${projectDir}/subworkflows/local/distill.nf"
+include { ADJECTIVES             } from "../modules/local/adjectives/adjectives.nf"
+include { PRODUCT_HEATMAP        } from "../modules/local/product/product_heatmap.nf"
+include { CAT_KEGG_PEP           } from "../modules/local/database/cat_kegg_pep.nf"
+include { FORMAT_KEGG_DB         } from "../modules/local/database/format_kegg_db.nf"
+include { MERGE                  } from "../subworkflows/local/merge.nf"
+include { ANNOTATE               } from "../subworkflows/local/annotate.nf"
+include { ADD_ANNOTATIONS        } from "../modules/local/add_and_combine/add_annotations.nf"
+include { ADD_AND_COUNT          } from "../subworkflows/local/add_and_count.nf"
+include { SUMMARIZE              } from "../modules/local/distill/distill.nf"
 
 
 /*
@@ -42,13 +40,27 @@ workflow DRAM {
     ch_versions = Channel.empty()
     ch_multiqc_files = Channel.empty()
     ch_fasta = Channel.empty()
-    n_fastas = 0
 
     default_sheet = file(params.distill_dummy_sheet)
     // ch_fasta = getFastaChannel(params.input_fasta, params.fasta_fmt)
-    distill_flag = (params.distill_topic != "" || params.distill_ecosystem != "" || params.distill_custom != "")
+    distill_flag = (params.summarize || params.distill_topic != "" || params.distill_ecosystem != "" || params.distill_custom != "")
 
-    if (params.rename || params.call) {
+    // if annotate with raw fasta but no call, we can infer we need to call genes, so set call to true
+    // Also, if call is specified, set call to true
+    if ((params.annotate && params.input_fasta != "") || params.call) {
+        call = true
+    }
+    visualize = false
+    if (params.product || params.visualize) {
+        visualize = true
+    }
+    traits = false
+    if (params.adjectives || params.traits) {
+        traits = true
+    }
+
+
+    if (params.rename || call) {
         ch_fasta = Channel
             .fromPath(file(params.input_fasta) / params.fasta_fmt, checkIfExists: true)
                 .ifEmpty { exit 1, "Cannot find any fasta files matching: ${params.input_fasta}\nNB: Path needs to follow pattern: path/to/directory/" }
@@ -57,10 +69,6 @@ workflow DRAM {
             fasta_name = it.getBaseName()
             tuple(fasta_name, it)
         }
-        fasta_name = ch_fasta.map { it[0] }
-        fasta_files = ch_fasta.map { it[1] }
-
-        n_fastas = file("$params.input_fasta/${params.fasta_fmt}").size()
     }
 
     def distill_topic_list = ""
@@ -74,10 +82,11 @@ workflow DRAM {
     distill_nitrogen = "0"
     distill_transport = "0"
     distill_camper = "0"
+    
+
 
     if (distill_flag) {
         if (params.distill_topic != "") {
-            def validTopics = ['default', 'carbon', 'energy', 'misc', 'nitrogen', 'transport', 'camper']
             def topics = params.distill_topic.split(',')
 
             topics.each { topic ->
@@ -128,6 +137,19 @@ workflow DRAM {
         
         }
 
+        if (params.summarize){
+            if (params.distill_topic == "") {
+                distill_topic = "default"
+            } else {
+                distill_topic = params.distill_topic
+            }
+            if (params.distill_ecosystem == "") {
+                distill_ecosystem = "eng_sys,ag"
+            } else {
+                distill_ecosystem = params.distill_ecosystem
+            }
+        }
+
         if (!params.use_kegg && !params.use_kofam && !params.use_dbcan && !params.use_merops) {
             if (!params.annotations) {
                 error("Error: If you are using --distill_<topic|ecosystem|custom>, you must also use --use_kegg, --use_kofam, --use_dbcan, or --use_merops.")
@@ -176,69 +198,45 @@ workflow DRAM {
     } else {
 
 
+
         //
         // Pipeline steps
         //
 
-        if( params.rename ) {
-            // We need to use collect so that we pass all the fasta files to the rename process at once
-            // Otherwise, it will try to rename each fasta file one at a time
-            // Which since rename is so fast, will clog up job queues
-            // so it is faster to rename all at once
-            RENAME_FASTA( fasta_name.toList(), fasta_files.toList() )
-            // we use flatten here to turn a list back into a channel
-            renamed_fasta_paths = RENAME_FASTA.out.renamed_fasta_paths.flatten()
-            // we need to recreate the fasta channel with the renamed fasta files
-            ch_fasta = renamed_fasta_paths.map {
-                fasta_name = it.getBaseName().replaceAll(/\./, '-')
-                tuple(fasta_name, it)
-            }
-        }
+        ANNOTATE (
+            ch_fasta,
+            default_sheet,
+            call
+        )
 
-        ch_quast_stats = default_sheet
-        ch_gene_locs = default_sheet
-        ch_called_proteins = default_sheet
-        ch_collected_fna = default_sheet
-
-        if (params.call){
-            CALL( ch_fasta )
-            ch_quast_stats = CALL.out.ch_quast_stats
-            ch_gene_locs = CALL.out.ch_gene_locs
-            ch_called_proteins = CALL.out.ch_called_proteins
-            ch_collected_fna = CALL.out.ch_collected_fna
-
-        }
-
-        if (params.call || distill_flag){
-            COLLECT_RNA( ch_fasta, default_sheet )
-        }
-
-        if (params.annotate){
-            ANNOTATE( ch_gene_locs, ch_called_proteins, default_sheet, n_fastas )
-
+        if( params.add_annotations ){
+            ch_add_annots = file(params.add_annotations)
+            ADD_ANNOTATIONS( ch_updated_taxa_annots, ch_add_annots )
+            ch_final_annots = ADD_ANNOTATIONS.out.combined_annots_out
         }
 
         ch_final_annots = null
-        if (params.annotate || distill_flag || params.generate_gff || params.generate_gbk) {
+        if (distill_flag) {
             if (params.annotate){ // If the user has specified --annotate, us the outputted annotations
-                ch_combined_annotations = ANNOTATE.out.ch_combined_annotations
+                ch_final_annots = ANNOTATE.out.ch_combined_annotations
             } else {  // If the user has not specified --annotate, use the provided annotations
-                ch_combined_annotations = Channel
+                ch_final_annots = Channel
                     .fromPath(params.annotations, checkIfExists: true)
                     .ifEmpty { exit 1, "If you specify --distill_<topic|ecosystem|custom> without --annotate, you must provide an annotations TSV file (--annotations <path>) with approprite formatting. Cannot find any called gene files matching: ${params.annotations}\nNB: Path needs to follow pattern: path/to/directory/" }
             }
 
-            ADD_AND_COUNT( ch_combined_annotations )  // Do any adding of additional annotations and count the annotations
-            ch_final_annots = ADD_AND_COUNT.out.ch_final_annots
+            // ADD_AND_COUNT( ch_combined_annotations, call )  // Do any adding of additional annotations and count the annotations
+            // ch_final_annots = ADD_AND_COUNT.out.ch_final_annots
 
 
-            if( distill_flag ){
-                DISTILL(
+                SUMMARIZE(
                     ch_final_annots,
-                    COLLECT_RNA.out.ch_rrna_combined,
-                    COLLECT_RNA.out.ch_trna_combined,
+                    ANNOTATE.out.ch_rrna_combined,
+                    ANNOTATE.out.ch_trna_combined,
+                    distill_topic,
+                    distill_ecosystem,
                 )
-            }
+            
 
         }
         else if (params.annotations) {
@@ -247,7 +245,7 @@ workflow DRAM {
                 .ifEmpty { exit 1, "Parameter annotations problem: Cannot find any called gene files matching: ${params.annotations}\nNB: Path needs to follow pattern: path/to/directory/" }
         }
 
-        if (params.product) {  // If the user has specified --product after annotate or distill, generate the product heatmap
+        if (visualize) {  // If the user has specified --product after annotate or distill, generate the product heatmap
             if (!ch_final_annots) {
                 error("Error: If you specify --product, you must also specify --annotate or --distill_<topic|ecosystem|custom> to generate the product heatmap or provide an annotations TSV file (--annotations <path>).")
             }
@@ -257,7 +255,7 @@ workflow DRAM {
         // ADJECTIVES
         //
 
-        if( params.adjectives ){
+        if( traits ){
             if (!ch_final_annots) {
                 error("Error: If you specify --product, you must also specify --annotate or --distill_<topic|ecosystem|custom> to generate the product heatmap or provide an annotations TSV file (--annotations <path>).")
             }

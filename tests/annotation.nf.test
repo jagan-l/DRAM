@@ -15,7 +15,7 @@ nextflow_pipeline {
 
         then {
             assert workflow.success
-            def actual = path("${params.outdir}/RAW/raw-annotations.tsv").csv(sep: "\t").sort()
+            def actual = path("${params.outdir}/ANNOTATE/raw-annotations.tsv").csv(sep: "\t").sort()
             def expected = path("${projectDir}/tests/data/owc/annotation/dram1_informed_annotations.tsv").csv(sep: "\t")
 
             assert actual.columns["query_id"] == expected.columns["query_id"]

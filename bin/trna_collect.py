@@ -6,7 +6,7 @@ from pathlib import Path
 
 FASTA_COLUMN = os.getenv('FASTA_COLUMN')
 
-df = pd.read_csv(Path("combined_trna_scan.tsv").resolve(), sep='\t')
+df = pd.read_csv(Path("raw_trna_scan.tsv").resolve(), sep='\t')
 
 gene_col="gene_id"
 df = df[[FASTA_COLUMN, gene_col]].copy()

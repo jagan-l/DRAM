@@ -25,27 +25,7 @@ nextflow.enable.dsl = 2
 include { DRAM  } from './workflows/dram'
 include { PIPELINE_INITIALISATION } from './subworkflows/local/utils_nfcore_dram_pipeline'
 include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_dram_pipeline'
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    NAMED WORKFLOWS FOR PIPELINE
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
 
-//
-// WORKFLOW: Run main analysis pipeline depending on type of input
-//
-workflow WRIGHTONLABCSU_DRAM {
-
-    main:
-
-    //
-    // WORKFLOW: Run pipeline
-    //
-    DRAM ()
-   
-    emit:
-    multiqc_report = DRAM.out.multiqc_report // channel: /path/to/multiqc_report.html
-}
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     RUN MAIN WORKFLOW
@@ -71,7 +51,7 @@ workflow {
     //
     // WORKFLOW: Run main workflow
     //
-    WRIGHTONLABCSU_DRAM ()
+    DRAM ()
     //
     // SUBWORKFLOW: Run completion tasks
     //
@@ -82,7 +62,7 @@ workflow {
         params.outdir,
         params.monochrome_logs,
         params.hook_url,
-        WRIGHTONLABCSU_DRAM.out.multiqc_report
+        DRAM.out.multiqc_report
     )
 }
 
