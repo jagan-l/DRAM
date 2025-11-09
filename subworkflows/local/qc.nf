@@ -1,7 +1,7 @@
-include { COLLECT_RNA            } from "${projectDir}/subworkflows/local/collect_rna.nf"
-include { ADD_TAXA               } from "${projectDir}/modules/local/add_and_combine/add_taxa.nf"
-include { ADD_BIN_QUALITY        } from "${projectDir}/modules/local/add_and_combine/add_bin_quality.nf"
-include { GENERATE_GFF_GENBANK   } from "${projectDir}/modules/local/add_and_combine/generate_gff_genbank.nf"
+include { COLLECT_RNA            } from "../../subworkflows/local/collect_rna.nf"
+include { ADD_TAXA               } from "../../modules/local/add_and_combine/add_taxa.nf"
+include { ADD_BIN_QUALITY        } from "../../modules/local/add_and_combine/add_bin_quality.nf"
+include { GENERATE_GFF_GENBANK   } from "../../modules/local/add_and_combine/generate_gff_genbank.nf"
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

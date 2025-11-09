@@ -8,12 +8,12 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { ADD_TAXA                                      } from "${projectDir}/modules/local/add_and_combine/add_taxa.nf"
-include { ADD_BIN_QUALITY                               } from "${projectDir}/modules/local/add_and_combine/add_bin_quality.nf"
+include { ADD_TAXA                                      } from "../../modules/local/add_and_combine/add_taxa.nf"
+include { ADD_BIN_QUALITY                               } from "../../modules/local/add_and_combine/add_bin_quality.nf"
 
-include { COUNT_ANNOTATIONS                             } from "${projectDir}/modules/local/add_and_combine/count_annotations.nf"
-include { ADD_ANNOTATIONS                               } from "${projectDir}/modules/local/add_and_combine/add_annotations.nf"
-include { GENERATE_GFF_GENBANK                          } from "${projectDir}/modules/local/add_and_combine/generate_gff_genbank.nf"
+include { COUNT_ANNOTATIONS                             } from "../../modules/local/add_and_combine/count_annotations.nf"
+include { ADD_ANNOTATIONS                               } from "../../modules/local/add_and_combine/add_annotations.nf"
+include { GENERATE_GFF_GENBANK                          } from "../../modules/local/add_and_combine/generate_gff_genbank.nf"
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

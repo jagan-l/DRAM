@@ -8,8 +8,8 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { CALL_GENES                                    } from "${projectDir}/modules/local/call/call_genes_prodigal.nf"
-include { QUAST                                         } from "${projectDir}/modules/local/call/quast.nf"
+include { CALL_GENES                                    } from "../../modules/local/call/call_genes_prodigal.nf"
+include { QUAST                                         } from "../../modules/local/call/quast.nf"
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

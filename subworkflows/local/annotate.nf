@@ -1,7 +1,7 @@
-include { RENAME_FASTA           } from "${projectDir}/modules/local/rename/rename_fasta.nf"
-include { CALL                   } from "${projectDir}/subworkflows/local/call.nf"
-include { QC                     } from "${projectDir}/subworkflows/local/qc.nf"
-include { DB_SEARCH              } from "${projectDir}/subworkflows/local/db_search.nf"
+include { RENAME_FASTA           } from "../../modules/local/rename/rename_fasta.nf"
+include { CALL                   } from "../../subworkflows/local/call.nf"
+include { QC                     } from "../../subworkflows/local/qc.nf"
+include { DB_SEARCH              } from "../../subworkflows/local/db_search.nf"
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -12,15 +12,15 @@ include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_dram
 include { getFastaChannel        } from '../subworkflows/local/utils_pipeline_setup.nf'
 
 // Pipeline steps
-include { ADJECTIVES             } from "${projectDir}/modules/local/adjectives/adjectives.nf"
-include { PRODUCT_HEATMAP        } from "${projectDir}/modules/local/product/product_heatmap.nf"
-include { CAT_KEGG_PEP           } from "${projectDir}/modules/local/database/cat_kegg_pep.nf"
-include { FORMAT_KEGG_DB         } from "${projectDir}/modules/local/database/format_kegg_db.nf"
-include { MERGE                  } from "${projectDir}/subworkflows/local/merge.nf"
-include { ANNOTATE               } from "${projectDir}/subworkflows/local/annotate.nf"
-include { ADD_ANNOTATIONS        } from "${projectDir}/modules/local/add_and_combine/add_annotations.nf"
-include { ADD_AND_COUNT          } from "${projectDir}/subworkflows/local/add_and_count.nf"
-include { SUMMARIZE              } from "${projectDir}/modules/local/distill/distill.nf"
+include { ADJECTIVES             } from "../modules/local/adjectives/adjectives.nf"
+include { PRODUCT_HEATMAP        } from "../modules/local/product/product_heatmap.nf"
+include { CAT_KEGG_PEP           } from "../modules/local/database/cat_kegg_pep.nf"
+include { FORMAT_KEGG_DB         } from "../modules/local/database/format_kegg_db.nf"
+include { MERGE                  } from "../subworkflows/local/merge.nf"
+include { ANNOTATE               } from "../subworkflows/local/annotate.nf"
+include { ADD_ANNOTATIONS        } from "../modules/local/add_and_combine/add_annotations.nf"
+include { ADD_AND_COUNT          } from "../subworkflows/local/add_and_count.nf"
+include { SUMMARIZE              } from "../modules/local/distill/distill.nf"
 
 
 /*

@@ -8,10 +8,10 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { TRNA_SCAN                                     } from "${projectDir}/modules/local/collect_rna/trna_scan.nf"
-include { RRNA_SCAN                                     } from "${projectDir}/modules/local/collect_rna/rrna_scan.nf"
-include { TRNA_COLLECT                                  } from "${projectDir}/modules/local/collect_rna/trna_collect.nf"
-include { RRNA_COLLECT                                  } from "${projectDir}/modules/local/collect_rna/rrna_collect.nf"
+include { TRNA_SCAN                                     } from "../../modules/local/collect_rna/trna_scan.nf"
+include { RRNA_SCAN                                     } from "../../modules/local/collect_rna/rrna_scan.nf"
+include { TRNA_COLLECT                                  } from "../../modules/local/collect_rna/trna_collect.nf"
+include { RRNA_COLLECT                                  } from "../../modules/local/collect_rna/rrna_collect.nf"
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
