@@ -4,12 +4,13 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { MULTIQC                } from '../modules/nf-core/multiqc/main'
-include { paramsSummaryMap       } from 'plugin/nf-schema'
-include { paramsSummaryMultiqc   } from '../subworkflows/nf-core/utils_nfcore_pipeline'
-include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
-include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_dram_pipeline'
-include { getFastaChannel        } from '../subworkflows/local/utils_pipeline_setup.nf'
+include { MULTIQC                 } from '../modules/nf-core/multiqc/main'
+include { paramsSummaryMap        } from 'plugin/nf-schema'
+include { paramsSummaryMultiqc    } from '../subworkflows/nf-core/utils_nfcore_pipeline'
+include { softwareVersionsToYAML  } from '../subworkflows/nf-core/utils_nfcore_pipeline'
+include { methodsDescriptionText  } from '../subworkflows/local/utils_nfcore_dram_pipeline'
+include { getFastaChannel         } from '../subworkflows/local/utils_pipeline_setup.nf'
+include { getDBFlag               } from '../subworkflows/local/utils_pipeline_setup.nf'
 
 // Pipeline steps
 include { ADJECTIVES             } from "../modules/local/adjectives/adjectives.nf"
@@ -71,18 +72,38 @@ workflow DRAM {
         }
     }
 
-    def distill_topic_list = ""
-    def distill_ecosystem_list = ""
-    def distill_custom_list = ""
+    use_kegg = params.use_kegg
+    use_kofam = params.use_kofam
+    use_dbcan = params.use_dbcan
+    use_camper = params.use_camper
+    use_fegenie = params.use_fegenie
+    use_methyl = params.use_methyl
+    use_canthyd = params.use_canthyd
+    use_sulfur = params.use_sulfur
+    use_pfam = params.use_pfam
+    use_merops = params.use_merops
+    use_uniref = params.use_uniref
+    use_vog = params.use_vog
 
-    distill_default = "0"
-    distill_carbon = "0"
-    distill_energy = "0"
-    distill_misc = "0"
-    distill_nitrogen = "0"
-    distill_transport = "0"
-    distill_camper = "0"
-    
+    if (params.annon_dbs != "") {
+        annon_dbs = params.annon_dbs.tokenize(',').collect { it.trim().toLowerCase() }
+        value_for_all = 'all'
+        use_kegg = getDBFlag(annon_dbs, 'kegg', value_for_all)
+        use_kofam = getDBFlag(annon_dbs, 'kofam', value_for_all)
+        use_dbcan = getDBFlag(annon_dbs, 'dbcan', value_for_all)
+        use_camper = getDBFlag(annon_dbs, 'camper', value_for_all)
+        use_fegenie = getDBFlag(annon_dbs, 'fegenie', value_for_all)
+        use_methyl = getDBFlag(annon_dbs, 'methyl', value_for_all)
+        use_canthyd = getDBFlag(annon_dbs, 'canthyd', value_for_all)
+        use_sulfur = getDBFlag(annon_dbs, 'sulfur', value_for_all)
+        // use_pfam = getDBFlag(annon_dbs, 'pfam', value_for_all)
+        // PFAM database is currently disabled in this pipeline due to a bug in the DRAM2 implementation with the PFAM database. It will be re-enabled in a future release.
+        use_merops = getDBFlag(annon_dbs, 'merops', value_for_all)
+        use_uniref = getDBFlag(annon_dbs, 'uniref', value_for_all)
+        use_vog = getDBFlag(annon_dbs, 'vog', value_for_all)
+    }
+
+
 
 
     if (distill_flag) {
@@ -98,8 +119,6 @@ workflow DRAM {
             }
         }
 
-        distill_eng_sys = "0"
-        distill_ag = "0"
         if (params.distill_ecosystem != "") {
             def distillEcosystemList = params.distill_ecosystem.split(',')
 
@@ -114,14 +133,6 @@ workflow DRAM {
             }
         }
 
-        /*
-        if (params.distill_custom != "") {
-            ch_distill_custom = file(params.distill_custom).exists() ? file(params.distill_custom) : error("Error: If using --distill_custom <path/to/TSV>, you must have the preformatted custom distill sheet in the provided file: ${params.distill_custom}.")
-            distill_custom_list = "params.distill_custom"
-        }else{
-            ch_distill_custom = default_sheet
-        }
-        */
         if (params.distill_custom != "") {
             // Verify the directory exists
             def custom_distill_dir = file(params.distill_custom)
@@ -150,7 +161,7 @@ workflow DRAM {
             }
         }
 
-        if (!params.use_kegg && !params.use_kofam && !params.use_dbcan && !params.use_merops) {
+        if (!use_kegg && !use_kofam && !use_dbcan && !use_merops) {
             if (!params.annotations) {
                 error("Error: If you are using --distill_<topic|ecosystem|custom>, you must also use --use_kegg, --use_kofam, --use_dbcan, or --use_merops.")
             }
@@ -206,7 +217,19 @@ workflow DRAM {
         ANNOTATE (
             ch_fasta,
             default_sheet,
-            call
+            call,
+            use_kegg,
+            use_kofam,
+            use_dbcan,
+            use_camper,
+            use_fegenie,
+            use_methyl,
+            use_canthyd,
+            use_sulfur,
+            use_pfam,
+            use_merops,
+            use_uniref,
+            use_vog
         )
 
         if( params.add_annotations ){

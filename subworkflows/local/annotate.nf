@@ -14,6 +14,18 @@ workflow ANNOTATE {
     ch_fasta  // channel: [ val(input_fasta name), path(fasta) ]
     default_sheet // Path to dummy sheet
     call     // boolean: whether gene calling flag is set
+    use_kegg
+    use_kofam
+    use_dbcan
+    use_camper
+    use_fegenie
+    use_methyl
+    use_canthyd
+    use_sulfur
+    use_pfam
+    use_merops
+    use_uniref
+    use_vog
 
     main:
     n_fastas = 0
@@ -59,7 +71,25 @@ workflow ANNOTATE {
 
  
     if (params.annotate){
-        DB_SEARCH( ch_gene_locs, ch_called_proteins, default_sheet, n_fastas, call )
+        DB_SEARCH( 
+            ch_gene_locs, 
+            ch_called_proteins, 
+            default_sheet, 
+            n_fastas, 
+            call,
+            use_kegg,
+            use_kofam,
+            use_dbcan,
+            use_camper,
+            use_fegenie,
+            use_methyl,
+            use_canthyd,
+            use_sulfur,
+            use_pfam,
+            use_merops,
+            use_uniref,
+            use_vog
+            )
         ch_combined_annotations = DB_SEARCH.out.ch_combined_annotations
     }
 

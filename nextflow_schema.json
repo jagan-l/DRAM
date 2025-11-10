@@ -27,6 +27,10 @@
                     "type": "boolean",
                     "description": "Run quality control steps such as collect rRNA and tRNA scans. See QC section for more options."
                 },
+                "summarize": {
+                    "type": "boolean",
+                    "description": "Summarize annotations into a distilled output file. Will use all available distillate forms unless otherwise specified with furth distill options."
+                },
                 "distill_custom": {
                     "type": "string",
                     "description": "<path/to/custom_distillate.tsv>  Custom distill file to use. Can also supply a comma separated list of custom distill files to use. If more than one file included, they must be seperated by a comma (--distill_custom path/to/file1.tsv,path/to/file2.tsv or --distill_custom 'file1.tsv,file2.tsv'). The custom distill file must be in TSV format with the first column being the gene ID and the second column being the distillate value."
@@ -218,6 +222,15 @@
                 "use_vog": {
                     "type": "boolean"
                 },
+                "use_viral": {
+                    "type": "boolean",
+                    "hidden": true
+                },
+                "annon_dbs": {
+                    "type": "string",
+                    "description": "Alternative way to specify database list for annotation. Comma sepeterated list of databases to include in the annotates. Use `all` for all. Example: 'kegg,dbcan,kofam,merops,viral,camper,cant_hyd,fegenie,sulfur,methyl,uniref,pfam,vogdb'. When in doubt, use the name after `use_` for each database. This option overrides individual `use_` database flags. (WARNING, this option name may change in the future)",
+                    "default": ""
+                },
                 "add_annotations": {
                     "type": "string",
                     "format": "file-path",
@@ -236,8 +249,8 @@
                 },
                 "database_list": {
                     "type": "string",
-                    "description": "Database list for generating GFF and GBK. Comma sepeterated list of databases to include in the annotates. Use empty for all. Example: 'kegg,dbcan,kofam,merops,viral,camper,cant_hyd,fegenie,sulfur,methyl,uniref,pfam,vogdb'",
-                    "default": "empty"
+                    "description": "Database list for generating GFF and GBK. Comma sepeterated list of databases to include in the annotates. Use `all` for all. Example: 'kegg,dbcan,kofam,merops,viral,camper,cant_hyd,fegenie,sulfur,methyl,uniref,pfam,vogdb'",
+                    "default": "all"
                 },
                 "generate_gff": {
                     "type": "boolean",
@@ -270,10 +283,10 @@
             }
         },
         "distill_options": {
-            "title": "Distill Options",
+            "title": "Summarize Options",
             "type": "object",
             "fa_icon": "fas fa-dna",
-            "description": "The purpose of DRAM distill is to distill down annotations based on curated distillation summary form(s). It can be ran with either --distill_topic, --distill_ecosystem, or --distill_custom (or some combination). User's may also provide a custom distillate via --distill_custom <path/to/file> (TSV forms). Distill can be ran independent of --call and --annotate however, annotations must be provided (--annotations <path/to/annotations.tsv>). Optional tRNA, rRNA and bin quality may also be provided. When using distll, you also must use kegg, ko, dbcan, or merops when you do your annotation. To get the full results, you need to use kegg or ko and dbcan and merops.",
+            "description": "The purpose of DRAM summarize is to distill down annotations based on curated distillation summary form(s). It can be ran with either just --sumarize, or currated sheets with --distill_topic, --distill_ecosystem, or --distill_custom (or some combination). User's may also provide a custom distillate via --distill_custom <path/to/file> (TSV forms). Summarize can be ran independent of --annotate however, annotations must be provided (--annotations <path/to/annotations.tsv>). Optional tRNA, rRNA and bin quality may also be provided. When using distll, you also must use kegg, ko, dbcan, or merops when you do your annotation. To get the full results, you need to use kegg or ko and dbcan and merops.",
             "properties": {
                 "distill_topic": {
                     "type": "string",
