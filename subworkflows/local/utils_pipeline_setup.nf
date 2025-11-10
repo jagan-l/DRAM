@@ -60,3 +60,13 @@ def workflowCitation() {
         "* Software dependencies\n" +
         "  https://github.com/${workflow.manifest.name}/blob/master/CITATIONS.md"
 }  // TODO add DOI for DRAM
+
+def getDBFlag(db_list, db_name, value_for_all) {
+    if (db_list.contains(value_for_all)) {
+        return true
+    } else if (db_list.contains(db_name)) {
+        return true
+    } else {
+        return false
+    }
+}

@@ -7,7 +7,6 @@
     IMPORT FUNCTIONS / MODULES / SUBWORKFLOWS
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
-
 include { GENE_LOCS                                     } from "../../modules/local/annotate/gene_locs.nf"
 
 include { GENERIC_HMM_FORMATTER                         } from "../../modules/local/annotate/generic_hmm_formatter.nf"  // TODO, This has hard coded paths on the server to the python file. Need to fix this.
@@ -69,10 +68,36 @@ workflow DB_SEARCH {
     default_sheet // Path to dummy sheet
     n_fastas // Number of FASTA files to process
     call     // boolean: whether gene calling flag is set
+    use_kegg
+    use_kofam
+    use_dbcan
+    use_camper
+    use_fegenie
+    use_methyl
+    use_canthyd
+    use_sulfur
+    use_pfam
+    use_merops
+    use_uniref
+    use_vog
 
     main:
 
-    DB_CHANNEL_SETUP()
+    DB_CHANNEL_SETUP(
+        use_kegg,
+        use_kofam,
+        use_dbcan,
+        use_camper,
+        use_fegenie,
+        use_methyl,
+        use_canthyd,
+        use_sulfur,
+        use_pfam,
+        use_merops,
+        use_uniref,
+        use_vog
+
+    )
 
     ch_sql_descriptions_db = file(params.sql_descriptions_db)
     ch_kofam_list = file(params.kofam_list)
@@ -123,7 +148,7 @@ workflow DB_SEARCH {
     }
 
     // KEGG annotation
-    if (params.use_kegg) {
+    if (use_kegg) {
         ch_combined_query_locs_kegg = ch_mmseqs_query.join(ch_gene_locs)
         MMSEQS_SEARCH_KEGG( ch_combined_query_locs_kegg, DB_CHANNEL_SETUP.out.ch_kegg_db, params.bit_score_threshold, params.rbh_bit_score_threshold, default_sheet, kegg_name )
         ch_kegg_unformatted = MMSEQS_SEARCH_KEGG.out.mmseqs_search_formatted_out
@@ -134,7 +159,7 @@ workflow DB_SEARCH {
         formattedOutputChannels = formattedOutputChannels.mix(ch_kegg_formatted)
     }
     // KOFAM annotation
-    if (params.use_kofam) {
+    if (use_kofam) {
         HMM_SEARCH_KOFAM ( ch_called_proteins, params.kofam_e_value, DB_CHANNEL_SETUP.out.ch_kofam_db )
         ch_kofam_hmms = HMM_SEARCH_KOFAM.out.hmm_search_out
 
@@ -148,7 +173,7 @@ workflow DB_SEARCH {
         formattedOutputChannels = formattedOutputChannels.mix(ch_kofam_formatted)
     }
     // PFAM annotation
-    if (params.use_pfam) {
+    if (use_pfam) {
         ch_combined_query_locs_pfam = ch_mmseqs_query.join(ch_gene_locs)
         MMSEQS_SEARCH_PFAM( ch_combined_query_locs_pfam, DB_CHANNEL_SETUP.out.ch_pfam_mmseqs_db, params.bit_score_threshold, params.rbh_bit_score_threshold, default_sheet, pfam_name )
         ch_pfam_unformatted = MMSEQS_SEARCH_PFAM.out.mmseqs_search_formatted_out
@@ -159,7 +184,7 @@ workflow DB_SEARCH {
         formattedOutputChannels = formattedOutputChannels.mix(ch_pfam_formatted)
     }
     // dbCAN annotation
-    if  (params.use_dbcan) {
+    if  (use_dbcan) {
 
         HMM_SEARCH_DBCAN ( ch_called_proteins, params.dbcan_e_value , DB_CHANNEL_SETUP.out.ch_dbcan_db)
         ch_dbcan_hmms = HMM_SEARCH_DBCAN.out.hmm_search_out
@@ -174,7 +199,7 @@ workflow DB_SEARCH {
         formattedOutputChannels = formattedOutputChannels.mix(ch_dbcan_formatted)
     }
     // CAMPER annotation
-    if (params.use_camper) {
+    if (use_camper) {
         // HMM
         HMM_SEARCH_CAMPER ( ch_called_proteins, params.camper_e_value , DB_CHANNEL_SETUP.out.ch_camper_hmm_db)
         ch_camper_hmms = HMM_SEARCH_CAMPER.out.hmm_search_out
@@ -196,7 +221,7 @@ workflow DB_SEARCH {
         formattedOutputChannels = formattedOutputChannels.mix(ch_camper_mmseqs_formatted)
     }
     // FeGenie annotation
-    if (params.use_fegenie) {
+    if (use_fegenie) {
         HMM_SEARCH_FEGENIE ( ch_called_proteins,  params.fegenie_e_value, DB_CHANNEL_SETUP.out.ch_fegenie_db )
         ch_fegenie_hmms = HMM_SEARCH_FEGENIE.out.hmm_search_out
 
@@ -209,7 +234,7 @@ workflow DB_SEARCH {
         formattedOutputChannels = formattedOutputChannels.mix(ch_fegenie_formatted)
     }
     // Methyl annotation
-    if (params.use_methyl) {
+    if (use_methyl) {
         ch_combined_query_locs_methyl = ch_mmseqs_query.join(ch_gene_locs)
         MMSEQS_SEARCH_METHYL( ch_combined_query_locs_methyl, DB_CHANNEL_SETUP.out.ch_methyl_db, params.bit_score_threshold, params.rbh_bit_score_threshold, default_sheet, methyl_name )
         ch_methyl_mmseqs_formatted = MMSEQS_SEARCH_METHYL.out.mmseqs_search_formatted_out
@@ -217,7 +242,7 @@ workflow DB_SEARCH {
         formattedOutputChannels = formattedOutputChannels.mix(ch_methyl_mmseqs_formatted)
     }
     // CANT-HYD annotation
-    if (params.use_canthyd) {
+    if (use_canthyd) {
         // MMseqs
         ch_combined_query_locs_canthyd = ch_mmseqs_query.join(ch_gene_locs)
         MMSEQS_SEARCH_CANTHYD( ch_combined_query_locs_canthyd, DB_CHANNEL_SETUP.out.ch_canthyd_mmseqs_db, params.bit_score_threshold, params.rbh_bit_score_threshold, DB_CHANNEL_SETUP.out.ch_canthyd_mmseqs_list, canthyd_name )
@@ -240,7 +265,7 @@ workflow DB_SEARCH {
 
     }
     // Sulfur annotation
-    if (params.use_sulfur) {
+    if (use_sulfur) {
         HMM_SEARCH_SULFUR ( ch_called_proteins,  params.sulfur_e_value, DB_CHANNEL_SETUP.out.ch_sulfur_db )
         ch_sulfur_hmms = HMM_SEARCH_SULFUR.out.hmm_search_out
 
@@ -254,7 +279,7 @@ workflow DB_SEARCH {
         formattedOutputChannels = formattedOutputChannels.mix(ch_sulfur_formatted)
     }
     // MEROPS annotation
-    if (params.use_merops) {
+    if (use_merops) {
         ch_combined_query_locs_merops = ch_mmseqs_query.join(ch_gene_locs)
         MMSEQS_SEARCH_MEROPS( ch_combined_query_locs_merops, DB_CHANNEL_SETUP.out.ch_merops_db, params.bit_score_threshold, params.rbh_bit_score_threshold, default_sheet, merops_name )
         ch_merops_unformatted = MMSEQS_SEARCH_MEROPS.out.mmseqs_search_formatted_out
@@ -265,7 +290,7 @@ workflow DB_SEARCH {
         formattedOutputChannels = formattedOutputChannels.mix(ch_merops_formatted)
     }
     // Uniref annotation
-    if (params.use_uniref) {
+    if (use_uniref) {
         ch_combined_query_locs_uniref = ch_mmseqs_query.join(ch_gene_locs)
         MMSEQS_SEARCH_UNIREF( ch_combined_query_locs_uniref, DB_CHANNEL_SETUP.out.ch_uniref_db, params.bit_score_threshold, params.rbh_bit_score_threshold, default_sheet, uniref_name )
         ch_uniref_unformatted = MMSEQS_SEARCH_UNIREF.out.mmseqs_search_formatted_out
@@ -276,7 +301,7 @@ workflow DB_SEARCH {
         formattedOutputChannels = formattedOutputChannels.mix(ch_uniref_formatted)
     }
     // VOGdb annotation
-    if (params.use_vog) {
+    if (use_vog) {
         HMM_SEARCH_VOG ( ch_called_proteins, params.vog_e_value , DB_CHANNEL_SETUP.out.ch_vogdb_db )
         ch_vog_hmms = HMM_SEARCH_VOG.out.hmm_search_out
 
@@ -313,6 +338,21 @@ workflow DB_SEARCH {
 }
 
 workflow DB_CHANNEL_SETUP {
+    take:
+    use_kegg
+    use_kofam
+    use_dbcan
+    use_camper
+    use_fegenie
+    use_methyl
+    use_canthyd
+    use_sulfur
+    use_pfam
+    use_merops
+    use_uniref
+    use_vog
+
+
     main:
 
     index_mmseqs = false
@@ -335,66 +375,66 @@ workflow DB_CHANNEL_SETUP {
     ch_vogdb_db = Channel.empty()
     ch_viral_db = Channel.empty()
 
-    if (params.use_kegg) {
+    if (use_kegg) {
         ch_kegg_db = file(params.kegg_db).exists() ? file(params.kegg_db) : error("Error: If using --annotate, you must supply prebuilt databases. KEGG database file not found at ${params.kegg_db}")
         index_mmseqs = true
     }
 
-    if (params.use_kofam) {
+    if (use_kofam) {
         ch_kofam_db = file(params.kofam_db).exists() ? file(params.kofam_db) : error("Error: If using --annotate, you must supply prebuilt databases. KOFAM database file not found at ${params.kofam_db}")
     }
 
-    if (params.use_dbcan) {
+    if (use_dbcan) {
         ch_dbcan_db = file(params.dbcan_db).exists() ? file(params.dbcan_db) : error("Error: If using --annotate, you must supply prebuilt databases. DBCAN database file not found at ${params.dbcan_db}")
     }
 
-    if (params.use_camper) {
+    if (use_camper) {
         ch_camper_hmm_db = file(params.camper_hmm_db).exists() ? file(params.camper_hmm_db) : error("Error: If using --annotate, you must supply prebuilt databases. CAMPER HMM database file not found at ${params.camper_hmm_db}")
         ch_camper_mmseqs_db = file(params.camper_mmseqs_db).exists() ? file(params.camper_mmseqs_db) : error("Error: If using --annotate, you must supply prebuilt databases. CAMPER MMseqs2 database file not found at ${params.camper_mmseqs_db}")
         index_mmseqs = true
         ch_camper_mmseqs_list = file(params.camper_mmseqs_list)
     }
 
-    if (params.use_merops) {
+    if (use_merops) {
         ch_merops_db = file(params.merops_db).exists() ? file(params.merops_db) : error("Error: If using --annotate, you must supply prebuilt databases. MEROPS database file not found at ${params.merops_db}")
         index_mmseqs = true
     }
 
-    if (params.use_pfam) {
+    if (use_pfam) {
         ch_pfam_mmseqs_db = file(params.pfam_mmseq_db).exists() ? file(params.pfam_mmseq_db) : error("Error: If using --annotate, you must supply prebuilt databases. PFAM database file not found at ${params.pfam_mmseq_db}")
         index_mmseqs = true
     }
 
-    // if (params.use_heme) {
+    // if (use_heme) {
     //     ch_heme_db = file(params.heme_db).exists() ? file(params.heme_db) : error("Error: If using --annotate, you must supply prebuilt databases. HEME database file not found at ${params.heme_db}")
     // }
 
-    if (params.use_sulfur) {
+    if (use_sulfur) {
         ch_sulfur_db = file(params.sulfur_db).exists() ? file(params.sulfur_db) : error("Error: If using --annotate, you must supply prebuilt databases. SULURR database file not found at ${params.sulfur_db}")
     }
 
-    if (params.use_uniref) {
+    if (use_uniref) {
         ch_uniref_db = file(params.uniref_db).exists() ? file(params.uniref_db) : error("Error: If using --annotate, you must supply prebuilt databases. UNIREF database file not found at ${params.uniref_db}")
         index_mmseqs = true
     }
 
-    if (params.use_methyl) {
+    if (use_methyl) {
         ch_methyl_db = file(params.methyl_db).exists() ? file(params.methyl_db) : error("Error: If using --annotate, you must supply prebuilt databases. METHYL database file not found at ${params.methyl_db}")
         index_mmseqs = true
     }
 
-    if (params.use_fegenie) {
+    if (use_fegenie) {
         ch_fegenie_db = file(params.fegenie_db).exists() ? file(params.fegenie_db) : error("Error: If using --annotate, you must supply prebuilt databases. FEGENIE database file not found at ${params.fegenie_db}")
     }
 
-    if (params.use_canthyd) {
+    if (use_canthyd) {
         ch_canthyd_hmm_db = file(params.canthyd_hmm_db).exists() ? file(params.canthyd_hmm_db) : error("Error: If using --annotate, you must supply prebuilt databases. CANT_HYD HMM database file not found at ${params.canthyd_hmm_db}")
         ch_canthyd_mmseqs_db = file(params.canthyd_mmseqs_db).exists() ? file(params.canthyd_mmseqs_db) : error("Error: If using --annotate, you must supply prebuilt databases. CANT_HYD MMseqs database file not found at ${params.canthyd_mmseqs_db}")
         index_mmseqs = true
         ch_canthyd_mmseqs_list = file(params.canthyd_mmseqs_list)
     }
 
-    if (params.use_vog) {
+    if (use_vog) {
         ch_vogdb_db = file(params.vog_db).exists() ? file(params.vog_db) : error("Error: If using --annotate, you must supply prebuilt databases. VOG database file not found at ${params.vog_db}")
     }
 

@@ -11,6 +11,7 @@
 include { UTILS_NFSCHEMA_PLUGIN     } from '../../nf-core/utils_nfschema_plugin'
 include { dramLogo                  } from '../../local/utils_pipeline_setup.nf'
 include { workflowCitation          } from '../../local/utils_pipeline_setup.nf'
+include { getDBFlag                 } from '../../local/utils_pipeline_setup.nf'
 include { paramsSummaryMap          } from 'plugin/nf-schema'
 include { samplesheetToList         } from 'plugin/nf-schema'
 include { paramsHelp                } from 'plugin/nf-schema'
@@ -20,6 +21,7 @@ include { completionSummary         } from '../../nf-core/utils_nfcore_pipeline'
 include { imNotification            } from '../../nf-core/utils_nfcore_pipeline'
 include { UTILS_NFCORE_PIPELINE     } from '../../nf-core/utils_nfcore_pipeline'
 include { UTILS_NEXTFLOW_PIPELINE   } from '../../nf-core/utils_nextflow_pipeline'
+
 
 
 /*
@@ -64,6 +66,24 @@ workflow PIPELINE_INITIALISATION {
     //
     // Check pipeline params that need to be validated outside of the nf-schema plugin
     //
+
+    use_kegg = params.use_kegg
+    use_fegenie = params.use_fegenie
+    use_sulfur = params.use_sulfur
+    use_pfam = params.use_pfam
+
+
+    if (params.annon_dbs != "") {
+        annon_dbs = params.annon_dbs.tokenize(',').collect { it.trim().toLowerCase() }
+        value_for_all = 'all'
+        use_kegg = getDBFlag(annon_dbs, 'kegg', value_for_all)
+        use_fegenie = getDBFlag(annon_dbs, 'fegenie', value_for_all)
+        use_sulfur = getDBFlag(annon_dbs, 'sulfur', value_for_all)
+        // use_pfam = getDBFlag(annon_dbs, 'pfam', value_for_all)
+        // PFAM database is currently disabled in this pipeline due to a bug in the DRAM2 implementation with the PFAM database. It will be re-enabled in a future release.
+    }
+
+
     if (params.input_genes) {
         if (params.call) {
             error("Input genes file cannot be used with --call. Input genes is used when you are running annotate without call.")
@@ -79,14 +99,14 @@ workflow PIPELINE_INITIALISATION {
         }
     }
 
-    if ((params.adjectives || params.visualize) && (!params.use_kegg || !params.use_fegenie || !params.use_sulfur)) {
+    if ((params.adjectives || params.visualize) && (!use_kegg || !use_fegenie || !use_sulfur)) {
         // If they are using a premade annotations file, we just trust that they used kegg, fegenies, or sulfur
         if (!params.annotations) {
             error("When using Adjectives, make sure you use Kegg, FeGenie, and Sulfur Databases")
         }
     }
 
-    if (params.use_pfam) {
+    if (use_pfam) {
         error("PFAM database is currently disabled in this pipeline due to a bug in the DRAM2 implementation with the PFAM database. It will be re-enabled in a future release.")
     }
 

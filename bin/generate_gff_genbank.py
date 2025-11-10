@@ -25,7 +25,7 @@ def parse_arguments():
     parser.add_argument("--database_list", type=str, help="Comma-separated list of databases to include in the annotations. Use 'empty' for all.", default="empty")
     parser.add_argument("--annotations", required=True, help="Path to the raw annotations file")
     args = parser.parse_args()
-    args.database_list = None if args.database_list == "empty" else args.database_list.split(',')
+    args.database_list = None if (args.database_list == "empty" or args.database_list == "all") else args.database_list.split(',')
     return args
 
 def parse_input_fastas_and_paths(input_fastas_paths):
