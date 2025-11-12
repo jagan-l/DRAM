@@ -44,7 +44,7 @@ workflow DRAM {
 
     default_sheet = file(params.distill_dummy_sheet)
     // ch_fasta = getFastaChannel(params.input_fasta, params.fasta_fmt)
-    distill_flag = (params.summarize || params.distill_topic != "" || params.distill_ecosystem != "" || params.distill_custom != "")
+    distill_flag = (params.summarize || params.distill_topic != "" || params.distill_ecosystem != "" || params.distill_custom != "" || params.eco_dbs != "")
 
     // if annotate with raw fasta but no call, we can infer we need to call genes, so set call to true
     // Also, if call is specified, set call to true
@@ -85,30 +85,33 @@ workflow DRAM {
     use_uniref = params.use_uniref
     use_vog = params.use_vog
 
-    if (params.annon_dbs != "") {
-        annon_dbs = params.annon_dbs.tokenize(',').collect { it.trim().toLowerCase() }
+    if (params.anno_dbs != "") {
+        anno_dbs = params.anno_dbs.tokenize(',').collect { it.trim().toLowerCase() }
         value_for_all = 'all'
-        use_kegg = getDBFlag(annon_dbs, 'kegg', value_for_all)
-        use_kofam = getDBFlag(annon_dbs, 'kofam', value_for_all)
-        use_dbcan = getDBFlag(annon_dbs, 'dbcan', value_for_all)
-        use_camper = getDBFlag(annon_dbs, 'camper', value_for_all)
-        use_fegenie = getDBFlag(annon_dbs, 'fegenie', value_for_all)
-        use_methyl = getDBFlag(annon_dbs, 'methyl', value_for_all)
-        use_canthyd = getDBFlag(annon_dbs, 'canthyd', value_for_all)
-        use_sulfur = getDBFlag(annon_dbs, 'sulfur', value_for_all)
-        // use_pfam = getDBFlag(annon_dbs, 'pfam', value_for_all)
+        use_kegg = getDBFlag(anno_dbs, 'kegg', value_for_all)
+        use_kofam = getDBFlag(anno_dbs, 'kofam', value_for_all)
+        use_dbcan = getDBFlag(anno_dbs, 'dbcan', value_for_all)
+        use_camper = getDBFlag(anno_dbs, 'camper', value_for_all)
+        use_fegenie = getDBFlag(anno_dbs, 'fegenie', value_for_all)
+        use_methyl = getDBFlag(anno_dbs, 'methyl', value_for_all)
+        use_canthyd = getDBFlag(anno_dbs, 'canthyd', value_for_all)
+        use_sulfur = getDBFlag(anno_dbs, 'sulfur', value_for_all)
+        // use_pfam = getDBFlag(anno_dbs, 'pfam', value_for_all)
         // PFAM database is currently disabled in this pipeline due to a bug in the DRAM2 implementation with the PFAM database. It will be re-enabled in a future release.
-        use_merops = getDBFlag(annon_dbs, 'merops', value_for_all)
-        use_uniref = getDBFlag(annon_dbs, 'uniref', value_for_all)
-        use_vog = getDBFlag(annon_dbs, 'vog', value_for_all)
+        use_merops = getDBFlag(anno_dbs, 'merops', value_for_all)
+        use_uniref = getDBFlag(anno_dbs, 'uniref', value_for_all)
+        use_vog = getDBFlag(anno_dbs, 'vog', value_for_all)
     }
 
 
 
 
+    distill_ecosystem = params.eco_dbs || params.distill_ecosystem
+    distill_topic = params.distill_topic
     if (distill_flag) {
-        if (params.distill_topic != "") {
-            def topics = params.distill_topic.split(',')
+        if (distill_topic != "") {
+            def validTopics = ['default', 'carbon', 'energy', 'misc', 'nitrogen', 'transport', 'camper', 'none']
+            def topics = distill_topic.split(',')
 
             topics.each { topic ->
                 if (!validTopics.contains(topic)) {
@@ -119,15 +122,13 @@ workflow DRAM {
             }
         }
 
-        if (params.distill_ecosystem != "") {
-            def distillEcosystemList = params.distill_ecosystem.split(',')
-
-            // Create a list to store the generated channels
-            def ecoSysChannels = []
+        if (distill_ecosystem != "") {
+            def validEcos = ['eng_sys', 'ag']
+            def distillEcosystemList = distill_ecosystem.split(',')
 
             distillEcosystemList.each { ecosysItem ->
-                if (!['eng_sys', 'ag'].contains(ecosysItem)) {
-                    error("Invalid distill ecosystem: $ecosysItem. Valid values are eng_sys, ag")
+                if (!validEcos.contains(ecosysItem)) {
+                    error("Invalid distill ecosystem: $ecosysItem. Valid values are ${validEcos.join(', ')}")
                 }
 
             }
@@ -149,16 +150,13 @@ workflow DRAM {
         }
 
         if (params.summarize){
-            if (params.distill_topic == "") {
+            if (distill_topic == "") {
                 distill_topic = "default"
-            } else {
-                distill_topic = params.distill_topic
             }
-            if (params.distill_ecosystem == "") {
-                distill_ecosystem = "eng_sys,ag"
-            } else {
-                distill_ecosystem = params.distill_ecosystem
-            }
+        }
+
+        if (distill_topic == "none") {
+            distill_topic = ""
         }
 
         if (!use_kegg && !use_kofam && !use_dbcan && !use_merops) {
@@ -209,7 +207,6 @@ workflow DRAM {
     } else {
 
 
-
         //
         // Pipeline steps
         //
@@ -232,16 +229,14 @@ workflow DRAM {
             use_vog
         )
 
-        if( params.add_annotations ){
-            ch_add_annots = file(params.add_annotations)
-            ADD_ANNOTATIONS( ch_updated_taxa_annots, ch_add_annots )
-            ch_final_annots = ADD_ANNOTATIONS.out.combined_annots_out
-        }
-
-        ch_final_annots = null
         if (distill_flag) {
             if (params.annotate){ // If the user has specified --annotate, us the outputted annotations
                 ch_final_annots = ANNOTATE.out.ch_combined_annotations
+                if( params.add_annotations ){
+                    ch_add_annots = file(params.add_annotations)
+                    ADD_ANNOTATIONS( ANNOTATE.out.ch_combined_annotations, ch_add_annots )
+                    ch_final_annots = ADD_ANNOTATIONS.out.combined_annots_out
+                }
             } else {  // If the user has not specified --annotate, use the provided annotations
                 ch_final_annots = Channel
                     .fromPath(params.annotations, checkIfExists: true)

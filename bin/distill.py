@@ -198,13 +198,73 @@ def write_summarized_genomes_to_xlsx(summarized_genomes, output_file):
             frame.to_excel(writer, sheet_name=sheet, index=False)
 
 
+# TODO: add assembly stats like N50, longest contig, total assembled length etc
+def make_genome_stats(annotations, rrna_frame=None, trna_frame=None, quast_frame=None, groupby_column=FASTA_COLUMN):
+    rows = list()
+    columns = ['genome']
+    if 'scaffold' in annotations.columns:
+        columns.append('number of scaffolds')
+    if 'bin_taxonomy' in annotations.columns:
+        columns.append('taxonomy')
+    if 'bin_completeness' in annotations.columns:
+        columns.append('completeness score')
+    if 'bin_contamination' in annotations.columns:
+        columns.append('contamination score')
+    if rrna_frame is not None:
+        columns += RRNA_TYPES
+    if trna_frame is not None:
+        columns.append('tRNA count')
+    if 'bin_completeness' in annotations.columns and 'bin_contamination' in annotations.columns \
+       and rrna_frame is not None and trna_frame is not None:
+        columns.append('assembly quality')
+    for genome, frame in annotations.groupby(groupby_column, sort=False):
+        row = [genome]
+        if 'scaffold' in frame.columns:
+            row.append(len(set(frame['scaffold'])))
+        if 'bin_taxonomy' in frame.columns:
+            row.append(frame['bin_taxonomy'][0])
+        if 'bin_completeness' in frame.columns:
+            row.append(frame['bin_completeness'][0])
+        if 'bin_contamination' in frame.columns:
+            row.append(frame['bin_contamination'][0])
+        has_rrna = list()
+        if rrna_frame is not None:
+            genome_rrnas = rrna_frame.loc[rrna_frame.fasta == genome]
+            for rrna in RRNA_TYPES:
+                sixteens = genome_rrnas.loc[genome_rrnas.type == rrna]
+                if sixteens.shape[0] == 0:
+                    row.append('')
+                    has_rrna.append(False)
+                elif sixteens.shape[0] == 1:
+                    row.append('%s (%s, %s)' % (sixteens['scaffold'].iloc[0], sixteens.begin.iloc[0],
+                                                sixteens.end.iloc[0]))
+                    has_rrna.append(True)
+                else:
+                    row.append('%s present' % sixteens.shape[0])
+                    has_rrna.append(False)
+        if trna_frame is not None:
+            # TODO: remove psuedo from count?
+            row.append(trna_frame.loc[trna_frame[groupby_column] == genome].shape[0])
+        if 'assembly quality' in columns:
+            if frame['bin_completeness'][0] > 90 and frame['bin_contamination'][0] < 5 and np.all(has_rrna) and \
+               len(set(trna_frame.loc[trna_frame[groupby_column] == genome].Type)) >= 18:
+                row.append('high')
+            elif frame['bin_completeness'][0] >= 50 and frame['bin_contamination'][0] < 10:
+                row.append('med')
+            else:
+                row.append('low')
+        rows.append(row)
+    genome_stats = pd.DataFrame(rows, columns=columns)
+    return genome_stats
+
+
+
 @click.command()
 @click.option("-i", "--input_file", required=True, help="Annotations path")
 # @click.option("-o", "--output_dir", required=True, help="Directory to write summarized genomes")
-@click.option('--log_file_path', 
-                                    help="A name and loctation for the log file")
 @click.option("--rrna_path", help="rRNA output from annotation")
 @click.option("--trna_path", help="tRNA output from annotation")
+@click.option("--quast_path", help="Quast summary TSV from the quast step")
 @click.option("--groupby_column", help="Column from annotations to group as organism units",
                             default=FASTA_COLUMN)
 @click.option("--distil_topics", default="default", help="Default distillates topics to run.")
@@ -213,9 +273,8 @@ def write_summarized_genomes_to_xlsx(summarized_genomes, output_file):
 @click.option("--distillate_gene_names", is_flag=True,
     show_default=True, default=False,
                             help="Give names of genes instead of counts in genome metabolism summary")
-def distill(input_file, trna_path=None, rrna_path=None, distil_topics=None, distil_ecosystem=None,
-                      groupby_column=FASTA_COLUMN, log_file_path=None, custom_distillate=None,
-                      distillate_gene_names=False):
+def distill(input_file, rrna_path=None, trna_path=None, quast_path=None, groupby_column=FASTA_COLUMN, distil_topics=None, distil_ecosystem=None,
+                      custom_distillate=None, distillate_gene_names=False):
     """Summarize metabolic content of annotated genomes"""
     # make output folder
     # mkdir(output_dir)
@@ -242,6 +301,10 @@ def distill(input_file, trna_path=None, rrna_path=None, distil_topics=None, dist
     if trna_frame.empty:
         trna_frame = None
         
+    if quast_path is None:
+        quast_frame = None
+    else:
+        quast_frame = pd.read_csv(quast_path, sep='\t')
 
 
     distil_sheets_names = []
@@ -290,6 +353,11 @@ def distill(input_file, trna_path=None, rrna_path=None, distil_topics=None, dist
     logger.info('Retrieved distillate genome summary form')
 
     genome_summary_form = genome_summary_form.reset_index(drop=True)
+
+    # make genome stats
+    genome_stats = make_genome_stats(annotations, rrna_frame, trna_frame, quast_frame=quast_frame, groupby_column=groupby_column)
+    genome_stats.to_csv(path.join(output_dir, 'genome_stats.tsv'), sep='\t', index=None)
+    logger.info('Calculated genome statistics')
 
     # make genome metabolism summary
     genome_summary = 'metabolism_summary.xlsx'
