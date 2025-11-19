@@ -46,6 +46,7 @@ include { HMM_SEARCH as HMM_SEARCH_CAMPER               } from "../../modules/lo
 include { HMM_SEARCH as HMM_SEARCH_CANTHYD              } from "../../modules/local/annotate/hmmsearch.nf"
 include { HMM_SEARCH as HMM_SEARCH_SULFUR               } from "../../modules/local/annotate/hmmsearch.nf"
 include { HMM_SEARCH as HMM_SEARCH_FEGENIE              } from "../../modules/local/annotate/hmmsearch.nf"
+include { HMM_SEARCH as HMM_SEARCH_METALS               } from "../../modules/local/annotate/hmmsearch.nf"
 
 include { PARSE_HMM as PARSE_HMM_KOFAM                  } from "../../modules/local/annotate/parse_hmmsearch.nf"
 include { PARSE_HMM as PARSE_HMM_DBCAN                  } from "../../modules/local/annotate/parse_hmmsearch.nf"
@@ -54,6 +55,7 @@ include { PARSE_HMM as PARSE_HMM_CAMPER                 } from "../../modules/lo
 include { PARSE_HMM as PARSE_HMM_CANTHYD                } from "../../modules/local/annotate/parse_hmmsearch.nf"
 include { PARSE_HMM as PARSE_HMM_SULFUR                 } from "../../modules/local/annotate/parse_hmmsearch.nf"
 include { PARSE_HMM as PARSE_HMM_FEGENIE                } from "../../modules/local/annotate/parse_hmmsearch.nf"
+include { PARSE_HMM as PARSE_HMM_METALS                 } from "../../modules/local/annotate/parse_hmmsearch.nf"
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -79,6 +81,7 @@ workflow DB_SEARCH {
     use_pfam
     use_merops
     use_uniref
+    use_metals
     use_vog
 
     main:
@@ -95,6 +98,7 @@ workflow DB_SEARCH {
         use_pfam,
         use_merops,
         use_uniref,
+        use_metals,
         use_vog
 
     )
@@ -300,6 +304,19 @@ workflow DB_SEARCH {
 
         formattedOutputChannels = formattedOutputChannels.mix(ch_uniref_formatted)
     }
+    // Metals annotation
+    if (use_metals) {
+        HMM_SEARCH_METALS ( ch_called_proteins,  params.metals_e_value, DB_CHANNEL_SETUP.out.ch_metals_db )
+        ch_metals_hmms = HMM_SEARCH_FEGENIE.out.hmm_search_out
+
+        PARSE_HMM_METALS ( ch_metals_hmms )
+        ch_metals_parsed = PARSE_HMM_METALS.out.parsed_hmm
+
+        ch_combined_hits_locs_metals = ch_metals_parsed.join(ch_gene_locs)
+        METALS_HMM_FORMATTER ( ch_combined_hits_locs_metals )
+        ch_metals_formatted = METALS_HMM_FORMATTER.out.metals_formatted_hits
+        formattedOutputChannels = formattedOutputChannels.mix(ch_metals_formatted)
+    }
     // VOGdb annotation
     if (use_vog) {
         HMM_SEARCH_VOG ( ch_called_proteins, params.vog_e_value , DB_CHANNEL_SETUP.out.ch_vogdb_db )
@@ -350,6 +367,7 @@ workflow DB_CHANNEL_SETUP {
     use_pfam
     use_merops
     use_uniref
+    use_metals
     use_vog
 
 
@@ -367,6 +385,7 @@ workflow DB_CHANNEL_SETUP {
     ch_heme_db = Channel.empty()
     ch_sulfur_db = Channel.empty()
     ch_uniref_db = Channel.empty()
+    ch_metals_db = Channel.empty()
     ch_methyl_db = Channel.empty()
     ch_fegenie_db = Channel.empty()
     ch_canthyd_hmm_db = Channel.empty()
@@ -418,6 +437,10 @@ workflow DB_CHANNEL_SETUP {
         index_mmseqs = true
     }
 
+    if (use_metals) {
+        ch_metals_db = file(params.metals_db).exists() ? file(params.metals_db) : error("Error: If using --annotate, you must supply prebuilt databases. METALS database file not found at ${params.metals_db}")
+    }
+
     if (use_methyl) {
         ch_methyl_db = file(params.methyl_db).exists() ? file(params.methyl_db) : error("Error: If using --annotate, you must supply prebuilt databases. METHYL database file not found at ${params.methyl_db}")
         index_mmseqs = true
@@ -455,6 +478,7 @@ workflow DB_CHANNEL_SETUP {
     ch_heme_db
     ch_sulfur_db
     ch_uniref_db
+    ch_metals_db
     ch_methyl_db
     ch_fegenie_db
     ch_canthyd_hmm_db

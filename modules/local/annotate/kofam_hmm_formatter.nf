@@ -17,7 +17,7 @@ process KOFAM_HMM_FORMATTER {
 
     script:
     """
-    kofam_hmm_formatter.py --hits_csv ${hits_file} --ch_kofam_ko ${ch_kofam_list} --gene_locs "gene_locs.tsv" --output "${input_fasta}___formatted_kofam_hits.csv"
+    kofam_hmm_formatter.py --hits_csv ${hits_file} --hmm_info_path ${ch_kofam_list} --gene_locs "gene_locs.tsv" --db_name kofam --output "${input_fasta}___formatted_kofam_hits.csv"
     
     """
 }

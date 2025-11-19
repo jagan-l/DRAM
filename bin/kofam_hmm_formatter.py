@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import pandas as pd
-import argparse
 import re
+import click
 
 def extract_ec_numbers(definition):
     """
@@ -26,7 +26,7 @@ def calculate_perc_cov(row):
     """Calculate percent coverage for each row."""
     return (row['target_end'] - row['target_start']) / row['target_length']
 
-def find_best_kofam_hit(df):
+def find_best_hit(df):
     """Find the best hit based on E-value and coverage."""
     df['perc_cov'] = (df['target_end'] - df['target_start']) / df['target_length']
     df.sort_values(by=["full_evalue", "perc_cov"], ascending=[True, False], inplace=True)
@@ -38,21 +38,21 @@ def mark_best_hit_based_on_rank(df):
     df.at[best_hit_idx, "best_hit"] = True
     return df
 
-def main():
-    parser = argparse.ArgumentParser(description="Format HMM search results.")
-    parser.add_argument("--hits_csv", type=str, help="Path to the HMM search results CSV file.")
-    parser.add_argument("--ch_kofam_ko", type=str, help="Path to the ch_kofam_ko file.")
-    parser.add_argument("--gene_locs", type=str, help="Path to the gene locations TSV file.")
-    parser.add_argument("--output", type=str, help="Path to the formatted output file.")
-    args = parser.parse_args()
+@click.command()
+@click.option("--hits_csv", type=click.Path(exists=True), help="Path to the HMM search results CSV file.")
+@click.option("--hmm_info_path", type=click.Path(exists=True), help="Path to the hmm_info_path file.")
+@click.option("--gene_locs", type=click.Path(exists=True), help="Path to the gene locations TSV file.")
+@click.option('--db_name', type=str, help='Name of the HMM database.')
+@click.option("--output", type=click.Path(), help="Path to the formatted output file.")
+def main(hits_csv, hmm_info_path, gene_locs, db_name, output):
 
     # Load HMM search results CSV file
     print("Loading HMM search results CSV file...")
-    hits_df = pd.read_csv(args.hits_csv)
+    hits_df = pd.read_csv(hits_csv)
 
     # Load gene locations TSV file
     print("Loading gene locations TSV file...")
-    gene_locs_df = pd.read_csv(args.gene_locs, sep='\t', usecols=['query_id', 'start_position', 'stop_position'])
+    gene_locs_df = pd.read_csv(gene_locs, sep='\t', usecols=['query_id', 'start_position', 'stop_position'])
 
     # Merge hits_df with gene_locs_df
     hits_df = pd.merge(hits_df, gene_locs_df, on='query_id', how='left')
@@ -65,29 +65,29 @@ def main():
     hits_df.dropna(subset=['score_rank'], inplace=True)
 
     # Find the best hit for each unique query_id
-    best_hits = hits_df.groupby('query_id').apply(find_best_kofam_hit).reset_index(drop=True)
+    best_hits = hits_df.groupby('query_id').apply(find_best_hit).reset_index(drop=True)
 
     # Mark the best hit for each unique query_id based on score_rank
     best_hits = best_hits.groupby('query_id').apply(mark_best_hit_based_on_rank).reset_index(drop=True)
 
-    # Load ch_kofam_ko file
-    print("Loading ch_kofam_ko file...")
-    ch_kofam_ko_df = pd.read_csv(args.ch_kofam_ko, sep="\t")
+    # Load hmm_info_path file and check if it's not empty (dummy sheet handling)
+    if hmm_info_path is not None and not (hmm_info_path_df := pd.read_csv(hmm_info_path, sep="\t", index_col=0)).empty:
+        # Extract and format EC numbers from the "definition" column
+        hmm_info_path_df[f'{db_name}_EC'] = hmm_info_path_df['definition'].apply(extract_ec_numbers)
+        # Example of merging (assuming the rest of your script runs before this):
+        merged_df = pd.merge(best_hits, hmm_info_path_df[['definition', f'{db_name}_EC']], how='left', left_on='target_id', right_index=True)
+    else:
+        merged_df = best_hits
+        merged_df[f'{db_name}_EC'] = ''
 
-    # Extract and format EC numbers from the "definition" column
-    ch_kofam_ko_df['kofam_EC'] = ch_kofam_ko_df['definition'].apply(extract_ec_numbers)
-
-    # Example of merging (assuming the rest of your script runs before this):
-    merged_df = pd.merge(best_hits, ch_kofam_ko_df[['knum', 'definition', 'kofam_EC']], left_on='target_id', right_on='knum', how='left')
-
-    # Keep only the relevant columns in the final output, including 'kofam_EC'
-    final_output_df = merged_df[['query_id', 'start_position', 'stop_position', 'strandedness', 'target_id', 'score_rank', 'bitScore', 'definition', 'kofam_EC']]
+    # Keep only the relevant columns in the final output, including '{db_name}_EC'
+    final_output_df = merged_df[['query_id', 'start_position', 'stop_position', 'strandedness', 'target_id', 'score_rank', 'bitScore', 'definition', f'{db_name}_EC']]
 
     # Rename the columns for clarity
-    final_output_df.columns = ['query_id', 'start_position', 'stop_position', 'strandedness', 'kofam_id', 'kofam_score_rank', 'kofam_bitScore', 'kofam_description', 'kofam_EC']
+    final_output_df.columns = ['query_id', 'start_position', 'stop_position', 'strandedness', f'{db_name}_id', f'{db_name}_score_rank', f'{db_name}_bitScore', f'{db_name}_description', f'{db_name}_EC']
 
     # Save the modified DataFrame to CSV
-    final_output_df.to_csv(args.output, index=False)
+    final_output_df.to_csv(output, index=False)
 
     print("Process completed successfully!")
 
