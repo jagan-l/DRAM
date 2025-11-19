@@ -50,7 +50,7 @@ workflow ANNOTATE {
         renamed_fasta_paths = RENAME_FASTA.out.renamed_fasta_paths.flatten()
         // we need to recreate the fasta channel with the renamed fasta files
         ch_fasta = renamed_fasta_paths.map {
-            fasta_name = it.getBaseName().replaceAll(/\./, '-')
+            fasta_name = it.getBaseName()
             tuple(fasta_name, it)
         }
     }

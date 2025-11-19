@@ -129,7 +129,7 @@ workflow DB_SEARCH {
             .fromPath(file(params.input_genes) / params.genes_fmt, checkIfExists: true)
             .ifEmpty { exit 1, "If you specify --annotate without --call, you must provide a fasta file of called genes using --input_genes. Cannot find any called gene fasta files matching: ${params.input_genes}\nNB: Path needs to follow pattern: path/to/directory/" }
             .map {
-                input_fastaName = it.getBaseName().replaceAll(/\./, '-')
+                input_fastaName = it.getBaseName()
                 tuple(input_fastaName, it)
             }
 

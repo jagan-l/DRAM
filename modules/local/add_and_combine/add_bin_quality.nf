@@ -44,10 +44,6 @@ process ADD_BIN_QUALITY {
     # Load the ch_bin_quality TSV with only necessary columns
     checkm_data = pd.read_csv(checkm_path, sep='\t', usecols=quality_columns)
 
-    # Standardize input_fasta identifiers by replacing "." with "-" if necessary in both dataframes
-    combined_annotations[FASTA_COLUMN] = combined_annotations[FASTA_COLUMN].str.replace(".", "-")
-    checkm_data[id_column] = checkm_data[id_column].str.replace(".", "-")
-
     # Merge operation: Add "Completeness" and "Contamination" from checkm_data to combined_annotations
     # Merge based on the FASTA_COLUMN column in combined_annotations and id_column in checkm_data
     merged_data = pd.merge(combined_annotations, checkm_data, left_on=FASTA_COLUMN, right_on=id_column, how="left")

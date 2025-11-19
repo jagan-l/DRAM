@@ -9,7 +9,7 @@ from utils.logger import get_logger
 import click
 from utils.click_utils import validate_comma_separated
 
-FASTA_COLUMN = os.getenv('FASTA_COLUMN')
+FASTA_COLUMN = os.getenv('FASTA_COLUMN', 'input_fasta')
 
 logger = get_logger(filename=Path(__file__).stem)
 
@@ -67,6 +67,11 @@ def set_gene_data(gene_faa, genes_faa_dict=None):
         start_position, end_position, strandedness = seq.metadata["description"].split("#")[1:4]
 
         genes_faa_dict[seq.metadata["id"]][FASTA_COLUMN] = os.path.commonprefix([Path(gene_faa).stem, seq.metadata["id"]]).rstrip("_")
+        genes_faa_dict[seq.metadata["id"]]["scaffold"] = (
+            seq.metadata["id"]
+            .removeprefix(genes_faa_dict[seq.metadata["id"]][FASTA_COLUMN])
+            .removeprefix("_")
+            .removesuffix(f"_{gene_position}"))
         genes_faa_dict[seq.metadata["id"]]["gene_number"] = int(gene_position)
         genes_faa_dict[seq.metadata["id"]]["start_position"] = int(start_position)
         genes_faa_dict[seq.metadata["id"]]["stop_position"] = int(end_position)
@@ -76,7 +81,7 @@ def set_gene_data(gene_faa, genes_faa_dict=None):
 def organize_columns(df, special_columns=None):
     if special_columns is None:
         special_columns = []
-    base_columns = ['query_id', FASTA_COLUMN, 'start_position', 'stop_position', 'strandedness', 'rank', 'gene_number']
+    base_columns = ['query_id', FASTA_COLUMN, "scaffold",  'gene_number', 'start_position', 'stop_position', 'strandedness', 'rank']
     base_columns = [col for col in base_columns if col in df.columns]
     
     kegg_columns = sorted([col for col in df.columns if col.startswith('kegg_')], key=lambda x: (x != 'kegg_id', x))
@@ -92,8 +97,8 @@ def organize_columns(df, special_columns=None):
     return df[final_columns_order]
 
 @click.command()
-@click.option("--annotations_dir", default="", help="Directory of annotation files")
-@click.option("--genes_dir", default="", help="Directory genes faa file paths from prodigal")
+@click.option("--annotations_dir", required=True, help="Directory of annotation files")
+@click.option("--genes_dir", required=True, help="Directory genes faa file paths from prodigal")
 @click.option("--output", help="Output file path for the combined annotations.")
 @click.option("--threads", help="Number of threads for parallel processing", type=int, default=4)
 def combine_annotations(annotations_dir, genes_dir, output, threads):
@@ -119,7 +124,6 @@ def combine_annotations(annotations_dir, genes_dir, output, threads):
 
         # we use outer to get any genes that don't have hits
         combined_data = pd.merge(combined_data, df, how="outer", on="query_id")
-        
         combined_data.loc[combined_data[FASTA_COLUMN].isna(), FASTA_COLUMN] = ""
     
     combined_data = convert_bit_scores_to_numeric(combined_data)
@@ -132,17 +136,11 @@ def combine_annotations(annotations_dir, genes_dir, output, threads):
     # After aggregating data
     combined_data['rank'] = combined_data.apply(assign_rank, axis=1)
 
-    # Correctly extract the base part of 'query_id'
-    combined_data['base_query_id'] = combined_data['query_id'].str.rsplit('_', n=1).str[0]
-    # Recalculate 'gene_number' with corrected grouping
-    combined_data['gene_number'] = combined_data.groupby([FASTA_COLUMN, 'base_query_id']).cumcount() + 1
-
     # Continue with organizing columns and saving the DataFrame
     special_columns = ['Completeness', 'Contamination', 'taxonomy']
-    columns_to_exclude = [col for col in special_columns if col in combined_data.columns]
-    combined_data = organize_columns(combined_data, special_columns=columns_to_exclude)
-
-    combined_data.drop(columns=['base_query_id'], inplace=True)  # Cleanup
+    special_columns = [col for col in special_columns if col in combined_data.columns]
+    combined_data = organize_columns(combined_data, special_columns=special_columns)
+    combined_data = combined_data.sort_values(by=[FASTA_COLUMN, 'scaffold', 'gene_number'])
 
     combined_data.to_csv(output, index=False, sep='\t')
     logger.info(f"Combined annotations saved to {output}, with corrected gene numbers.")

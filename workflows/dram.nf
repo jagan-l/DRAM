@@ -9,7 +9,6 @@ include { paramsSummaryMap        } from 'plugin/nf-schema'
 include { paramsSummaryMultiqc    } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { softwareVersionsToYAML  } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { methodsDescriptionText  } from '../subworkflows/local/utils_nfcore_dram_pipeline'
-include { getFastaChannel         } from '../subworkflows/local/utils_pipeline_setup.nf'
 include { getDBFlag               } from '../subworkflows/local/utils_pipeline_setup.nf'
 
 // Pipeline steps
@@ -43,7 +42,6 @@ workflow DRAM {
     ch_fasta = Channel.empty()
 
     default_sheet = file(params.distill_dummy_sheet)
-    // ch_fasta = getFastaChannel(params.input_fasta, params.fasta_fmt)
     distill_flag = (params.summarize || params.distill_topic != "" || params.distill_ecosystem != "" || params.distill_custom != "" || params.eco_dbs != "")
 
     // if annotate with raw fasta but no call, we can infer we need to call genes, so set call to true

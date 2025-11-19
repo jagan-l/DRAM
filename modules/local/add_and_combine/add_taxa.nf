@@ -34,8 +34,8 @@ process ADD_TAXA {
     ch_taxa_data = pd.read_csv(ch_taxa_path, sep='\t', usecols=taxa_columns)
 
     # Standardize identifiers in both dataframes, if necessary
-    combined_annotations[FASTA_COLUMN] = combined_annotations[FASTA_COLUMN].str.replace('.', '-')
-    ch_taxa_data['user_genome'] = ch_taxa_data['user_genome'].str.replace('.', '-')
+    combined_annotations[FASTA_COLUMN] = combined_annotations[FASTA_COLUMN]
+    ch_taxa_data['user_genome'] = ch_taxa_data['user_genome']
 
     # Check if 'taxonomy' column exists and has at least one non-empty value
     if 'taxonomy' not in combined_annotations.columns or combined_annotations['taxonomy'].isnull().all():
