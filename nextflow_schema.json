@@ -171,6 +171,11 @@
             "type": "object",
             "fa_icon": "fas fa-database",
             "properties": {
+                "anno_dbs": {
+                    "type": "string",
+                    "description": "Alternative way to specify database list for annotation. Comma sepeterated list of databases to include in the annotates. Use `all` for all. Example: 'kegg,dbcan,kofam,merops,viral,camper,cant_hyd,fegenie,sulfur,methyl,uniref,pfam,vogdb'. When in doubt, use the name after `use_` for each database. This option overrides individual `use_` database flags. (WARNING, this option name may change in the future)",
+                    "default": ""
+                },
                 "use_camper": {
                     "type": "boolean",
                     "description": "Use the CAMPer database for annotation."
@@ -221,11 +226,6 @@
                 "use_viral": {
                     "type": "boolean",
                     "hidden": true
-                },
-                "annon_dbs": {
-                    "type": "string",
-                    "description": "Alternative way to specify database list for annotation. Comma sepeterated list of databases to include in the annotates. Use `all` for all. Example: 'kegg,dbcan,kofam,merops,viral,camper,cant_hyd,fegenie,sulfur,methyl,uniref,pfam,vogdb'. When in doubt, use the name after `use_` for each database. This option overrides individual `use_` database flags. (WARNING, this option name may change in the future)",
-                    "default": ""
                 },
                 "add_annotations": {
                     "type": "string",

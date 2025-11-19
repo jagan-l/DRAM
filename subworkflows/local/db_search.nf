@@ -9,7 +9,7 @@
 */
 include { GENE_LOCS                                     } from "../../modules/local/annotate/gene_locs.nf"
 
-include { GENERIC_HMM_FORMATTER                         } from "../../modules/local/annotate/generic_hmm_formatter.nf"  // TODO, This has hard coded paths on the server to the python file. Need to fix this.
+// include { GENERIC_HMM_FORMATTER                         } from "../../modules/local/annotate/generic_hmm_formatter.nf"  // TODO, This has hard coded paths on the server to the python file. Need to fix this.
 include { KEGG_HMM_FORMATTER                            } from "../../modules/local/annotate/kegg_hmm_formatter.nf"
 include { KOFAM_HMM_FORMATTER                           } from "../../modules/local/annotate/kofam_hmm_formatter.nf"
 include { DBCAN_HMM_FORMATTER                           } from "../../modules/local/annotate/dbcan_hmm_formatter.nf"
