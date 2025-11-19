@@ -42,7 +42,7 @@ workflow DRAM {
     ch_fasta = Channel.empty()
 
     default_sheet = file(params.distill_dummy_sheet)
-    distill_flag = (params.summarize || params.distill_topic != "" || params.distill_ecosystem != "" || params.distill_custom != "" || params.eco_dbs != "")
+    distill_flag = (params.summarize || params.distill_topic != "" || params.distill_ecosystem != "" || params.distill_custom != "" || params.sum_ecos != "")
 
     // if annotate with raw fasta but no call, we can infer we need to call genes, so set call to true
     // Also, if call is specified, set call to true
@@ -103,7 +103,7 @@ workflow DRAM {
 
 
 
-    distill_ecosystem = params.eco_dbs
+    distill_ecosystem = params.sum_ecos
     if (distill_ecosystem == "") {
         distill_ecosystem = params.distill_ecosystem
     }
