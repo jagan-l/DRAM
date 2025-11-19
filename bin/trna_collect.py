@@ -13,6 +13,7 @@ df = df[[FASTA_COLUMN, gene_col]].copy()
 counts = pd.crosstab(df[gene_col], df[FASTA_COLUMN], dropna=False).astype("int64")
 counts.columns.name = None
 counts = counts.reset_index()
+counts["AA_type"] = counts[gene_col].str.split(" ").str[0]
 counts["gene_description"] = counts[gene_col] + " tRNA"
 counts["category"] = "tRNA"
 counts["topic_ecosystem"] = "tRNA"
