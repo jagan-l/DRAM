@@ -17,7 +17,7 @@ process SUMMARIZE {
     path( "metabolism_summary.xlsx" ), emit: distillate
     path( "*.log" ), emit: log
     path( "summarized_genomes.tsv" ), emit: summarized_genomes
-    path( "genome_stats.tsv" ), emit: genome_stats.tsv
+    path( "genome_stats.tsv" ), emit: genome_stats
 
     script:
     """

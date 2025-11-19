@@ -38,12 +38,12 @@ def generic_hmm_formatter(hits_csv, hmm_info_path, top_hit, output):
         hits.dropna(subset=['score_rank'], inplace=True)
     
     if top_hit:
-        hits = hits.sort values('full_evalue').drop_duplicates(subset=["query_id"])
+        hits = hits.sort_values('full_evalue').drop_duplicates(subset=["query_id"])
     
     hits.set_index('query_id', inplace=True, drop=True)
     hits.rename_axis(None, inplace=True)
     
-    if 'definition' in hits columns:
+    if 'definition' in hitscolumns:
         hits = hits[['target_id', 'score_rank', 'bitScore', 'definition']]
         hits.columns = ["db_name_id", "db_name_rank", "db_name_bitScore", "db_name_hits"]
     else:

@@ -103,8 +103,10 @@ workflow DRAM {
 
 
 
-
-    distill_ecosystem = params.eco_dbs || params.distill_ecosystem
+    distill_ecosystem = params.eco_dbs
+    if (distill_ecosystem == "") {
+        distill_ecosystem = params.distill_ecosystem
+    }
     distill_topic = params.distill_topic
     if (distill_flag) {
         if (distill_topic != "") {
@@ -113,7 +115,7 @@ workflow DRAM {
 
             topics.each { topic ->
                 if (!validTopics.contains(topic)) {
-                    error("Invalid distill topic: $topic. Valid values are ${validTopics.join(', ')}")
+                    error("Invalid distill topic: $topic. Valid values are ${validTopics.join(',')}. If you included those, try comma separating them without spaces.")
                 }
 
                 // Handle the 'default' case by setting all default topics to "1"
@@ -126,7 +128,7 @@ workflow DRAM {
 
             distillEcosystemList.each { ecosysItem ->
                 if (!validEcos.contains(ecosysItem)) {
-                    error("Invalid distill ecosystem: $ecosysItem. Valid values are ${validEcos.join(', ')}")
+                    error("Invalid distill ecosystem: $ecosysItem. Valid values are ${validEcos.join(',')}. If you included those, try comma separating them without spaces.")
                 }
 
             }
@@ -136,15 +138,8 @@ workflow DRAM {
             // Verify the directory exists
             def custom_distill_dir = file(params.distill_custom)
             if (!custom_distill_dir.exists()) {
-                error "Error: The specified directory for merging annotations (--distill_custom) does not exist: ${params.distill_custom}"
-            }
-
-            // Verify the directory contains .tsv files
-            def tsv_files = custom_distill_dir.list().findAll { it.endsWith('.tsv') }
-            if (tsv_files.isEmpty()) {
-                error "Error: The specified directory for merging annotations (--distill_custom) does not contain any .tsv files: ${params.distill_custom}"
-            }
-        
+                error "Error: The specified custom_distill sheet (--distill_custom) does not exist: ${params.distill_custom}"
+            }      
         }
 
         if (params.summarize){

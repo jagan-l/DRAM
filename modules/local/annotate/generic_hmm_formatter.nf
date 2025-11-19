@@ -10,7 +10,7 @@ process GENERIC_HMM_FORMATTER {
     input:
     path( hmm_info_path )
     path( hits_file )
-    bool( top_hit )
+    val( top_hit )
     
     output:
     path ( "formatted_hits.out" ), emit: formatted_hits
@@ -18,7 +18,7 @@ process GENERIC_HMM_FORMATTER {
     script:
     """
     generic_hmm_formatter.py \
-        --hits_csv ${hits_csv} \
+        --hits_csv ${hits_file} \
         --hmm_info_path ${hmm_info_path} \
         --top_hit ${top_hit} \
         --output "formatted_hits.out"
