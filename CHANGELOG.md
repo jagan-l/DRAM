@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2.0.0-beta19 - 2025-11-21
+
+[3c20b59](https://github.com/WrightonLabCSU/DRAM/commit/3c20b59f74e7af1a78993e8e91f31a4d8390ecd6)...[79dd74d](https://github.com/WrightonLabCSU/DRAM/commit/79dd74db3e60e1b6b3f84d8a691a5f37b4365e80)
+
+### Bugfix
+
+- Fix distill bugs with genome stats, and metabolism summary ([419322b](https://github.com/WrightonLabCSU/DRAM/commit/419322b0d3b54ccc98d4540f94689b69c687ee42))
+
+genome_stats would error out if certain arguments were not provided.
+Also fixed that the metabolism summary was adding extra columns to
+some tabs that were needed.
+Also fixed that quast stats were not being passed to distill script
+
 ## 2.0.0-beta18 - 2025-11-21
 
 [756904d](https://github.com/WrightonLabCSU/DRAM/commit/756904df36a390847945c07aa33a6741d160ab82)...[763f71f](https://github.com/WrightonLabCSU/DRAM/commit/763f71f3baa20b14dc3bcb42a25cca4805f71e71)
