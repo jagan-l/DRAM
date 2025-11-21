@@ -1,4 +1,4 @@
-# WrightonLabCSU/dram: Usage
+# DRAM Usage
 
 > _The entire list of pipeline configuration parameters can be found here: [Parameters API](params_doc.md). Here we will give some overviews on how to use important parameters and launch DRAM_
 

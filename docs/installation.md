@@ -1,4 +1,4 @@
-# Installation Guide
+# DRAM Installation Guide
 
 ## Requirements
 
