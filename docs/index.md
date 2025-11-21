@@ -3,14 +3,14 @@
 The WrightonLabCSU/dram documentation is split into the following pages:
 
 
-.. toctree::
-
-  installation
-  usage
-  params_doc
-  output
-  contributing
-  changelog_include
+```{toctree}
+installation
+usage
+Parameter API <params_doc>
+output
+contributing
+changelog_include
+```
 
 # Indices and tables
 
