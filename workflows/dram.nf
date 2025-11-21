@@ -252,8 +252,9 @@ workflow DRAM {
 
                 SUMMARIZE(
                     ch_final_annots,
-                    ANNOTATE.out.ch_rrna_combined,
-                    ANNOTATE.out.ch_trna_combined,
+                    ANNOTATE.out.ch_rrna_collected,
+                    ANNOTATE.out.ch_trna_collected,
+                    ANNOTATE.out.ch_quast_stats,
                     distill_topic,
                     distill_ecosystem,
                     distill_custom
