@@ -76,8 +76,7 @@ pygments_style = None
 #
 # html_theme = 'alabaster'
 # html_theme = 'sphinx_nefertiti'
-html_permalinks_icon = '<span>#</span>'
-html_theme = 'sphinxawesome_theme'
+html_theme = 'sphinx_rtd_theme'
 
 
 # Theme options are theme-specific and customize the look and feel of a theme
