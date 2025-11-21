@@ -15,6 +15,7 @@
 # import os
 # import sys
 # sys.path.insert(0, os.path.abspath('.'))
+import sphinx_theme_pd
 
 # -- Project information -----------------------------------------------------
 
@@ -76,7 +77,8 @@ pygments_style = None
 #
 # html_theme = 'alabaster'
 # html_theme = 'sphinx_nefertiti'
-html_theme = 'pydata_sphinx_theme'
+html_theme = 'sphinx_theme_pd'
+html_theme_path = [sphinx_theme_pd.get_html_theme_path()]
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
