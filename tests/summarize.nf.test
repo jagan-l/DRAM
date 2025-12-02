@@ -9,6 +9,8 @@ nextflow_pipeline {
         when {
             params {
                 outdir = "$outputDir"
+                summarize = true
+                qc = true
             }
         }
 
