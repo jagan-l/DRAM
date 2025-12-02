@@ -246,19 +246,15 @@ workflow DRAM {
                     .ifEmpty { exit 1, "If you specify --distill_<topic|ecosystem|custom> without --annotate, you must provide an annotations TSV file (--annotations <path>) with approprite formatting. Cannot find any called gene files matching: ${params.annotations}\nNB: Path needs to follow pattern: path/to/directory/" }
             }
 
-            // ADD_AND_COUNT( ch_combined_annotations, call )  // Do any adding of additional annotations and count the annotations
-            // ch_final_annots = ADD_AND_COUNT.out.ch_final_annots
-
-
-                SUMMARIZE(
-                    ch_final_annots,
-                    ANNOTATE.out.ch_rrna_collected,
-                    ANNOTATE.out.ch_trna_collected,
-                    ANNOTATE.out.ch_quast_stats,
-                    distill_topic,
-                    distill_ecosystem,
-                    distill_custom
-                )
+            SUMMARIZE(
+                ch_final_annots,
+                ANNOTATE.out.ch_rrna_collected,
+                ANNOTATE.out.ch_trna_collected,
+                ANNOTATE.out.ch_quast_stats,
+                distill_topic,
+                distill_ecosystem,
+                distill_custom
+            )
             
 
         }
