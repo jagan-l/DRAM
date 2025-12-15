@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## 2.0.0-beta20 - 2025-12-15
+## 2.0.0-beta21 - 2025-12-15
 
 [3648a77](https://github.com/WrightonLabCSU/DRAM/commit/3648a77ee93cb0e5c72dee5cf3d1b6b4a38a834e)...[1106003](https://github.com/WrightonLabCSU/DRAM/commit/1106003daaab6bea519132c5232cf62c54be2a9b)
 

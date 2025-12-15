@@ -155,7 +155,7 @@ def main(hmm_domtbl, hmm_info_path, ec_from_info, gene_locs, db_name, output):
 
     # Get the best hit
     # hits_sig = hits_sig.sort_values(['full_evalue', "domain_ievalue", "perc_cov"], ascending=[True, True, False]).drop_duplicates(subset=["query_id"])
-    hits_sig = hits_sig.sort_values(['full_evalue', "perc_cov"], ascending=[True, True, False]).drop_duplicates(subset=["query_id"])
+    hits_sig = hits_sig.sort_values(['full_evalue', "perc_cov"], ascending=[True, False]).drop_duplicates(subset=["query_id"])
     hits_sig = hits_sig.rename(columns={"full_bitScore": f"{db_name}_full_bitScore", "domain_bitScore": f"{db_name}_domain_bitScore"})
     
     final_cols = [col for col in [col.format(db_name=db_name) for col in OUTPUT_COLUMNS] if col in hits_sig.columns]
