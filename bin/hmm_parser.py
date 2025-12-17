@@ -123,7 +123,7 @@ def main(hmm_domtbl, hmm_info_path, ec_from_info, gene_locs, db_name, output):
                 print(f"Error reading HMM info file: {e}\n{e2}")
                 hmm_sheet = False
     if hmm_sheet and not hmm_info.empty:
-        merge_cols = ['score_type', 'threshold', f"{db_name}_EC", "description"]
+        merge_cols = ['score_type', 'threshold', f"{db_name}_EC", "description", "A_rank", "B_rank"]
         raise_on_ec = False
         if "description" in hmm_info.columns:
             pass
@@ -143,7 +143,8 @@ def main(hmm_domtbl, hmm_info_path, ec_from_info, gene_locs, db_name, output):
 
         hits = hits.merge(hmm_info[merge_cols], how='left', left_on="query_name", right_index=True)
         hits_sig = sig_scores_row_by_row(hits, db_name=db_name)
-        hits_sig = hits_sig.drop(columns=['score_type', 'threshold'])
+        drop_cols = [col for col in merge_cols if col in hits_sig.columns and col not in [f"{db_name}_EC", "description",]]
+        hits_sig = hits_sig.drop(columns=drop_cols)
     else:
         hits_sig = hits[hits["perc_cov"] >= 0.35]
     
