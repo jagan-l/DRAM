@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2.0.0-beta22 - 2025-12-17
+
+[64da24e](https://github.com/WrightonLabCSU/DRAM/commit/64da24e51367feaffe2f643dfbb0aa602e28c5c5)...[0933424](https://github.com/WrightonLabCSU/DRAM/commit/093342450e6e49c1a706cdf2c181bd931bab7a6d)
+
+### Bug Fixes
+
+- A_rank from info sheet for hmm parse now parse properly ([0933424](https://github.com/WrightonLabCSU/DRAM/commit/093342450e6e49c1a706cdf2c181bd931bab7a6d))
+
+
+
 ## 2.0.0-beta21 - 2025-12-15
 
 [3648a77](https://github.com/WrightonLabCSU/DRAM/commit/3648a77ee93cb0e5c72dee5cf3d1b6b4a38a834e)...[1106003](https://github.com/WrightonLabCSU/DRAM/commit/1106003daaab6bea519132c5232cf62c54be2a9b)
