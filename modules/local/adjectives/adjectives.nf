@@ -11,7 +11,7 @@ process ADJECTIVES {
     path( rules_tsv )
 
     output:
-    path("adjectives.tsv"), emit: adjectives_ch
+    path("traits.tsv"), emit: adjectives_ch
 
     script:
     def args = task.ext.args ?: ""
