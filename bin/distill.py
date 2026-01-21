@@ -8,7 +8,7 @@ from xlsxwriter import Workbook
 from utils.logger import get_logger
 from utils.click_utils import validate_comma_separated
 from utils.click_utils import validate_comma_separated
-from rule_parser.rules import evaluate_rules_on_anno, ID_EXPR_DICT
+from rule_parser.src.rules import evaluate_rules_on_anno, ID_EXPR_DICT
 
 logger = get_logger(filename=Path(__file__).stem)
 
@@ -255,8 +255,6 @@ def distill(input_file, rrna_path=None, trna_path=None, quast_path=None, groupby
     )
     
     logger.info('Retrieved distillate genome summary form')
-
-    # genome_summary_form = genome_summary_form.reset_index(drop=True)
 
     # make genome stats
     genome_stats = make_genome_stats(annotations, rrna_frame, trna_frame, quast_frame=quast_frame, groupby_column=groupby_column)

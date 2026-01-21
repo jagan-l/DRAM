@@ -4,7 +4,7 @@ import os
 import ast
 import click
 
-from rule_parser.rules import evaluate_rules_on_anno
+from rule_parser.src.rules import evaluate_rules_on_anno
 
 
 class PythonLiteralOption(click.Option):
