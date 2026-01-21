@@ -3,7 +3,7 @@ import argparse
 import pandas as pd
 import os
 
-FASTA_COLUMN = os.getenv('FASTA_COLUMN')
+FASTA_COLUMN = os.getenv('FASTA_COLUMN', 'input_fasta')
 
 def count_annotations(input_file, output_file):
     # Read the data from the input file

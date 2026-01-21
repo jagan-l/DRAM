@@ -15,7 +15,7 @@ from dram_viz.definitions import (
 )
 # import dask.dataframe as dd
 
-FASTA_COLUMN = os.getenv('FASTA_COLUMN')
+FASTA_COLUMN = os.getenv('FASTA_COLUMN', 'input_fasta')
 
 
 def get_ids_from_annotations_by_row(data):

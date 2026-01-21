@@ -262,9 +262,9 @@ M67	PSMD14 peptidase (Saccharomyces cerev	Extracellular Peptidases	ag	Nitrogen
 A37	sso1175 g.p. (Sulfolobus solfataricus)	Extracellular Peptidases	ag	Nitrogen 	
 A31	HybD peptidase (Escherichia coli)	Extracellular Peptidases	ag	Nitrogen 	
 K01183	chiA1, chitinase A1; [EC:3.2.1.14]	Chitin Degredation 	ag	Nitrogen 	
-K20547¬†¬†	chiB, basic endochitinase	Chitin Degredation 	ag	Nitrogen 	
+K20547	chiB, basic endochitinase	Chitin Degredation 	ag	Nitrogen 	
 K01183	chiC, chitinase	Chitin Degredation 	ag	Nitrogen 	
-K21713¬†¬†	lytic chitin monoxygenase [EC:1.14.99.53]	Chitin Degredation 	ag	Nitrogen 	
+K21713	lytic chitin monoxygenase [EC:1.14.99.53]	Chitin Degredation 	ag	Nitrogen 	
 GH110	GH110 alpha-galactosidase (EC 3.2.1.22); alpha-1,3-galactosidase (EC 3.2.1.-)	Glycoside Hydrolases	ag	CAZY	Alpha-galactans Oligo Cleavage
 GH27	GH27 alpha-galactosidase (EC 3.2.1.22); alpha-N-acetylgalactosaminidase (EC 3.2.1.49); isomalto-dextranase (EC 3.2.1.94); beta-L-arabinopyranosidase (EC 3.2.1.88); galactan:galactan galactosyltransferase (EC 2.4.1.-)	Glycoside Hydrolases	ag	CAZY	Alpha-galactans Oligo Cleavage, Mucin Oligo Cleavage
 GH36	GH36 alpha-galactosidase (EC 3.2.1.22); alpha-N-acetylgalactosaminidase (EC 3.2.1.49); stachyose synthase (EC 2.4.1.67); raffinose synthase (EC 2.4.1.82)	Glycoside Hydrolases	ag	CAZY	Alpha-galactans Oligo Cleavage, Mucin Oligo Cleavage
