@@ -8,6 +8,7 @@ from xlsxwriter import Workbook
 from utils.logger import get_logger
 from utils.click_utils import validate_comma_separated
 from utils.click_utils import validate_comma_separated
+from utils.excel import write_summarized_genomes_to_xlsx
 from rule_parser.src.rules import evaluate_rules_on_anno, ID_EXPR_DICT
 
 logger = get_logger(filename=Path(__file__).stem)
@@ -45,7 +46,7 @@ def make_genome_summary(annotations, genome_summary_frame: pl.LazyFrame, logger,
     genome_summary_frame = genome_summary_frame.with_columns(
         pl.when(pl.col(rules_col).is_not_null())
         .then(pl.col(rules_col))
-        .otherwise(pl.col("gene_id").str.replace_all(",", "|"))
+        .otherwise(pl.col("gene_id"))
         .alias(rules_col)
     )
 
@@ -68,24 +69,6 @@ def make_genome_summary(annotations, genome_summary_frame: pl.LazyFrame, logger,
     df = df.drop(OPTIONAL_COLUMNS, strict=False)
 
     return df
-
-
-def write_summarized_genomes_to_xlsx(summarized_genomes: pl.DataFrame, output_file, extra_frames=tuple()):
-    # turn all this into an xlsx
-    with Workbook(output_file) as wb:
-        for sheet, frame in summarized_genomes.group_by(COL_SHEET):
-            frame = frame.sort(DISTILATE_SORT_ORDER_COLUMNS)
-            frame = frame.drop(COL_SHEET)
-            frame.write_excel(
-                workbook=wb,
-                worksheet=sheet[0],
-            )
-        for extra_frame in extra_frames:
-            if extra_frame is not None and not extra_frame.is_empty():
-                extra_frame.write_excel(
-                    workbook=wb,
-                    worksheet=str(extra_frame[COL_SHEET][0]),
-            )
 
 # TODO: add assembly stats like N50, longest contig, total assembled length etc
 def make_genome_stats(annotations: pl.DataFrame, rrna_frame: pl.DataFrame = None, trna_frame: pl.DataFrame = None, quast_frame: pl.DataFrame = None, groupby_column: str = FASTA_COLUMN):
@@ -266,7 +249,13 @@ def distill(input_file, rrna_path=None, trna_path=None, quast_path=None, groupby
     logger.info(f'Giving counts for genome metabolism summary')
     summarized_genomes = make_genome_summary(annotations, genome_summary_form, logger, groupby_column)
     summarized_genomes.write_csv('summarized_genomes.tsv', separator='\t')
-    write_summarized_genomes_to_xlsx(summarized_genomes, genome_summary, extra_frames=[rrna_frame, trna_frame])
+    write_summarized_genomes_to_xlsx(
+        df=summarized_genomes,
+        output_file=genome_summary,
+        group_by=COL_SHEET,
+        sort_order_columns=DISTILATE_SORT_ORDER_COLUMNS,
+        extra_frames=[rrna_frame, trna_frame]
+    )
     logger.info('Generated genome metabolism summary')
 
     
