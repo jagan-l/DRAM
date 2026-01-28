@@ -51,11 +51,11 @@ Iron Oxidation	IronOxidation	[Cyc2 | PioA | Fe:sulfocyanin | foxEYZ | foxABC] & 
 	foxEYZ	Fe:FoxE | Fe:FoxY | Fe:FoxZ
 	foxABC	Fe:FoxA | Fe:FoxB | Fe:FoxC
 	PlaceHolder	False
-Probable Iron Reduction	ProbIronReduction	[notIronReductionGenes | hemeCount] & ETC50 & NotUnironDescription
+Probable Iron Reduction	ProbIronReduction	[notIronReductionGenes | hemeCount] & ETC50
 	notIronReductionGenes	not(IronReductionGenes)
-	hemeCount	column_count_values(heme_regulatory_motif_count,ge,4,ge,3)
+	hemeCount	NotUnironDescription -> column_count_values(heme_regulatory_motif_count,ge,4,ge,3)
 	NotUnironDescription	not(UnironDescription)
-	UnironDescription	column_contains(kegg_description,NitrateReducer)
+	UnironDescription	filter_contains(kegg_description,"nitrate reductase")
 Iron Reduction	IronReduction	IronReductionGenes & ETC50
 	IronReductionGenes	mtrCAB | Fe:omcF | Fe:omcS | Fe:omcZ | Fe:DFE_operons | Fe:FmnA
 	mtrCAB	Fe:MtrA & Fe:MtrB_TIGR03509 & Fe:MtrC_TIGR03507
