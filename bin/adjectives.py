@@ -3,9 +3,10 @@
 import os
 import ast
 import click
+import polars as pl
 
 from rule_parser.src.rules import evaluate_rules_on_anno
-
+from utils.excel import write_summarized_genomes_to_xlsx
 
 class PythonLiteralOption(click.Option):
 
@@ -55,7 +56,7 @@ def get_assets_path(local_path):
 
 @click.command()
 @click.option('--annotations', type=click.Path(exists=True), required=True, help="One of only 2 required files. Path to a DRAM annotations file.")
-@click.option('-o', '--output', type=click.Path(), default='adjectives.tsv', help="Path for the output table. A true false table created by this script.")
+@click.option('-o', '--output', type=click.Path(), default='traits.xlsx', help="Path for the output table. A true false table created by this script.")
 @click.option('--rules_tsv', type=click.Path(exists=True),
               default=get_assets_path('traits_rules.tsv'),
               help="This is an optional path to a rules file with strict formatting. It will over write the original rules file that is stored with the script.")
@@ -92,11 +93,28 @@ def evaluate(annotations:str, output:str,
             #  strainer_tsv:str=None, strainer_type='pgtb'
              ):
     """Using a DRAM annotations file make a table of adjectives."""
-    evaluate_rules_on_anno(
-        rules_path=rules_tsv,
-        annotations_path=annotations,
-        sample_col="input_fasta",
-    ).write_csv(output, separator="\t")
+    rules = pl.read_csv(rules_tsv, separator="\t")
+
+    dfs = {}
+    sample_col = "input_fasta"
+    group_by_col = "topic_ecosystem"
+    if group_by_col not in rules.columns:
+        rules = rules.with_columns(
+            pl.lit("traits").alias(group_by_col)
+        )
+    for name, data in rules.group_by(group_by_col):
+        dfs[name[0]] = evaluate_rules_on_anno(
+            rules=data.lazy(),
+            annotations_path=annotations,
+            sample_col=sample_col,
+        )
+    write_summarized_genomes_to_xlsx(
+        df=None,
+        output_file=output,
+        group_by=group_by_col,
+        sort_order_columns=sample_col,
+        extra_frames=dfs
+    )
 
 # Maybe someday we will add all of this back in?
 
