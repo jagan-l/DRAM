@@ -3,7 +3,7 @@ Methanogen	methanogen	mcr & notOtherMethanogen	energy
 	mcr	K00399 | K00400 | K00401 | K00402 | K03421 | K03422	energy	
 	notOtherMethanogen	not(OtherAjMethanogen)	energy	
 	OtherAjMethanogen	sulfatereducer | Denitrifier | AerobicAmmoniaOxidizer | comammox | annamox | Phototroph | ETC60	energy	
-Aerobic Ammonia Oxidizer	AerobicAmmoniaOxidizer	AmmoniaMonooxygenase | AmmoniaMonooxygenase & HydroxylamineDehydrogenase	energy	
+Aerobic Ammonia Oxidizer	AerobicAmmoniaOxidizer	AmmoniaMonooxygenase | [AmmoniaMonooxygenase & HydroxylamineDehydrogenase]	energy	
 	AmmoniaMonooxygenase	EC1.14.99.39 | K10944 | K10945 | K10946	energy	
 	HydroxylamineDehydrogenase	EC1.7.2.6 | K10535	energy	
 Comammox	comammox	AmmoniaMonooxygenase & NitriteOxidoreductase & HydrazineDeydrogenase	energy	
@@ -24,7 +24,7 @@ Phototroph	Phototroph	PhotosystemI | PhotosystemII	energy
 	percent60ComplexIA	percent(60,ComplexIA)	energy	
 	percent60ComplexIB	percent(60,ComplexIB)	energy	
 	percent60ComplexIC	percent(60,ComplexIC)	energy	
-	ComplexIA	K00330,[K00331 & K00332 & [K00333 | K00331] & [K13378 | K13380]],K00334,K00335,K00336,K00337,K00338,K00339,K00340,[K00341 & K00342 | K15863],K00343	energy	
+	ComplexIA	K00330,[K00331 & K00332 & [K00333 | K00331] & [K13378 | K13380]],K00334,K00335,K00336,K00337,K00338,K00339,K00340,[[K00341 & K00342] | K15863],K00343	energy	
 	ComplexIB	K05574,K05582,K05581,K05579,K05572,K05580,K05578,K05576,K05577,K05575,K05573,K05583,K05584,K05585	energy	
 	ComplexIC	K03945,K03946,K03947,K03948,K03949,K03950,K03951,K03952,K03953,K03954,K03955,K03956,K11352,K11353	energy	
 Fermenter	Fermenter	not(NegativeForFermenter)	energy	
@@ -107,34 +107,83 @@ Simple Sugars Trehalose	Trehalose	K12437 | K02777 | K02819 | K01194 | K22934 | K
 Simple Sugars Lactose	Lactose	[K01190 | K12111 | K12112] | K12309	carbon	
 Complex Polysaccharide Amorphous Cellulose	Amorphous Cellulose	[[GH94 | GH1 | GH2 | GH3 | GH5 | GH9 | GH16] | GH116] & [[GH5 | GH6 | GH7 | GH8 | GH9 | GH10 | GH124 | GH12 | GH44] | GH45]	carbon	
 Complex Polysaccharide Crystalline Cellulose	Crystalline Cellulose	[GH7 | GH48 | AA10 | AA15 | AA16 | AA9 | AA10 | AA11] | AA13	carbon	
-Complex Polysaccharide Starch	Starch	[AA13 | GH13 | GH14 | GH57 | GH119] | GH126 & [GH133 | GH15] | GH97	carbon	
+Complex Polysaccharide Starch	Starch	[[AA13 | GH13 | GH14 | GH57 | GH119] | GH126] & [[GH133 | GH15] | GH97]	carbon	
 Complex Polysaccharide Pectin	Pectin	[[GH28 | PL1 | PL2 | PL9 | PL10 | PL11 | PL22 | PL26 | PL3] | PL4] & [[GH78 | GH106 | GH138 | GH139 | GH143 | CE8 | GH105 | GH4 | CE12] | GH2]	carbon	
 Complex Polysaccharide Beta-mannan	Beta-mannan	[[GH113 | GH134 | GH26] | GH5] & [[GH26 | GH130 | GH113 | CE2 | CE17] | GH2]	carbon	
-Complex Polysaccharide Alpha-mannan	Alpha-mannan	[GH99 | GH76] & [GH76 | GH92 | GH38 | GH63 | GH47 | GH125] | GH130	carbon	
+Complex Polysaccharide Alpha-mannan	Alpha-mannan	[[GH99 | GH76] & [GH76 | GH92 | GH38 | GH63 | GH47 | GH125]] | GH130	carbon	
 Complex Polysaccharide Xyloglucan	Xyloglucan	[[GH5 | GH9 | GH12 | GH16 | GH44 | GH45 | GH48 | GH74] | AA9] & [[GH31 | GH43 | GH10] | GH2]	carbon	
 Complex Polysaccharide Xylan	Xylan	[[AA13 | GH13 | GH14 | GH57 | GH119] | GH126] & [[GH133 | GH15] | GH97]	carbon	
 Short-Chain Fatty Acids (SCFA) Acetate	Acetate-Final	Acetate-1 | Acetate-2 | Acetate-3	carbon	
-	Acetate-1	[Acetate-sub1 & [K00163 | K00161 | K00162] & K00627] | [K00174 | K00175] | [K00169 | K00170 | K00172 | K00189 | K00171 | K03737] & [K01905 | K22224 | K24012]	carbon	
+	Acetate-1	[[Acetate-sub1 & [K00163 | K00161 | K00162] & K00627] | [K00174 | K00175] | [K00169 | K00170 | K00172 | K00189 | K00171 | K03737]] & [K01905 | K22224 | K24012]	carbon	
 	Acetate-2	Acetate-sub1 & K01568 & [K00138 | K00128 | K14085 | K00149 | K00129]	carbon	
 	Acetate-3	K001895 | K01913	carbon	
 	Acetate-sub1	[K00163 | K00161 | K00162 | K01568]	carbon	
 Short-Chain Fatty Acids (SCFA) Propionate	Propionate-Final	Propionate-1 | Propionate-2 | Propionate-3	carbon	
-	Propionate-1	[[K01899 | K01900 | K01902 | K01903 | K01899] & [K01847 | K01849 | K01848] & K00140 | K05606 & [K11264 | K03416] & Propionate-sub2] | Propionate-sub1	carbon	
+	Propionate-1	"[
+						[K01899 | K01900 | K01902 | K01903 | K01899]
+						& [K01847 | K01849 | K01848]
+						& [K00140 | [K05606 & [K11264 | K03416 | K18426]]]
+						& Propionate-sub2
+					]
+					| Propionate-sub1"	carbon	
 	Propionate-2	[K01026 & [K20626 | K20627] & [K00248 | K00232] & Propionate-sub2] | Propionate-sub1	carbon	
 	Propionate-3	[[K01699 | K13919 | K13920] & K13922 & Propionate-sub2] | Propionate-sub1	carbon	
-	Propionate-sub1	[[K01206 | K01905 | K22224 | K24012] | [K13788 | K00625 | K15024 | K13923] | [K00169 | K00170 | K00172 | K00189 | K00171] | K00565 & [K00925 | K00932 | K19697]]	carbon	
+	Propionate-sub1	"[
+						[K01206 | K01905 | K22224 | K24012] 
+						| [
+							[
+								[K13788 | K00625 | K15024 | K13923]
+								| [K00169 | K00170 | K00172 | K00189 | K00171]
+								| K00656
+							]
+							& [K00925 | K00932 | K19697]
+						]
+					]"	carbon	
 	Propionate-sub2	[K01895 | K01908]	carbon	
 Short-Chain Fatty Acids (SCFA) Butyrate	Butyrate-Final	Butyrate-1 | Butyrate-2 | Butyrate-3 | Butyrate-4	carbon	
 	Butyrate-1	K00626 & [K00074 | K00022 | K07516 | K01825 | K01782 | K07514] & [K01692 | K01825 | K01782 | K07515 | K07514 | K07511 | K01715] & Butyrate-sub1	carbon	
 	Butyrate-2	[K00135 | K08324 | K00135 | K00139 | K17761 | K08324] & Butyrate-sub2 & Butyrate-sub1	carbon	
 	Butyrate-3	K01580 & [K13524 | K07250 | K14268 | K00823 | K16871] & Butyrate-sub2 & Butyrate-sub1	carbon	
-	Butyrate-4	K01843 & [K01844 | K18011] & K18012 & K18013 & [K01034 | K01035] | [K18014 & [K01692 | K01825 | K01782 | K07515 | K07514 | K07511] & [K00022 | K01825 | K01782 | K07514]] & Butyrate-1	carbon	
+	Butyrate-4	"K01843
+				& [K01844 | K18011]
+				& K18012
+				& K18013
+				& [
+					[K01034 | K01035]
+					| [
+						K18014
+						& [K01692 | K01825 | K01782 | K07515 | K07514 | K07511]
+						& [K00022 | K01825 | K01782 | K07514]
+					]
+				]
+				& Butyrate-1"	carbon
 	Butyrate-sub1	[K00209 | K17829] & [K01034 | K01035 | K19709]	carbon	
 	Butyrate-sub2	[K00043 | K08318 | K18120 | K18121] & K18122 & K14534	carbon	
-Short-Chain Fatty Acids (SCFA) Lactate	Lactate-Final	Lactate-1 | Lactate-2 | Lactate-3	carbon	
-	Lactate-1	[K00844 | K00886 | K08074 | K00918 | K12407 | K00845 | K25026] & [K01810 | K06859 | K13810 | K15916] & [K24182 | K00850 | K16370 | K21071 | K00918 | K00895 | K21071] & [K01623 | K01624 | K01622 | K11645 | K16305 | K16306] & [K01803 & K00131 | K11389 | K18978] | [[K01803 & K00134 | K10705 | K00150] & K00927] | [[K01803 & K00134 | K10705 | K00150] & K01837] & [K01834 | K15634 | K01837 | K15633 | K15635] & [K01689 | K27394] | [K01006 | K01007] & K00016	carbon	
+Short-Chain Fatty Acids (SCFA) Lactate	Lactate-Final	Lactate-1 | Lactate-2 | Lactate-3	carbon
+	Lactate-1	"Lactate-sub1
+				& [
+					[
+						[K00134 | K00150]
+						& [K00927 | K01837]
+						& [K01834 | K15633 | K15634 | K15635 | K01837]
+					]
+					| [
+						[K11389 | K00131 | K18978]
+						& [K01834 | K15633 | K15634 | K15635 | K01837]
+					]
+					| [
+						[K00134 | K00150]
+						& K01837 & K03103
+					]
+				]
+				& [K01689 | K27394 | K00873 | K12406]
+				& K00016"	carbon	
 	Lactate-2	K00016	carbon	
 	Lactate-3	[K18124 | K18125 | K00115 | K19813 | K00117] & K01053 & K05308 & [K11395 | K18127] & K00016	carbon	
+	Lactate-sub1	"[K00844 | K00886 | K08074 | K00918 | K12407 | K00845 | K25026]
+					& [K01810 | K06859 | K13810 | K15916]
+					& [K24182 | K00850 | K16370 | K21071 | K00918 | K00895 | K21071]
+					& [K01623 | K01624 | K01622 | K11645 | K16305 | K16306]"	carbon	
 Short-Chain Fatty Acids (SCFA) Formate	Formate	K00656	carbon	
 Amino Acids Glutamate	Glutamate	K11067 | K00618 | K00619 | K14681 | K14682 | K00620 | K22476 | K22477 | K22478 | K19412 | K25032 | K00260 | K00261 | K00262 | K01915 | K00931 | K18538 | K18539 | K00603 | K01776 | K11204 | K11205 | K01909 | K06048 | K13559 | K01915 | K14272 | K05825 | K28204 | K19268 | K01846 | K01885 | K14163 | K09698 | K14223 | K01886	carbon	
 Amino Acids Glycine	Glycine	K00659 | K00273 | K14272 | K00827 | K00830 | K14272 | K00281 | K00282 | K00283 | K00643 | K01620 | K20801 | K00639 | K18896 | K24071 | K00552 | K00613 | K00830 | K00600 | K10814 | K10815 | K10816 | K19967 | K21456 | K01920 | K00605 | K00382 | K02437 | K03153 | K01878 | K01879 | K01880 | K14164	carbon	
