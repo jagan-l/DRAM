@@ -66,7 +66,8 @@ def set_gene_data(gene_faa, genes_faa_dict=None):
         gene_position = split_label[-1]
         start_position, end_position, strandedness = seq.metadata["description"].split("#")[1:4]
 
-        genes_faa_dict[seq.metadata["id"]][FASTA_COLUMN] = os.path.commonprefix([Path(gene_faa).stem, seq.metadata["id"]]).rstrip("_")
+        input_fasta_name = Path(gene_faa).stem.split('_called_genes')[0]
+        genes_faa_dict[seq.metadata["id"]][FASTA_COLUMN] = input_fasta_name
         genes_faa_dict[seq.metadata["id"]]["scaffold"] = (
             seq.metadata["id"]
             .removeprefix(genes_faa_dict[seq.metadata["id"]][FASTA_COLUMN])
@@ -119,12 +120,16 @@ def combine_annotations(annotations_dir, genes_dir, output, threads):
             count_motifs(gene_path, "(C..CH)", genes_faa_dict=genes_faa_dict)
             set_gene_data(gene_path, genes_faa_dict)
         df = pd.DataFrame.from_dict(genes_faa_dict, orient='index')
-        combined_data = combined_data.drop(columns=df.columns, errors='ignore')
+        columns = [col for col in df.columns.tolist() if col != FASTA_COLUMN]
+        combined_data = combined_data.drop(columns=columns, errors='ignore')
         df.index.name = 'query_id'
-
+        df = df.rename(columns={FASTA_COLUMN: FASTA_COLUMN+"2"})
+        
         # we use outer to get any genes that don't have hits
         combined_data = pd.merge(combined_data, df, how="outer", on="query_id")
-        combined_data.loc[combined_data[FASTA_COLUMN].isna(), FASTA_COLUMN] = ""
+        combined_data[FASTA_COLUMN] = combined_data[FASTA_COLUMN].fillna("")
+        mask = combined_data[FASTA_COLUMN] != ""
+        combined_data[FASTA_COLUMN] = combined_data[FASTA_COLUMN].where(mask, other=combined_data[FASTA_COLUMN+"2"])
     
     combined_data = convert_bit_scores_to_numeric(combined_data)
 
@@ -144,8 +149,6 @@ def combine_annotations(annotations_dir, genes_dir, output, threads):
 
     combined_data.to_csv(output, index=False, sep='\t')
     logger.info(f"Combined annotations saved to {output}, with corrected gene numbers.")
-
-
 
 if __name__ == "__main__":
     combine_annotations()
