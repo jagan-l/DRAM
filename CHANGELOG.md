@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2.0.0-beta24 - 2026-02-03
+
+[3659fda](https://github.com/WrightonLabCSU/DRAM/commit/3659fdaa0f9779108840e3bbf97c6d196b37a7d3)...[32d0527](https://github.com/WrightonLabCSU/DRAM/commit/32d05274be6eaeaed48de6bb5a047bd67f21fea1)
+
+### Bug Fixes
+
+- Bugfix for excel saving when rrna or trna are None ([32d0527](https://github.com/WrightonLabCSU/DRAM/commit/32d05274be6eaeaed48de6bb5a047bd67f21fea1))
+
+
+
 ## 2.0.0-beta23 - 2026-02-01
 
 [348e276](https://github.com/WrightonLabCSU/DRAM/commit/348e2764de7b666c0f6dcc1d82deea67d96e439b)...[852e0ae](https://github.com/WrightonLabCSU/DRAM/commit/852e0ae18ae5976e8594e8f68ed1938f7eafce9d)
