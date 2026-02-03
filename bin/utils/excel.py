@@ -14,7 +14,7 @@ def write_summarized_genomes_to_xlsx(
     output_file: PathLike,
     group_by: Columns,
     sort_order_columns: Columns,
-    extra_frames: tuple|dict = tuple(),
+    extra_frames: Iterable|dict = tuple(),
 ):
     format_kw = {
         "autofit": True,
@@ -31,6 +31,8 @@ def write_summarized_genomes_to_xlsx(
                     **format_kw
                 )
         for extra_frame in extra_frames:
+            if extra_frame is None:
+                continue
             # If dictionary of names to frames, get the name
             if isinstance(extra_frames, dict):
                 name = extra_frame

@@ -249,12 +249,17 @@ def distill(input_file, rrna_path=None, trna_path=None, quast_path=None, groupby
     logger.info(f'Giving counts for genome metabolism summary')
     summarized_genomes = make_genome_summary(annotations, genome_summary_form, logger, groupby_column)
     summarized_genomes.write_csv('summarized_genomes.tsv', separator='\t')
+    kw = {"extra_frames": []}
+    if rrna_frame is not None:
+        kw["extra_frames"].append(rrna_frame)
+    if trna_frame is not None:
+        kw["extra_frames"].append(trna_frame)
     write_summarized_genomes_to_xlsx(
         df=summarized_genomes,
         output_file=genome_summary,
         group_by=COL_SHEET,
         sort_order_columns=DISTILATE_SORT_ORDER_COLUMNS,
-        extra_frames=[rrna_frame, trna_frame]
+        **kw
     )
     logger.info('Generated genome metabolism summary')
 
