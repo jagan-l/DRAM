@@ -64,14 +64,14 @@ nextflow run DRAM --distill_<topic|ecosystem|custom> --annotations <path/to/anno
 
 7) **Complete workflow example:**
 ```bash
-nextflow run -bg DRAM \
-  --input_fasta ../test_data/DRAM_test_data/ \
-  --outdir DRAM-test-data-call-annotate-distill \
+nextflow run -bg /home/opt/DRAM_versions/DRAM-latest \
+  --input_fasta 95per_80cov_clust_cdhit_JARDZ.fna\
+  --outdir Feb18/  \
   --threads 8 \
   --call --rename --annotate \
   --use_uniref --use_kegg --use_merops --use_viral --use_pfam --use_camper \
   --use_kofam --use_dbcan --use_methyl --use_canthyd --use_vog --use_fegenie --use_sulfur \
-  --distill_topic default --distill_ecosystem 'eng_sys ag' --distill_custom test-data/custom-test-distilalte.tsv \
+  --distill_topic default --distill_ecosystem 'eng_sys ag'  \
   -profile conda_slurm --slurm_node main -with-report -with-trace -with-timeline
 ```
 
