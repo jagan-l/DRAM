@@ -65,8 +65,8 @@ nextflow run DRAM --distill_<topic|ecosystem|custom> --annotations <path/to/anno
 7) **Complete workflow example:**
 ```bash
 nextflow run -bg /home/opt/DRAM_versions/DRAM-latest \
-  --input_fasta 95per_80cov_clust_cdhit_JARDZ.fna\
-  --outdir Feb18/  \
+  --input_fasta <input_fasta>\
+  --outdir <output_dir> \
   --threads 8 \
   --call --rename --annotate \
   --use_uniref --use_kegg --use_merops --use_viral --use_pfam --use_camper \
