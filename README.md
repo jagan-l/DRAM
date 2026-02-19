@@ -65,14 +65,11 @@ nextflow run DRAM --distill_<topic|ecosystem|custom> --annotations <path/to/anno
 7) **Complete workflow example:**
 ```bash
 nextflow run -bg /home/opt/DRAM_versions/DRAM-latest \
-  --input_fasta <input_fasta>\
-  --outdir <output_dir> \
+  --input_fasta [DIRECTORY of fasta files] \
+  --outdir [OUTPUT]\
   --threads 8 \
-  --call --rename --annotate \
-  --use_uniref --use_kegg --use_merops --use_viral --use_pfam --use_camper \
-  --use_kofam --use_dbcan --use_methyl --use_canthyd --use_vog --use_fegenie --use_sulfur \
-  --distill_topic default --distill_ecosystem 'eng_sys ag'  \
-  -profile conda_slurm --slurm_node main -with-report -with-trace -with-timeline
+  --rename --sum_ecos 'eng_sys,ag' \
+  -profile singularity,full_mode --slurm --slurm_node [SLURM NODE NAME] -with-report -with-trace -with-timeline
 ```
 
 ## Nextflow Tips and Tricks
