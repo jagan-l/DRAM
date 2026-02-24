@@ -212,7 +212,7 @@ workflow DRAM {
 
         gene_ko_link_f = params.gene_ko_link_loc && file(params.gene_ko_link_loc).exists() ? file(params.gene_ko_link_loc) : default_sheet
         kegg_download_date = params.kegg_download_date ? params.kegg_download_date : "''"
-        skip_gene_ko_link = params.skip_gene_ko_link ? 1 : 0
+        skip_gene_ko_link = params.skip_gene_ko_link ? "true" : "false"
         FORMAT_KEGG_DB( kegg_pep_f, gene_ko_link_f, kegg_download_date, skip_gene_ko_link )
 
     } else if (params.merge_annotations){
