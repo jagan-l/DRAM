@@ -5,7 +5,6 @@ from shutil import move, rmtree
 from glob import glob
 import logging
 import subprocess
-from skbio import write as write_sequence, read as read_sequence
 from collections import defaultdict
 import gzip
 import argparse
@@ -64,6 +63,7 @@ def process_kegg(
         download_date = get_iso_date()
     if gene_ko_link_loc is not None and Path(gene_ko_link_loc).exists():
         # add KOs to end of header where KO is not already there
+        from skbio import write as write_sequence
         kegg_mod_loc = path.join(output_dir, "kegg.mod.fa")
         write_sequence(
             generate_modified_kegg_fasta(kegg_loc, gene_ko_link_loc),
@@ -73,7 +73,7 @@ def process_kegg(
     else:
         kegg_mod_loc = kegg_loc
     # make mmseqsdb from modified kegg fasta
-    kegg_mmseqs_db = path.join(output_dir, "kegg.%s.mmsdb" % download_date)
+    kegg_mmseqs_db = path.join(output_dir, "kegg.mmsdb")
     create_mmseqs(
         kegg_mod_loc,
         kegg_mmseqs_db,
@@ -114,6 +114,7 @@ def generate_modified_kegg_fasta(kegg_fasta, gene_ko_link_loc=None):
     Takes kegg fasta file and gene ko link file, adds kos not already in headers to headers
     Whish I knew about this, oh well I may split this out.
     """
+    from skbio import write as write_sequence, read as read_sequence
     genes_ko_dict = defaultdict(list)
     if gene_ko_link_loc is not None:
         if gene_ko_link_loc.endswith(".gz"):
@@ -150,9 +151,8 @@ def main():
     )
     parser.add_argument(
         "--skip_gene_ko_link",
-        type=bool,
+        action="store_true",
         help="Skip gene KO link processing. If not passed in, `--gene_ko_link_loc` is required",
-        default=False,
     )
     parser.add_argument(
         "--output_dir", type=str, help="Path to the output directory", default="kegg"
