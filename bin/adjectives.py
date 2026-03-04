@@ -107,6 +107,8 @@ def evaluate(annotations:str, output:str,
             rules=data.lazy(),
             annotations_path=annotations,
             sample_col=sample_col,
+            parent_col="alias",
+            rules_col="rule"
         )
     write_summarized_genomes_to_xlsx(
         df=None,

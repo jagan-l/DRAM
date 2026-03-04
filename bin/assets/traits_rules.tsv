@@ -1,4 +1,4 @@
-name	parent	child	topic_ecosystem	notes
+name	alias	rule	topic_ecosystem	notes
 Methanogen	methanogen	mcr & notOtherMethanogen	energy	
 	mcr	K00399 | K00400 | K00401 | K00402 | K03421 | K03422	energy	
 	notOtherMethanogen	not(OtherAjMethanogen)	energy	

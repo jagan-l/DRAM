@@ -110,7 +110,9 @@ workflow DB_SEARCH {
     def formattedOutputChannels = channel.of()
 
     // Here we will create mmseqs2 index files for each of the inputs if we are going to do a mmseqs2 database
-    if (DB_CHANNEL_SETUP.out.index_mmseqs) {
+    // We use .val because we need to unwrap the workflow output.
+    // if the .out was from a process, this could block as it waited for DB_CHANNEL_SETUP, so use with caution
+    if (DB_CHANNEL_SETUP.out.index_mmseqs.val) {
         // Use MMSEQS2 to index each called genes protein file
         MMSEQS_INDEX( ch_called_proteins )
         ch_mmseqs_query = MMSEQS_INDEX.out.mmseqs_index_out
