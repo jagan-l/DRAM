@@ -18,6 +18,6 @@ process GENE_LOCS {
     script:
 
     """
-    generate_faa_gene_loc_tsv.py ${genes} "${input_fasta}_called_genes_table.tsv"
+    parse_faa.sh ${genes} "${input_fasta}_called_genes_table.tsv"
     """
 }

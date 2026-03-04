@@ -50,8 +50,6 @@ workflow DB_SEARCH {
     ch_gene_locs  // channel: path(gene_locs_tsv) ]
     ch_called_proteins  // channel: [ val(input_fasta name), path(called_proteins_file.faa) ]
     default_sheet // Path to dummy sheet
-    n_fastas // Number of FASTA files to process
-    call     // boolean: whether gene calling flag is set
     use_kegg
     use_kofam
     use_dbcan
@@ -108,21 +106,6 @@ workflow DB_SEARCH {
     pfam_name = "pfam"
     vogdb_name = "vogdb"
     metals_name = "metals"
-
-
-    if (!call) {
-        ch_called_proteins = Channel
-            .fromPath(file(params.input_genes) / params.genes_fmt, checkIfExists: true)
-            .ifEmpty { exit 1, "If you specify --annotate without --call, you must provide a fasta file of called genes using --input_genes. Cannot find any called gene fasta files matching: ${params.input_genes}\nNB: Path needs to follow pattern: path/to/directory/" }
-            .map {
-                input_fastaName = it.getBaseName()
-                tuple(input_fastaName, it)
-            }
-
-        GENE_LOCS( ch_called_proteins)
-        ch_gene_locs = GENE_LOCS.out.prodigal_locs_tsv
-        n_fastas = file("$params.input_genes/${params.genes_fmt}").size()
-    }
 
     def formattedOutputChannels = channel.of()
 

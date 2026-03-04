@@ -9,6 +9,7 @@ from utils.logger import get_logger
 from utils.click_utils import validate_comma_separated
 from utils.click_utils import validate_comma_separated
 from utils.excel import write_summarized_genomes_to_xlsx
+from utils.pl_utils import read_csv
 from rule_parser.src.rules import evaluate_rules_on_anno, ID_EXPR_DICT
 
 logger = get_logger(filename=Path(__file__).stem)
@@ -170,24 +171,9 @@ def distill(input_file, rrna_path=None, trna_path=None, quast_path=None, groupby
     # Check the columns are present
     check_columns(annotations, logger)
 
-    if trna_path is None:
-        trna_frame = None
-    else:
-        trna_frame = pl.read_csv(trna_path, separator='\t')
-    if rrna_path is None:
-        rrna_frame = None
-    else:
-        rrna_frame = pl.read_csv(rrna_path, separator='\t')
-    # Check NF DRAM didn't pass an empty sheet to signal no tRNAs or rRNAs
-    if rrna_frame.is_empty():
-        rrna_frame = None
-    if trna_frame.is_empty():
-        trna_frame = None
-        
-    if quast_path is None:
-        quast_frame = None
-    else:
-        quast_frame = pl.read_csv(quast_path, separator='\t')
+    trna_frame = read_csv(trna_path)
+    rrna_frame = read_csv(rrna_path)
+    quast_frame = read_csv(quast_path)
 
     distil_sheets_names = []
     if "default" in distil_topics:

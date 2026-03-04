@@ -50,7 +50,7 @@ process CALL_GENES {
             # With prodigal GFF output:
 
             # We parse the GFF to create a summary TSV for later use
-            parse_gff.sh "${input_fasta}_called_genes.gff" "${input_fasta}_called_genes_table.tsv"
+            parse_faa.sh "${input_fasta}_called_genes.faa" "${input_fasta}_called_genes_table.tsv"
 
             # Next we need to convert all metadata ID fields from generated unique 
             # IDS (1_1, 1_2, 2_1, etc.) to SeqID_GeneNumber (Bin7_1, Bin7_2, etc.)

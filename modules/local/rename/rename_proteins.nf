@@ -1,17 +1,14 @@
-process RENAME_FASTA {
+process RENAME_PROTEINS {
     label 'process_tiny'
 
-    tag { "renaming_fastas" }
-
-    conda "${moduleDir}/environment.yml"
-    container "community.wave.seqera.io/library/bbmap:801715ef64484762"
+    tag { "renaming_proteins" }
 
     input:
     val fasta_names
     path fastas
 
     output:
-    path("RENAMED_HEADERS/*.fa"), emit: renamed_fasta_paths
+    path("RENAMED_HEADERS/*.faa"), emit: renamed_paths
 
     script:
     // def samples = fasta_names as List
@@ -19,9 +16,8 @@ process RENAME_FASTA {
     def rename_cmds = fasta_names.indices.collect { i ->
         def name = fasta_names[i]
         def file = fastas[i]
-        "rename.sh in=${file} out=RENAMED_HEADERS/${name}.fa prefix=${name} addprefix=t"
+        "rename_headers.py ${file} RENAMED_HEADERS/${name}.faa ${name}"
     }.join("\n")
-
 
     """
     mkdir -p RENAMED_HEADERS

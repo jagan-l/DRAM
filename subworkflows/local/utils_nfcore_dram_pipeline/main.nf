@@ -68,6 +68,7 @@ workflow PIPELINE_INITIALISATION {
         anno_dbs = params.anno_dbs.tokenize(',').collect { it.trim().toLowerCase() }
         value_for_all = 'all'
         use_kegg = getDBFlag(anno_dbs, 'kegg', value_for_all)
+        use_kofam = getDBFlag(anno_dbs, 'kofam', value_for_all)
         use_fegenie = getDBFlag(anno_dbs, 'fegenie', value_for_all)
         use_sulfur = getDBFlag(anno_dbs, 'sulfur', value_for_all)
         // use_pfam = getDBFlag(anno_dbs, 'pfam', value_for_all)
@@ -95,6 +96,9 @@ workflow PIPELINE_INITIALISATION {
         if (!params.annotate && !params.generate_gff && !params.generate_gbk) {
             error("Input genes file must be used with --annotate or --generate_gff --generate_gbk.")
         }
+        if (params.input_fasta) {
+            error("--input_genes and --input_fasta both specified, please specify only one.")
+        }
     }
 
     if (params.trnas || params.rrnas) {
@@ -103,10 +107,10 @@ workflow PIPELINE_INITIALISATION {
         }
     }
 
-    if (((params.adjectives || params.traits) || (params.visualize || params.product)) && (!use_kegg || !use_fegenie || !use_sulfur)) {
+    if (((params.adjectives || params.traits) || (params.visualize || params.product)) && ((!use_kegg && !use_kofam) || !use_fegenie || !use_sulfur)) {
         // If they are using a premade annotations file, we just trust that they used kegg, fegenies, or sulfur
         if (!params.annotations) {
-            error("When using Adjectives, make sure you use Kegg, FeGenie, and Sulfur Databases")
+            error("When using Traits, make sure you use (Kegg or Kofam), FeGenie, and Sulfur Databases")
         }
     }
 
