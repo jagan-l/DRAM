@@ -34,19 +34,23 @@ workflow COLLECT_RNA {
     if (!call) {
         if (params.rrnas) {
             Channel.fromPath("${params.rrnas}/*.tsv", checkIfExists: true)
-                .ifEmpty { exit 1, "If you specify --distill_<topic|ecosystem|custom> without --call, you must provide individual rRNA files generated with barrnap. Cannot find any files at: ${params.rrnas}\nNB: Path needs to follow pattern: path/to/directory" }
+                .ifEmpty { exit 1, "Cannot find individual rRNA files generated with barrnap at: ${params.rrnas}\nNB: Path needs to follow pattern: path/to/directory" }
                 .collect()
                 .set { ch_collected_rRNAs }
                 run_rrna_collect = true
-
+        }
+        else {
+            log.warn("No rRNA files provided, skipping rRNA steps.")
         }
         if (params.trnas) {
-            // the user provided rrnas or trnas 
             Channel.fromPath("${params.trnas}/*.tsv", checkIfExists: true)
-                .ifEmpty { exit 1, "If you specify --distill_<topic|ecosystem|custom> without --call, you must provide individual tRNA files generated with tRNAscan-SE. Cannot find any files at: ${params.trnas}\nNB: Path needs to follow pattern: path/to/directory" }
+                .ifEmpty { exit 1, "Cannot find individual tRNA files generated with tRNAscan-SE. Cannot find any files at: ${params.trnas}\nNB: Path needs to follow pattern: path/to/directory" }
                 .collect()
                 .set { ch_collected_tRNAs }
                 run_trna_collect = true
+        }
+        else {
+            log.warn("No tRNA files provided, skipping tRNA steps.")
         }
     } else { // If we did run call then we need to generate the rrnas and trnas from the fastas
         // Run tRNAscan-SE on each fasta to identify tRNAs

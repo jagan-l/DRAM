@@ -4,7 +4,7 @@ process SUMMARIZE {
     errorStrategy 'finish'
 
     conda "${moduleDir}/environment.yml"
-    container "community.wave.seqera.io/library/python_click_polars_pyarrow_pruned:00822989eabb8b47"
+    container "community.wave.seqera.io/library/python_click_polars_pyarrow_pruned:45e45e8e79698c99"
 
     input:
     path( ch_combined_annotations, stageAs: "raw-annotations.tsv" )

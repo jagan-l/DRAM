@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2.0.0-beta25 - 2026-03-04
+
+[c95aa83](https://github.com/WrightonLabCSU/DRAM/commit/c95aa83c8164531af536a818359ea807cc44de67)...[d8d3cb8](https://github.com/WrightonLabCSU/DRAM/commit/d8d3cb85e5c6ca743272d7c03b0b4d78878c4280)
+
+### Bug Fixes
+
+- Bugfixes for using input_genes parameter ([d8d3cb8](https://github.com/WrightonLabCSU/DRAM/commit/d8d3cb85e5c6ca743272d7c03b0b4d78878c4280))
+
+- Skip tRNA and rRNA when using input_genes unless trna and rrna
+input sheet provided since they require raw fasta file to produce.
+- new parse_faa file to generate called_table summary file
+that leave error message on non-zero exit code telling people
+to check the headers metadata in case they don't match with prodigal
+output metadata.
+- use the same parsing code parse_faa.sh from above to generate
+sumamry table for DRAM if using input_fasta and input_genes so
+less likely of bug in one spot isn't noticed if other is working.
+- fix bugs where downstream stuff would pass dummy sheet to summarize
+and then that wouldn't properly handle it
+- add ability to rename headers with input_genes with --rename flag
+with rename_headers.py script and rename_proteins.nf
+
 ## 2.0.0-beta24 - 2026-02-03
 
 [3659fda](https://github.com/WrightonLabCSU/DRAM/commit/3659fdaa0f9779108840e3bbf97c6d196b37a7d3)...[32d0527](https://github.com/WrightonLabCSU/DRAM/commit/32d05274be6eaeaed48de6bb5a047bd67f21fea1)

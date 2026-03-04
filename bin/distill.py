@@ -9,12 +9,13 @@ from utils.logger import get_logger
 from utils.click_utils import validate_comma_separated
 from utils.click_utils import validate_comma_separated
 from utils.excel import write_summarized_genomes_to_xlsx
+from utils.pl_utils import read_csv
 from rule_parser.src.rules import evaluate_rules_on_anno, ID_EXPR_DICT
 
 logger = get_logger(filename=Path(__file__).stem)
 
-COL_GENE_ID, COL_GENE_DESCRIPTION, COL_MODULE, COL_SHEET, COL_HEADER, COL_SUBHEADER, RULES_PARENT, RULES = 'gene_id', 'gene_description', 'pathway', 'topic_ecosystem','category', 'subcategory', 'parent', 'rules'
-OPTIONAL_COLUMNS = [RULES_PARENT, RULES]
+COL_GENE_ID, COL_GENE_DESCRIPTION, COL_MODULE, COL_SHEET, COL_HEADER, COL_SUBHEADER, COL_ALIAS, COL_RULE = 'gene_id', 'gene_description', 'pathway', 'topic_ecosystem','category', 'subcategory', 'alias', 'rule'
+OPTIONAL_COLUMNS = [COL_ALIAS, COL_RULE]
 RRNA_COLUMNS = [COL_GENE_ID, COL_GENE_DESCRIPTION, COL_SHEET, COL_HEADER, COL_SUBHEADER]
 TRNA_COLUMNS = RRNA_COLUMNS + ['AA_type']
 CORE_COLUMNS = RRNA_COLUMNS + [COL_MODULE]
@@ -37,17 +38,16 @@ def check_columns(data, logger):
           f" but these are {functions}")  
 
 def make_genome_summary(annotations, genome_summary_frame: pl.LazyFrame, logger, groupby_column=FASTA_COLUMN):
-    rules_col = "rules"
-    if rules_col not in genome_summary_frame.collect_schema().names():
+    if COL_RULE not in genome_summary_frame.collect_schema().names():
         genome_summary_frame = genome_summary_frame.with_columns(
-            pl.lit(None).cast(pl.String).alias(rules_col)
+            pl.lit(None).cast(pl.String).alias(COL_RULE)
         )
 
     genome_summary_frame = genome_summary_frame.with_columns(
-        pl.when(pl.col(rules_col).is_not_null())
-        .then(pl.col(rules_col))
+        pl.when(pl.col(COL_RULE).is_not_null())
+        .then(pl.col(COL_RULE))
         .otherwise(pl.col("gene_id"))
-        .alias(rules_col)
+        .alias(COL_RULE)
     )
 
     df = evaluate_rules_on_anno(
@@ -57,7 +57,7 @@ def make_genome_summary(annotations, genome_summary_frame: pl.LazyFrame, logger,
         sample_col="query_id",
         label_col="gene_id",
         parent_col=None,
-        rules_col=rules_col
+        rules_col=COL_RULE
         )
     df = df.join(annotations.select([pl.col("query_id"), pl.col("input_fasta")]), on="query_id").drop("query_id")
     df = df.group_by("input_fasta").agg(pl.exclude("input_fasta").sum())
@@ -170,24 +170,9 @@ def distill(input_file, rrna_path=None, trna_path=None, quast_path=None, groupby
     # Check the columns are present
     check_columns(annotations, logger)
 
-    if trna_path is None:
-        trna_frame = None
-    else:
-        trna_frame = pl.read_csv(trna_path, separator='\t')
-    if rrna_path is None:
-        rrna_frame = None
-    else:
-        rrna_frame = pl.read_csv(rrna_path, separator='\t')
-    # Check NF DRAM didn't pass an empty sheet to signal no tRNAs or rRNAs
-    if rrna_frame.is_empty():
-        rrna_frame = None
-    if trna_frame.is_empty():
-        trna_frame = None
-        
-    if quast_path is None:
-        quast_frame = None
-    else:
-        quast_frame = pl.read_csv(quast_path, separator='\t')
+    trna_frame = read_csv(trna_path)
+    rrna_frame = read_csv(rrna_path)
+    quast_frame = read_csv(quast_path)
 
     distil_sheets_names = []
     if "default" in distil_topics:

@@ -1,4 +1,4 @@
-gene_id	rules	gene_description	pathway	topic_ecosystem	category	subcategory	note	reference
+gene_id	rule	gene_description	pathway	topic_ecosystem	category	subcategory	note	reference
 arsD	arsD	"arsD, Arsenic metallochaperone for efflux pump"		metals	Stressors	Heavy Metals	arsenic	
 arsM	arsM|K07755	"arsM, arsenite methyltransferase"		metals	Stressors	Heavy Metals	arsenic	
 aioA-aoxB	aioA-aoxB|K08356	"aioA-aoxB, arsenite oxidase large subunit"		metals	Stressors	Heavy Metals	arsenic	

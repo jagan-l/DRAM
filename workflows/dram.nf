@@ -58,8 +58,7 @@ workflow DRAM {
         traits = true
     }
 
-
-    if (params.rename || call) {
+    if (params.input_fasta && (params.rename || call)) {
         ch_fasta = Channel
             .fromPath(file(params.input_fasta) / params.fasta_fmt, checkIfExists: true)
                 .ifEmpty { exit 1, "Cannot find any fasta files matching: ${params.input_fasta}\nNB: Path needs to follow pattern: path/to/directory/" }
