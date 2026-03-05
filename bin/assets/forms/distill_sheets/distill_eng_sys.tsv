@@ -154,29 +154,29 @@ K21009	PelD; EPS	engineered systems	engineered systems	biofilm formation	EPS pro
 K21010	PelD; EPS	engineered systems	engineered systems	biofilm formation	EPS production
 K21011	PelD; EPS	engineered systems	engineered systems	biofilm formation	EPS production
 K21012	PelD; EPS	engineered systems	engineered systems	biofilm formation	EPS production
-K04455	HSPB1; heat shock protein family B (small) member 1	engineered systems	engineered systems	heat tolerance	
-K03667	"ttm:Tthe_1460 heat shock protein HslVU	 ATPase subunit HslU; K03667 AAA_2 AAA ClpB_D2-small AAA_5 AAA_22 AAA_16 Mg_chelatase Sigma54_activat MCM AAA_18 RuvB_N ABC_tran NTPase_1 TniB AAA_28 AAA_33 Zeta_toxin AAA_7 IstB_IS21 TIP49 TsaE FAS_meander AAA_19 DEAD"	engineered systems	engineered systems	heat tolerance	
-K13993	ttm:Tthe_0173 heat shock protein Hsp20; K13993 HSP20 ArsA_HSP20 CS	engineered systems	engineered systems	heat tolerance	
-K03686	blq:L21SP5_01031 dnaJ; Heat shock protein J; K03686 DnaJ_C DnaJ DnaJ_CXXCXGXG Anti-TRAP	engineered systems	engineered systems	heat tolerance	
-K04762	pet:PEIBARAKI_4309 heat shock protein 15; K04762 S4	engineered systems	engineered systems	heat tolerance	
-K05801	tli:Tlie_1612 heat shock protein DnaJ domain protein; K05801 DnaJ 3HBOH	engineered systems	engineered systems	heat tolerance	
-K03799	"mem:Memar_2252 Heat shock protein	 Metallo peptidase	 MEROPS family M48B; K03799 Peptidase_M48 Peptidase_M56 Peptidase_U49 SprT-like DUF2268 Pex24p"	engineered systems	engineered systems	heat tolerance	
-K03705	tte:TTE0953 HrcA; Transcriptional regulator of heat shock gene; K03705 HrcA HrcA_DNA-bdg HTH_11 HTH_DeoR	engineered systems	engineered systems	heat tolerance	
-K03687	tte:TTE0954 GrpE; Molecular chaperone GrpE (heat shock protein); K03687 GrpE Herpes_UL6 GldM_N Complex1_LYR Trans_reg_C DUF573 KxDL Atg14 DUF87	engineered systems	engineered systems	heat tolerance	
-K13640	cha:CHAB381_0975 putative heat shock protein HspR; K13640 MerR_1 MerR_2 MerR HTH_17 HTH_3 PKcGMP_CC TolA_bind_tri HTH_23	engineered systems	engineered systems	heat tolerance	
-K01419	"hor:Hore_07560 heat shock protein HslVU	 ATP dependent protease HslV; K01419 Proteasome"	engineered systems	engineered systems	heat tolerance	
-K07721	"tko:TK2291 archaeal heat shock regulator	 ArsR family; K07721 HTH_5 HTH_20 ArsR HTH_24 PadR TrmB MarR_2 HTH_CodY HTH_11 PSY3 MscS_porin GntR DprA_WH HTH_10 LexA_DNA_bind HxlR IF2_N DUF4795 DUF2205"	engineered systems	engineered systems	heat tolerance	
-K19411	"min:Minf_0201 mcsA; Modulator of heat shock repressor CtsR	 McsA; K19411 UVR TackOD1 XFP A2L_zn_ribbon HypA"	engineered systems	engineered systems	heat tolerance	
-K22447	thv:ADU37_CDS16120 Heat shock protein 60 family chaperone GroEL / Thermosome subunit; K22447 Cpn60_TCP1 AAA_5	engineered systems	engineered systems	heat tolerance	
-K04079	csh:Closa_3215 Heat shock protein Hsp90-like protein; K04079 HSP90 HATPase_c_3 HATPase_c	engineered systems	engineered systems	heat tolerance	
-K04083	cst:CLOST_0638 hslO; disulfide bond chaperone (heat shock protein HSP33); K04083 HSP33	engineered systems	engineered systems	heat tolerance	
-K03695	rho:RHOM_03585 heat shock protein ClpB-like protein; K03695 AAA_2 AAA_lid_9 AAA ClpB_D2-small Clp_N AAA_5 AAA_16 Sigma54_activat AAA_22 IstB_IS21 ATPase_2 TniB AAA_7 AAA_18 AAA_14 Mg_chelatase RNA_helicase RuvB_N NACHT DUF815 AAA_3 Zeta_toxin AAA_33 Roc DNA_pol3_delta2 AAA_19 Torsin AAA_23 Spc7 DUF87 Cob_adeno_trans Atg14 ABC_tran	engineered systems	engineered systems	heat tolerance	
-K06335	sbu:SpiBuddy_2148 heat shock protein Hsp20; K06335 HSP20 ArsA_HSP20 Frataxin_Cyay	engineered systems	engineered systems	heat tolerance	
-K04078	mthr:MSTHT_2204 Heat shock protein 60 family co-chaperone GroES; K04078 Cpn10 NTPase_1	engineered systems	engineered systems	heat tolerance	
-K05516	aeh:Mlg_2130 heat shock protein DnaJ domain protein; K05516 DnaJ_C DnaJ Metal_resist	engineered systems	engineered systems	heat tolerance	
-K04080	salg:BS332_16600 heat-shock protein; K04080 HSP20 ArsA_HSP20	engineered systems	engineered systems	heat tolerance	
-K04077	smul:SMUL_0986 groL; heat shock protein 60 family chaperone GroEL; K04077 Cpn60_TCP1 Cas_APE2256	engineered systems	engineered systems	heat tolerance	
-K04043	DnaK; molecular chaperone	engineered systems	engineered systems	heat tolerance	
+K04455	HSPB1; heat shock protein family B (small) member 1	engineered systems	engineered systems	heat tolerance
+K03667	"ttm:Tthe_1460 heat shock protein HslVU	 ATPase subunit HslU; K03667 AAA_2 AAA ClpB_D2-small AAA_5 AAA_22 AAA_16 Mg_chelatase Sigma54_activat MCM AAA_18 RuvB_N ABC_tran NTPase_1 TniB AAA_28 AAA_33 Zeta_toxin AAA_7 IstB_IS21 TIP49 TsaE FAS_meander AAA_19 DEAD"	engineered systems	engineered systems	heat tolerance
+K13993	ttm:Tthe_0173 heat shock protein Hsp20; K13993 HSP20 ArsA_HSP20 CS	engineered systems	engineered systems	heat tolerance
+K03686	blq:L21SP5_01031 dnaJ; Heat shock protein J; K03686 DnaJ_C DnaJ DnaJ_CXXCXGXG Anti-TRAP	engineered systems	engineered systems	heat tolerance
+K04762	pet:PEIBARAKI_4309 heat shock protein 15; K04762 S4	engineered systems	engineered systems	heat tolerance
+K05801	tli:Tlie_1612 heat shock protein DnaJ domain protein; K05801 DnaJ 3HBOH	engineered systems	engineered systems	heat tolerance
+K03799	"mem:Memar_2252 Heat shock protein	 Metallo peptidase	 MEROPS family M48B; K03799 Peptidase_M48 Peptidase_M56 Peptidase_U49 SprT-like DUF2268 Pex24p"	engineered systems	engineered systems	heat tolerance
+K03705	tte:TTE0953 HrcA; Transcriptional regulator of heat shock gene; K03705 HrcA HrcA_DNA-bdg HTH_11 HTH_DeoR	engineered systems	engineered systems	heat tolerance
+K03687	tte:TTE0954 GrpE; Molecular chaperone GrpE (heat shock protein); K03687 GrpE Herpes_UL6 GldM_N Complex1_LYR Trans_reg_C DUF573 KxDL Atg14 DUF87	engineered systems	engineered systems	heat tolerance
+K13640	cha:CHAB381_0975 putative heat shock protein HspR; K13640 MerR_1 MerR_2 MerR HTH_17 HTH_3 PKcGMP_CC TolA_bind_tri HTH_23	engineered systems	engineered systems	heat tolerance
+K01419	"hor:Hore_07560 heat shock protein HslVU	 ATP dependent protease HslV; K01419 Proteasome"	engineered systems	engineered systems	heat tolerance
+K07721	"tko:TK2291 archaeal heat shock regulator	 ArsR family; K07721 HTH_5 HTH_20 ArsR HTH_24 PadR TrmB MarR_2 HTH_CodY HTH_11 PSY3 MscS_porin GntR DprA_WH HTH_10 LexA_DNA_bind HxlR IF2_N DUF4795 DUF2205"	engineered systems	engineered systems	heat tolerance
+K19411	"min:Minf_0201 mcsA; Modulator of heat shock repressor CtsR	 McsA; K19411 UVR TackOD1 XFP A2L_zn_ribbon HypA"	engineered systems	engineered systems	heat tolerance
+K22447	thv:ADU37_CDS16120 Heat shock protein 60 family chaperone GroEL / Thermosome subunit; K22447 Cpn60_TCP1 AAA_5	engineered systems	engineered systems	heat tolerance
+K04079	csh:Closa_3215 Heat shock protein Hsp90-like protein; K04079 HSP90 HATPase_c_3 HATPase_c	engineered systems	engineered systems	heat tolerance
+K04083	cst:CLOST_0638 hslO; disulfide bond chaperone (heat shock protein HSP33); K04083 HSP33	engineered systems	engineered systems	heat tolerance
+K03695	rho:RHOM_03585 heat shock protein ClpB-like protein; K03695 AAA_2 AAA_lid_9 AAA ClpB_D2-small Clp_N AAA_5 AAA_16 Sigma54_activat AAA_22 IstB_IS21 ATPase_2 TniB AAA_7 AAA_18 AAA_14 Mg_chelatase RNA_helicase RuvB_N NACHT DUF815 AAA_3 Zeta_toxin AAA_33 Roc DNA_pol3_delta2 AAA_19 Torsin AAA_23 Spc7 DUF87 Cob_adeno_trans Atg14 ABC_tran	engineered systems	engineered systems	heat tolerance
+K06335	sbu:SpiBuddy_2148 heat shock protein Hsp20; K06335 HSP20 ArsA_HSP20 Frataxin_Cyay	engineered systems	engineered systems	heat tolerance
+K04078	mthr:MSTHT_2204 Heat shock protein 60 family co-chaperone GroES; K04078 Cpn10 NTPase_1	engineered systems	engineered systems	heat tolerance
+K05516	aeh:Mlg_2130 heat shock protein DnaJ domain protein; K05516 DnaJ_C DnaJ Metal_resist	engineered systems	engineered systems	heat tolerance
+K04080	salg:BS332_16600 heat-shock protein; K04080 HSP20 ArsA_HSP20	engineered systems	engineered systems	heat tolerance
+K04077	smul:SMUL_0986 groL; heat shock protein 60 family chaperone GroEL; K04077 Cpn60_TCP1 Cas_APE2256	engineered systems	engineered systems	heat tolerance
+K04043	DnaK; molecular chaperone	engineered systems	engineered systems	heat tolerance
 K00625	phosphate acetyltransferase [EC:2.3.1.8] [RN:R00230]	engineered systems	engineered systems	organic acids	potential acetate production
 K13788	phosphate acetyltransferase [EC:2.3.1.8] [RN:R00230]	engineered systems	engineered systems	organic acids	potential acetate production
 K15024	phosphate acetyltransferase [EC:2.3.1.8] [RN:R00230]	engineered systems	engineered systems	organic acids	potential acetate production
@@ -225,23 +225,23 @@ CmdA	HMM; cmdA; p-cymene dehydrogenase	engineered systems	engineered systems	"CA
 EbdA	HMM; ebdA; Ethylbenzene dehydrogenase	engineered systems	engineered systems	"CANT-HYD	 hydrocarbon degradation"	"aromatic	 anaerobic"
 K27540	HMM; K27540; Naphthalene carboxylase	engineered systems	engineered systems	"CANT-HYD	 hydrocarbon degradation"	"aromatic	 anaerobic"
 NmsA	HMM; nmsA; Naphthyl 2-methylsuccinate synthase	engineered systems	engineered systems	"CANT-HYD	 hydrocarbon degradation"	"aromatic	 anaerobic"
-APS-reductase_C	HMM; adenylylsulfate reductase C	engineered systems	engineered systems	sulfur	
-ATP-sulfurylase	HMM; sulfate adenylyltransferase	engineered systems	engineered systems	sulfur	
-DoxA	HMM; doxA; thiosulfate dehydrogenase (quinone) small subunit	engineered systems	engineered systems	sulfur	
-DoxD	HMM; doxD; thiosulfate dehydrogenase (quinone) large subunit	engineered systems	engineered systems	sulfur	
-DoxX	HMM; doxX	engineered systems	engineered systems	sulfur	
-DsrD	"HMM; dsrD; sulfite reductase D	 dissimilatory-type"	engineered systems	engineered systems	sulfur	
-FCSD-flav_bind	"HMM; flavocytochrome c sulfide dehydrogenase flavin-binding protein	 sulfide dehydrogenase"	engineered systems	engineered systems	sulfur	
-NIR_SIR	HMM; nir_sir	engineered systems	engineered systems	sulfur	
-Rhodanese	HMM; rhodanase	engineered systems	engineered systems	sulfur	
-SOR	HMM; SOR; sulphur oxygenase/reductase (elemental sulfur to sulfide & sulfate)	engineered systems	engineered systems	sulfur	
-SoxY	HMM; soxY; sulfur-oxidizing protein SoxY	engineered systems	engineered systems	sulfur	
-SoxZ	HMM; soxZ; sulfur-oxidizing protein SoxZ	engineered systems	engineered systems	sulfur	
-sqr_alignment	HMM; sqr; sulfide-quinone reductase 	engineered systems	engineered systems	sulfur	
-sulfur_dioxygenase_sdo_alignment	HMM; dso; sulfur dioxgenase	engineered systems	engineered systems	sulfur	
-thiosulfate_reductase_phsA_alignment	HMM; phsA; thiosulfate reductase / polysulfide reductase chain A	engineered systems	engineered systems	sulfur	
-dsrA	"HMM; dsrA; sulfite reductase A	 dissimilatory-type"	engineered systems	engineered systems	sulfur	
-dsrB	"HMM; dsrB; sulfite reductase B	 dissimilatory-type "	engineered systems	engineered systems	sulfur	
+APS-reductase_C	HMM; adenylylsulfate reductase C	engineered systems	engineered systems	sulfur
+ATP-sulfurylase	HMM; sulfate adenylyltransferase	engineered systems	engineered systems	sulfur
+DoxA	HMM; doxA; thiosulfate dehydrogenase (quinone) small subunit	engineered systems	engineered systems	sulfur
+DoxD	HMM; doxD; thiosulfate dehydrogenase (quinone) large subunit	engineered systems	engineered systems	sulfur
+DoxX	HMM; doxX	engineered systems	engineered systems	sulfur
+DsrD	"HMM; dsrD; sulfite reductase D	 dissimilatory-type"	engineered systems	engineered systems	sulfur
+FCSD-flav_bind	"HMM; flavocytochrome c sulfide dehydrogenase flavin-binding protein	 sulfide dehydrogenase"	engineered systems	engineered systems	sulfur
+NIR_SIR	HMM; nir_sir	engineered systems	engineered systems	sulfur
+Rhodanese	HMM; rhodanase	engineered systems	engineered systems	sulfur
+SOR	HMM; SOR; sulphur oxygenase/reductase (elemental sulfur to sulfide & sulfate)	engineered systems	engineered systems	sulfur
+SoxY	HMM; soxY; sulfur-oxidizing protein SoxY	engineered systems	engineered systems	sulfur
+SoxZ	HMM; soxZ; sulfur-oxidizing protein SoxZ	engineered systems	engineered systems	sulfur
+sqr_alignment	HMM; sqr; sulfide-quinone reductase 	engineered systems	engineered systems	sulfur
+sulfur_dioxygenase_sdo_alignment	HMM; dso; sulfur dioxgenase	engineered systems	engineered systems	sulfur
+thiosulfate_reductase_phsA_alignment	HMM; phsA; thiosulfate reductase / polysulfide reductase chain A	engineered systems	engineered systems	sulfur
+dsrA	"HMM; dsrA; sulfite reductase A	 dissimilatory-type"	engineered systems	engineered systems	sulfur
+dsrB	"HMM; dsrB; sulfite reductase B	 dissimilatory-type "	engineered systems	engineered systems	sulfur
 K00394	adenylylsulfate reductase [EC:1.8.99.2] [RN:R08553]	engineered systems	engineered systems	sulfur	sulfate => H2S
 K00395	adenylylsulfate reductase [EC:1.8.99.2] [RN:R08553]	engineered systems	engineered systems	sulfur	sulfate => H2S
 K00956	sulfate adenylyltransferase [EC:2.7.7.4] [RN:R00529]	engineered systems	engineered systems	sulfur	sulfate => H2S

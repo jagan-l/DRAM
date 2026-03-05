@@ -9,8 +9,8 @@ process MMSEQS_SEARCH {
     tag { input_fasta }
 
     input:
-    tuple( val(input_fasta), 
-        path( query_database, stageAs: "query_database/" ), 
+    tuple( val(input_fasta),
+        path( query_database, stageAs: "query_database/" ),
         path( prodigal_locs_tsv, stageAs: "gene_locs.tsv" )
         )
     path( mmseqs_database )
@@ -78,7 +78,7 @@ process MMSEQS_SEARCH {
 
             # Convert Reverse Best Hit  results to BLAST outformat 6
             mmseqs convertalis ${db_name}.mmsdb query_database/${input_fasta}.mmsdb mmseqs_out/${input_fasta}_${db_name}_tophit_rbh_minbitscore${bit_score_threshold}.mmsdb mmseqs_out/${input_fasta}___mmseqs_rbh_${db_name}.tsv --threads ${task.cpus}
-        
+
             # Need additional processing for KEGG RBH
             rbh_mmseqs_filter.py filterdb "mmseqs_out/${input_fasta}___mmseqs_${db_name}.tsv" --reverse "mmseqs_out/${input_fasta}___mmseqs_rbh_${db_name}.tsv" --output "mmseqs_out/${input_fasta}___mmseqs_rbh_${db_name}_combined.tsv"
             mv mmseqs_out/${input_fasta}___mmseqs_rbh_${db_name}_combined.tsv mmseqs_out/${input_fasta}___mmseqs_${db_name}.tsv

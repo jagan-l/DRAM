@@ -1,14 +1,15 @@
 #!/usr/bin/env python
 import logging
 import os
-from pathlib import Path
 
 
 DEFAULT_LOG_LEVEL: int = logging.INFO
 ROOT_LOGGER_NAME = "dram"
 
 
-def get_logger(name: str = ROOT_LOGGER_NAME, level: int = DEFAULT_LOG_LEVEL, filename="dram.log") -> logging.Logger:
+def get_logger(
+    name: str = ROOT_LOGGER_NAME, level: int = DEFAULT_LOG_LEVEL, filename="dram.log"
+) -> logging.Logger:
     """Get a logger.
 
     To set a human-readable "output_name" that appears in logger outputs,
@@ -71,7 +72,9 @@ def build_stream_handler(level: int = DEFAULT_LOG_LEVEL) -> logging.StreamHandle
     return handler
 
 
-def build_file_handler(filename: os.PathLike, level: int = DEFAULT_LOG_LEVEL) -> logging.FileHandler:
+def build_file_handler(
+    filename: os.PathLike, level: int = DEFAULT_LOG_LEVEL
+) -> logging.FileHandler:
     handler = logging.FileHandler(filename)
     handler.setLevel(level=level)
     formatter = get_formatter()

@@ -2,7 +2,6 @@ name: Bug report
 description: Report something that is broken or incorrect, the more information you include, the easier it will be to help.
 labels: bug
 body:
-
   - type: textarea
     id: description
     attributes:

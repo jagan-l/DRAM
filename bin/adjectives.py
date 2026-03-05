@@ -1,19 +1,25 @@
 #!/usr/bin/env python
 """Contains main entry point to the program and helper functions"""
+
 import os
 import ast
 import click
 import polars as pl
+from pathlib import Path
 
 from rule_parser.src.rules import evaluate_rules_on_anno
 from utils.excel import write_summarized_genomes_to_xlsx
+from utils.logger import get_logger
+
+logger = get_logger(filename=Path(__file__).stem)
+
 
 class PythonLiteralOption(click.Option):
-
     def type_cast_value(self, ctx, value):
         try:
             return ast.literal_eval(value)
-        except:
+        except Exception as e:
+            logger.error(e)
             raise click.BadParameter(value)
 
 
@@ -24,10 +30,9 @@ def get_assets_path(local_path):
     :param local_path:
     :returns:
     """
-    abs_snake_path = os.path.join(os.path.dirname(
-        os.path.abspath(__file__)),
-                                  "assets",
-        local_path)
+    abs_snake_path = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)), "assets", local_path
+    )
     return abs_snake_path
 
 
@@ -55,11 +60,25 @@ def get_assets_path(local_path):
 
 
 @click.command()
-@click.option('--annotations', type=click.Path(exists=True), required=True, help="One of only 2 required files. Path to a DRAM annotations file.")
-@click.option('-o', '--output', type=click.Path(), default='traits.xlsx', help="Path for the output table. A true false table created by this script.")
-@click.option('--rules_tsv', type=click.Path(exists=True),
-              default=get_assets_path('traits_rules.tsv'),
-              help="This is an optional path to a rules file with strict formatting. It will over write the original rules file that is stored with the script.")
+@click.option(
+    "--annotations",
+    type=click.Path(exists=True),
+    required=True,
+    help="One of only 2 required files. Path to a DRAM annotations file.",
+)
+@click.option(
+    "-o",
+    "--output",
+    type=click.Path(),
+    default="traits.xlsx",
+    help="Path for the output table. A true false table created by this script.",
+)
+@click.option(
+    "--rules_tsv",
+    type=click.Path(exists=True),
+    default=get_assets_path("traits_rules.tsv"),
+    help="This is an optional path to a rules file with strict formatting. It will over write the original rules file that is stored with the script.",
+)
 # @click.option('-a', '--adjectives_list', default="", callback=validate_comma_separated, help="A comma seperated list of adjectives ('adj1,adj2,adj3'), by name, to evaluate. This limits the number of adjectives that are evaluated and is faster.")
 # @click.option('-p', '--plot_adjectives', multiple=True, default=[], help="A list of adjectives, by name, to plot. This limits the number of adjectives that are plotted and is probably needed for speed.")
 # @click.option('-g', '--plot_genomes', multiple=True,
@@ -85,13 +104,15 @@ def get_assets_path(local_path):
 #                    " available, you can pass these names to limit the"
 #                    " adjectives that are evaluated")
 # @click.argument('-p', type=click.Path(exists=True))
-def evaluate(annotations:str, output:str,
-             rules_tsv:str=get_assets_path('traits_rules.tsv'),
-            #  adjectives_list:list=None, plot_adjectives:list=None,
-            #  plot_genomes:list=None,plot_path:str=None,
-            #  debug_ids_by_fasta_to_tsv:str=None,
-            #  strainer_tsv:str=None, strainer_type='pgtb'
-             ):
+def evaluate(
+    annotations: str,
+    output: str,
+    rules_tsv: str = get_assets_path("traits_rules.tsv"),
+    #  adjectives_list:list=None, plot_adjectives:list=None,
+    #  plot_genomes:list=None,plot_path:str=None,
+    #  debug_ids_by_fasta_to_tsv:str=None,
+    #  strainer_tsv:str=None, strainer_type='pgtb'
+):
     """Using a DRAM annotations file make a table of adjectives."""
     rules = pl.read_csv(rules_tsv, separator="\t")
 
@@ -99,34 +120,33 @@ def evaluate(annotations:str, output:str,
     sample_col = "input_fasta"
     group_by_col = "topic_ecosystem"
     if group_by_col not in rules.columns:
-        rules = rules.with_columns(
-            pl.lit("traits").alias(group_by_col)
-        )
+        rules = rules.with_columns(pl.lit("traits").alias(group_by_col))
     for name, data in rules.group_by(group_by_col):
         dfs[name[0]] = evaluate_rules_on_anno(
             rules=data.lazy(),
             annotations_path=annotations,
             sample_col=sample_col,
             parent_col="alias",
-            rules_col="rule"
+            rules_col="rule",
         )
     write_summarized_genomes_to_xlsx(
         df=None,
         output_file=output,
         group_by=group_by_col,
         sort_order_columns=sample_col,
-        extra_frames=dfs
+        extra_frames=dfs,
     )
+
 
 # Maybe someday we will add all of this back in?
 
-    # if plot_path is not None:
-    #     rules.plot_cause(plot_path, adjectives=plot_adjectives,
-    #                      genomes=plot_genomes, show_steps=False
-    #                      )
-    # if strainer_tsv is not None:
-    #     strainer_data = get_positive_genes(rules, annotations, adjectives)
-    #     strainer_data.to_csv(strainer_tsv, sep='\t')
+# if plot_path is not None:
+#     rules.plot_cause(plot_path, adjectives=plot_adjectives,
+#                      genomes=plot_genomes, show_steps=False
+#                      )
+# if strainer_tsv is not None:
+#     strainer_data = get_positive_genes(rules, annotations, adjectives)
+#     strainer_data.to_csv(strainer_tsv, sep='\t')
 
 
 # @click.command()

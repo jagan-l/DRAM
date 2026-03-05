@@ -5,7 +5,7 @@ process GENERATE_GFF_GENBANK {
 
     conda "${moduleDir}/environment.yml"
     container "community.wave.seqera.io/library/python_pandas_biopython:7df21d027f67112e"
-    
+
     input:
     val( all_genes_fna )
     val( databases_list )

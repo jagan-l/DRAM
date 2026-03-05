@@ -1,6 +1,10 @@
+#!/usr/bin/env python
 import polars as pl
 
-def read_csv(path, check_for_null_file=True, seperator="\t", *args, **kwargs) -> pl.DataFrame | None:
+
+def read_csv(
+    path, check_for_null_file=True, seperator="\t", *args, **kwargs
+) -> pl.DataFrame | None:
     if path is None:
         return None
     df = pl.read_csv(path, separator=seperator, *args, **kwargs)
@@ -10,4 +14,3 @@ def read_csv(path, check_for_null_file=True, seperator="\t", *args, **kwargs) ->
         if df.is_empty():
             return None
     return df
-    

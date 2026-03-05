@@ -149,7 +149,7 @@ workflow DRAM {
             def custom_distill_dir = file(distill_custom)
             if (!custom_distill_dir.exists()) {
                 error "Error: The specified custom_distill sheet (--sum_custom or --distill_custom) does not exist: ${distill_custom}"
-            }      
+            }
         }
 
         if (params.summarize){
@@ -258,7 +258,7 @@ workflow DRAM {
                 distill_ecosystem,
                 distill_custom
             )
-            
+
 
         }
 

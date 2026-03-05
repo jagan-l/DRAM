@@ -4,11 +4,11 @@ import os
 import pandas as pd
 from pathlib import Path
 
-FASTA_COLUMN = os.getenv('FASTA_COLUMN', 'input_fasta')
+FASTA_COLUMN = os.getenv("FASTA_COLUMN", "input_fasta")
 
-df = pd.read_csv(Path("raw_trna_scan.tsv").resolve(), sep='\t')
+df = pd.read_csv(Path("raw_trna_scan.tsv").resolve(), sep="\t")
 
-gene_col="gene_id"
+gene_col = "gene_id"
 df = df[[FASTA_COLUMN, gene_col]].copy()
 counts = pd.crosstab(df[gene_col], df[FASTA_COLUMN], dropna=False).astype("int64")
 counts.columns.name = None

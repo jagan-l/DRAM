@@ -38,9 +38,9 @@ process ADD_ANNOTATIONS {
 
     for col in duplicate_columns:
         # Create a new column that concatenates information from the old and new columns, if both are non-null
-        merged_df[col] = merged_df.apply(lambda x: str(x[col + '_old']) + "; " + str(x[col + '_new']) 
+        merged_df[col] = merged_df.apply(lambda x: str(x[col + '_old']) + "; " + str(x[col + '_new'])
                                         if pd.notnull(x[col + '_old']) and pd.notnull(x[col + '_new'])
-                                        else x[col + '_old'] if pd.notnull(x[col + '_old']) 
+                                        else x[col + '_old'] if pd.notnull(x[col + '_old'])
                                         else x[col + '_new'], axis=1)
         # Drop the old and new columns after merging their data
         merged_df.drop(columns=[col + '_old', col + '_new'], inplace=True)

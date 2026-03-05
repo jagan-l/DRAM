@@ -1,29 +1,29 @@
 query_id	input_fasta	start_position	stop_position	strandedness	rank	gene_number	kegg_id	kegg_EC	kegg_bitScore	kegg_description	kegg_gene_name	kofam_id	kofam_EC	kofam_bitScore	kofam_description	kofam_score_rank	heme_regulatory_motif_count	dbcan_id	dbcan_EC	dbcan_bitScore	dbcan_description	dbcan_score_rank
-OWC_0000_k121_3157_1	OWC_0000	2	580	-1	E	1											0					
-OWC_0000_k121_3157_2	OWC_0000	596	997	-1	C	2	K14127	EC:1.8.98.5; EC:1.8.98.6	205.0	barc:AOA65_1889 (K14127) mvhD, vhuD, vhcD; F420-non-reducing hydrogenase iron-sulfur subunit [EC:1.12.99.- 1.8.98.5 1.8.98.6]	barc:AOA65_1889	K14127	EC:1.12.99.-; EC:1.8.98.5; EC:1.8.98.6	250.7	F420-non-reducing hydrogenase iron-sulfur subunit [EC:1.12.99.- 1.8.98.5 1.8.98.6]	250.7	0					
-OWC_0000_k121_3157_3	OWC_0000	998	4048	-1	A	3	K03388	EC:1.8.7.3; EC:1.8.98.4; EC:1.8.98.5; EC:1.8.98.6	1129.0	barb:AOA66_1510 (K03388) hdrA2; heterodisulfide reductase subunit A2 [EC:1.8.7.3 1.8.98.4 1.8.98.5 1.8.98.6]	barb:AOA66_1510	K03388	EC:1.8.7.3; EC:1.8.98.4; EC:1.8.98.5; EC:1.8.98.6	1131.2	heterodisulfide reductase subunit A2 [EC:1.8.7.3 1.8.98.4 1.8.98.5 1.8.98.6]	1131.2	0					
-OWC_0000_k121_3157_4	OWC_0000	4059	5147	-1	C	4	K00441	EC:1.12.98.1	260.0	loki:Lokiarch_10850 (K00441) frhB; coenzyme F420 hydrogenase subunit beta [EC:1.12.98.1]	loki:Lokiarch_10850	K00441	EC:1.12.98.1	320.1	coenzyme F420 hydrogenase subunit beta [EC:1.12.98.1]	320.1	0					
-OWC_0000_k121_3157_5	OWC_0000	5153	6280	-1	C	5	K08264	EC:1.8.98.1	278.0	sfu:Sfum_1801 (K08264) hdrD; heterodisulfide reductase subunit D [EC:1.8.98.1]	sfu:Sfum_1801	K08264	EC:1.8.98.1	316.6	heterodisulfide reductase subunit D [EC:1.8.98.1]	316.6	0					
-OWC_0000_k121_3157_6	OWC_0000	6496	7005	-1	C	6			166.0	loki:Lokiarch_40200 ()	loki:Lokiarch_40200	K03388	EC:1.8.7.3; EC:1.8.98.4; EC:1.8.98.5; EC:1.8.98.6	185.8	heterodisulfide reductase subunit A2 [EC:1.8.7.3 1.8.98.4 1.8.98.5 1.8.98.6]	185.8	0					
-OWC_0000_k121_43717_1	OWC_0000	150	665	1	C	1	K03388	EC:1.8.7.3; EC:1.8.98.4; EC:1.8.98.5; EC:1.8.98.6	208.0	mif:Metin_0381 (K03388) hdrA2; heterodisulfide reductase subunit A2 [EC:1.8.7.3 1.8.98.4 1.8.98.5 1.8.98.6]	mif:Metin_0381	K03388	EC:1.8.7.3; EC:1.8.98.4; EC:1.8.98.5; EC:1.8.98.6	170.9	heterodisulfide reductase subunit A2 [EC:1.8.7.3 1.8.98.4 1.8.98.5 1.8.98.6]	170.9	0					
-OWC_0000_k121_43717_2	OWC_0000	831	2024	1	A	2	K03388	EC:1.8.7.3; EC:1.8.98.4; EC:1.8.98.5; EC:1.8.98.6	371.0	mif:Metin_0381 (K03388) hdrA2; heterodisulfide reductase subunit A2 [EC:1.8.7.3 1.8.98.4 1.8.98.5 1.8.98.6]	mif:Metin_0381	K03388	EC:1.8.7.3; EC:1.8.98.4; EC:1.8.98.5; EC:1.8.98.6	442.5	heterodisulfide reductase subunit A2 [EC:1.8.7.3 1.8.98.4 1.8.98.5 1.8.98.6]	442.5	0					
-OWC_0000_k121_43717_3	OWC_0000	2658	3170	1	C	3			67.0	loki:Lokiarch_09920 ()	loki:Lokiarch_09920	K00443	EC:1.12.98.1	19.85	coenzyme F420 hydrogenase subunit gamma [EC:1.12.98.1]	39.7	0					
-OWC_0001_k121_1650290_1	OWC_0001	3	461	1	E	1											0					
-OWC_0001_k121_1650290_2	OWC_0001	820	939	1	E	2											0					
-OWC_0001_k121_1650290_3	OWC_0001	1108	2694	1	C	3			273.0	mcj:MCON_0756 ()	mcj:MCON_0756	K07752	EC:3.4.17.22	21.3	carboxypeptidase D [EC:3.4.17.22]	21.3	0					
-OWC_0001_k121_1650290_4	OWC_0001	3766	4008	1	C	4			105.0	metm:MSMTP_1429 ()	metm:MSMTP_1429						0					
-OWC_0001_k121_21365628_1	OWC_0001	3	383	1	E	1											0					
-OWC_0001_k121_21365628_10	OWC_0001	6987	8144	-1	C	2			155.0	psyt:DSAG12_00320 ()	psyt:DSAG12_00320	K05889	EC:1.1.2.6	19.3	polyvinyl alcohol dehydrogenase (cytochrome) [EC:1.1.2.6]	19.3	0					
-OWC_0001_k121_21365628_11	OWC_0001	8326	9180	-1	C	3	K09711		177.0	hth:HTH_1873 (K09711) lipS1; lipoyl synthase	hth:HTH_1873	K09711		243.8	lipoyl synthase	243.8	0					
-OWC_0001_k121_21365628_12	OWC_0001	9168	9434	-1	C	4			65.0	smr:Smar_0192 ()	smr:Smar_0192	K03800	EC:6.3.1.20	25.8	lipoate---protein ligase [EC:6.3.1.20]	25.8	0					
-OWC_0001_k121_21365628_13	OWC_0001	9440	10147	-1	C	5	K03800	EC:6.3.1.20	199.0	agw:QT03_C0001G0351 (K03800) lplA, lplJ, lipL1; lipoate---protein ligase [EC:6.3.1.20]	agw:QT03_C0001G0351	K03800	EC:6.3.1.20	219.2	lipoate---protein ligase [EC:6.3.1.20]	219.2	0					
-OWC_0001_k121_21365628_14	OWC_0001	10170	11147	-1	C	6	K24689		227.0	thy:A3L12_03680 (K24689) lipS2; lipoyl synthase	thy:A3L12_03680	K24689		309.1	lipoyl synthase	309.1	0					
-OWC_0001_k121_21365628_15	OWC_0001	11194	11685	-1	E	7						K23356		52.0	HTH-type transcriptional regulator, sugar sensing transcriptional regulator	52.0	0					
-OWC_0001_k121_21365628_2	OWC_0001	407	1039	-1	C	8			144.0	ttr:Tter_2727 ()	ttr:Tter_2727	K03387	EC:1.8.1.-	67.2	NADH-dependent peroxiredoxin subunit F [EC:1.8.1.-]	67.2	0					
-OWC_0001_k121_21365628_3	OWC_0001	1162	1665	1	C	9			151.0	cthm:CFE_1764 ()	cthm:CFE_1764						0					
-OWC_0001_k121_21365628_4	OWC_0001	1713	2447	1	C	10			289.0	pbu:L21SP3_00081 ()	pbu:L21SP3_00081	K05897	EC:1.3.3.16	82.8	oxazoline/thiazoline dehydrogenase [EC:1.3.3.16]	82.8	0					
-OWC_0001_k121_21365628_5	OWC_0001	2491	3528	1	A	11	K01990		394.0	kcr:Kcr_0542 (K01990) ABC-2.A; ABC-2 type transport system ATP-binding protein	kcr:Kcr_0542	K25144		309.0	linearmycin/streptolysin S transport system ATP-binding protein	309.0	0					
-OWC_0001_k121_21365628_6	OWC_0001	3534	4295	1	A	12	K01992		365.0	kcr:Kcr_0543 (K01992) ABC-2.P; ABC-2 type transport system permease protein	kcr:Kcr_0543	K18233		132.5	oleandomycin transport system permease protein	132.5	0					
-OWC_0001_k121_21365628_7	OWC_0001	4437	4889	1	C	13			86.0	scia:HUG15_04845 ()	scia:HUG15_04845	K06149		74.2	universal stress protein A	74.2	0					
-OWC_0001_k121_21365628_8	OWC_0001	4886	6211	-1	C	14			212.0	tra:Trad_1166 ()	tra:Trad_1166	K05770		27.1	translocator protein	27.1	0					
-OWC_0001_k121_21365628_9	OWC_0001	6269	6772	-1	E	15						K07133		15.3	uncharacterized protein	15.3	0					
+OWC_0000_k121_3157_1	OWC_0000	2	580	-1	E	1											0
+OWC_0000_k121_3157_2	OWC_0000	596	997	-1	C	2	K14127	EC:1.8.98.5; EC:1.8.98.6	205.0	barc:AOA65_1889 (K14127) mvhD, vhuD, vhcD; F420-non-reducing hydrogenase iron-sulfur subunit [EC:1.12.99.- 1.8.98.5 1.8.98.6]	barc:AOA65_1889	K14127	EC:1.12.99.-; EC:1.8.98.5; EC:1.8.98.6	250.7	F420-non-reducing hydrogenase iron-sulfur subunit [EC:1.12.99.- 1.8.98.5 1.8.98.6]	250.7	0
+OWC_0000_k121_3157_3	OWC_0000	998	4048	-1	A	3	K03388	EC:1.8.7.3; EC:1.8.98.4; EC:1.8.98.5; EC:1.8.98.6	1129.0	barb:AOA66_1510 (K03388) hdrA2; heterodisulfide reductase subunit A2 [EC:1.8.7.3 1.8.98.4 1.8.98.5 1.8.98.6]	barb:AOA66_1510	K03388	EC:1.8.7.3; EC:1.8.98.4; EC:1.8.98.5; EC:1.8.98.6	1131.2	heterodisulfide reductase subunit A2 [EC:1.8.7.3 1.8.98.4 1.8.98.5 1.8.98.6]	1131.2	0
+OWC_0000_k121_3157_4	OWC_0000	4059	5147	-1	C	4	K00441	EC:1.12.98.1	260.0	loki:Lokiarch_10850 (K00441) frhB; coenzyme F420 hydrogenase subunit beta [EC:1.12.98.1]	loki:Lokiarch_10850	K00441	EC:1.12.98.1	320.1	coenzyme F420 hydrogenase subunit beta [EC:1.12.98.1]	320.1	0
+OWC_0000_k121_3157_5	OWC_0000	5153	6280	-1	C	5	K08264	EC:1.8.98.1	278.0	sfu:Sfum_1801 (K08264) hdrD; heterodisulfide reductase subunit D [EC:1.8.98.1]	sfu:Sfum_1801	K08264	EC:1.8.98.1	316.6	heterodisulfide reductase subunit D [EC:1.8.98.1]	316.6	0
+OWC_0000_k121_3157_6	OWC_0000	6496	7005	-1	C	6			166.0	loki:Lokiarch_40200 ()	loki:Lokiarch_40200	K03388	EC:1.8.7.3; EC:1.8.98.4; EC:1.8.98.5; EC:1.8.98.6	185.8	heterodisulfide reductase subunit A2 [EC:1.8.7.3 1.8.98.4 1.8.98.5 1.8.98.6]	185.8	0
+OWC_0000_k121_43717_1	OWC_0000	150	665	1	C	1	K03388	EC:1.8.7.3; EC:1.8.98.4; EC:1.8.98.5; EC:1.8.98.6	208.0	mif:Metin_0381 (K03388) hdrA2; heterodisulfide reductase subunit A2 [EC:1.8.7.3 1.8.98.4 1.8.98.5 1.8.98.6]	mif:Metin_0381	K03388	EC:1.8.7.3; EC:1.8.98.4; EC:1.8.98.5; EC:1.8.98.6	170.9	heterodisulfide reductase subunit A2 [EC:1.8.7.3 1.8.98.4 1.8.98.5 1.8.98.6]	170.9	0
+OWC_0000_k121_43717_2	OWC_0000	831	2024	1	A	2	K03388	EC:1.8.7.3; EC:1.8.98.4; EC:1.8.98.5; EC:1.8.98.6	371.0	mif:Metin_0381 (K03388) hdrA2; heterodisulfide reductase subunit A2 [EC:1.8.7.3 1.8.98.4 1.8.98.5 1.8.98.6]	mif:Metin_0381	K03388	EC:1.8.7.3; EC:1.8.98.4; EC:1.8.98.5; EC:1.8.98.6	442.5	heterodisulfide reductase subunit A2 [EC:1.8.7.3 1.8.98.4 1.8.98.5 1.8.98.6]	442.5	0
+OWC_0000_k121_43717_3	OWC_0000	2658	3170	1	C	3			67.0	loki:Lokiarch_09920 ()	loki:Lokiarch_09920	K00443	EC:1.12.98.1	19.85	coenzyme F420 hydrogenase subunit gamma [EC:1.12.98.1]	39.7	0
+OWC_0001_k121_1650290_1	OWC_0001	3	461	1	E	1											0
+OWC_0001_k121_1650290_2	OWC_0001	820	939	1	E	2											0
+OWC_0001_k121_1650290_3	OWC_0001	1108	2694	1	C	3			273.0	mcj:MCON_0756 ()	mcj:MCON_0756	K07752	EC:3.4.17.22	21.3	carboxypeptidase D [EC:3.4.17.22]	21.3	0
+OWC_0001_k121_1650290_4	OWC_0001	3766	4008	1	C	4			105.0	metm:MSMTP_1429 ()	metm:MSMTP_1429						0
+OWC_0001_k121_21365628_1	OWC_0001	3	383	1	E	1											0
+OWC_0001_k121_21365628_10	OWC_0001	6987	8144	-1	C	2			155.0	psyt:DSAG12_00320 ()	psyt:DSAG12_00320	K05889	EC:1.1.2.6	19.3	polyvinyl alcohol dehydrogenase (cytochrome) [EC:1.1.2.6]	19.3	0
+OWC_0001_k121_21365628_11	OWC_0001	8326	9180	-1	C	3	K09711		177.0	hth:HTH_1873 (K09711) lipS1; lipoyl synthase	hth:HTH_1873	K09711		243.8	lipoyl synthase	243.8	0
+OWC_0001_k121_21365628_12	OWC_0001	9168	9434	-1	C	4			65.0	smr:Smar_0192 ()	smr:Smar_0192	K03800	EC:6.3.1.20	25.8	lipoate---protein ligase [EC:6.3.1.20]	25.8	0
+OWC_0001_k121_21365628_13	OWC_0001	9440	10147	-1	C	5	K03800	EC:6.3.1.20	199.0	agw:QT03_C0001G0351 (K03800) lplA, lplJ, lipL1; lipoate---protein ligase [EC:6.3.1.20]	agw:QT03_C0001G0351	K03800	EC:6.3.1.20	219.2	lipoate---protein ligase [EC:6.3.1.20]	219.2	0
+OWC_0001_k121_21365628_14	OWC_0001	10170	11147	-1	C	6	K24689		227.0	thy:A3L12_03680 (K24689) lipS2; lipoyl synthase	thy:A3L12_03680	K24689		309.1	lipoyl synthase	309.1	0
+OWC_0001_k121_21365628_15	OWC_0001	11194	11685	-1	E	7						K23356		52.0	HTH-type transcriptional regulator, sugar sensing transcriptional regulator	52.0	0
+OWC_0001_k121_21365628_2	OWC_0001	407	1039	-1	C	8			144.0	ttr:Tter_2727 ()	ttr:Tter_2727	K03387	EC:1.8.1.-	67.2	NADH-dependent peroxiredoxin subunit F [EC:1.8.1.-]	67.2	0
+OWC_0001_k121_21365628_3	OWC_0001	1162	1665	1	C	9			151.0	cthm:CFE_1764 ()	cthm:CFE_1764						0
+OWC_0001_k121_21365628_4	OWC_0001	1713	2447	1	C	10			289.0	pbu:L21SP3_00081 ()	pbu:L21SP3_00081	K05897	EC:1.3.3.16	82.8	oxazoline/thiazoline dehydrogenase [EC:1.3.3.16]	82.8	0
+OWC_0001_k121_21365628_5	OWC_0001	2491	3528	1	A	11	K01990		394.0	kcr:Kcr_0542 (K01990) ABC-2.A; ABC-2 type transport system ATP-binding protein	kcr:Kcr_0542	K25144		309.0	linearmycin/streptolysin S transport system ATP-binding protein	309.0	0
+OWC_0001_k121_21365628_6	OWC_0001	3534	4295	1	A	12	K01992		365.0	kcr:Kcr_0543 (K01992) ABC-2.P; ABC-2 type transport system permease protein	kcr:Kcr_0543	K18233		132.5	oleandomycin transport system permease protein	132.5	0
+OWC_0001_k121_21365628_7	OWC_0001	4437	4889	1	C	13			86.0	scia:HUG15_04845 ()	scia:HUG15_04845	K06149		74.2	universal stress protein A	74.2	0
+OWC_0001_k121_21365628_8	OWC_0001	4886	6211	-1	C	14			212.0	tra:Trad_1166 ()	tra:Trad_1166	K05770		27.1	translocator protein	27.1	0
+OWC_0001_k121_21365628_9	OWC_0001	6269	6772	-1	E	15						K07133		15.3	uncharacterized protein	15.3	0

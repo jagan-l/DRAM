@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from os import path, mkdir
+from os import path
 from datetime import datetime
 from shutil import move, rmtree
 from glob import glob
@@ -77,7 +77,7 @@ def process_kegg(
     create_mmseqs(
         kegg_mod_loc,
         kegg_mmseqs_db,
-        #create_index=True,
+        # create_index=True,
         threads=threads,
     )
     LOGGER.info("KEGG database processed")
@@ -149,17 +149,32 @@ def main():
         "--gene_ko_link_loc", type=str, help="Path to the gene KO link file"
     )
     parser.add_argument(
-        "--skip_gene_ko_link", type=bool, help="Skip gene KO link processing. If not passed in, `--gene_ko_link_loc` is required", default=False
+        "--skip_gene_ko_link",
+        type=bool,
+        help="Skip gene KO link processing. If not passed in, `--gene_ko_link_loc` is required",
+        default=False,
     )
-    parser.add_argument("--output_dir", type=str, help="Path to the output directory", default="kegg")
-    parser.add_argument("--download_date", type=str, help="Date of the KEGG download, if not included, will use today's date")
-    parser.add_argument("--threads", type=int, help="Number of threads to use", default=10)
+    parser.add_argument(
+        "--output_dir", type=str, help="Path to the output directory", default="kegg"
+    )
+    parser.add_argument(
+        "--download_date",
+        type=str,
+        help="Date of the KEGG download, if not included, will use today's date",
+    )
+    parser.add_argument(
+        "--threads", type=int, help="Number of threads to use", default=10
+    )
     args = parser.parse_args()
-    
+
     if not args.skip_gene_ko_link and not args.gene_ko_link_loc:
-        parser.error("If `--skip_gene_ko_link` is not passed in, `--gene_ko_link_loc` is required")
+        parser.error(
+            "If `--skip_gene_ko_link` is not passed in, `--gene_ko_link_loc` is required"
+        )
     if args.skip_gene_ko_link and args.gene_ko_link_loc:
-        parser.error("If `--skip_gene_ko_link` is passed in, `--gene_ko_link_loc` is not allowed")
+        parser.error(
+            "If `--skip_gene_ko_link` is passed in, `--gene_ko_link_loc` is not allowed"
+        )
 
     prepare_databases(
         kegg_loc=args.kegg_loc,

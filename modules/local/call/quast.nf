@@ -18,7 +18,7 @@ process QUAST {
     """
     set -euo pipefail
     shopt -s nullglob   # make *.fa expand to nothing if no matches
-    
+
     export FASTA_COLUMN="${params.CONSTANTS.FASTA_COLUMN}"
 
     quast.py -o quast_results --no-plots --no-html --no-icarus --no-snps *.fa

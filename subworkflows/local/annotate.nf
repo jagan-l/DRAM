@@ -98,11 +98,11 @@ workflow ANNOTATE {
         // n_fastas = file("$params.input_genes/${params.genes_fmt}").size()
     }
 
- 
+
     if (params.annotate){
-        DB_SEARCH( 
-            ch_gene_locs, 
-            ch_called_proteins, 
+        DB_SEARCH(
+            ch_gene_locs,
+            ch_called_proteins,
             default_sheet,
             use_kegg,
             use_kofam,

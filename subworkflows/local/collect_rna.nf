@@ -30,7 +30,7 @@ workflow COLLECT_RNA {
     run_rrna_collect = false
     run_trna_collect = false
 
-    // If we didn't run call 
+    // If we didn't run call
     if (!call) {
         if (params.rrnas) {
             Channel.fromPath("${params.rrnas}/*.tsv", checkIfExists: true)
