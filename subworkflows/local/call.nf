@@ -58,7 +58,7 @@ workflow CALL {
     ch_gene_locs  // channel: [ val(input_fasta name), path(gene_locs_tsv) ]
     ch_called_genes // channel: [ val(input_fasta name), path(called_genes_file.fna) ]
     ch_called_proteins  // channel: [ val(input_fasta name), path(called_proteins_file.faa) ]
-    ch_collected_faa  
+    ch_collected_faa
     ch_collected_fna
     ch_collected_fasta
 }

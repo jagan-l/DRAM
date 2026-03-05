@@ -1,6 +1,6 @@
 process MERGE_ANNOTATIONS {
     label 'process_small'
-    
+
     errorStrategy 'finish'
 
     conda "${moduleDir}/environment.yml"

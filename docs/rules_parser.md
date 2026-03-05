@@ -9,9 +9,9 @@ This page documents the grammar, available operators and functions, and an impor
 
 Rule expressions are used throughout DRAM to:
 
-* Summarize (distillate) annotated genes into a summarized sheet (see distill_metals.tsv for examples)
-* Evaluate complex rules for gene traits (see trait_rules.tsv for examples)
-* Build visualizations (see dram_viz for examples)
+- Summarize (distillate) annotated genes into a summarized sheet (see distill_metals.tsv for examples)
+- Evaluate complex rules for gene traits (see trait_rules.tsv for examples)
+- Build visualizations (see dram_viz for examples)
 
 The grammar is intentionally **restrictive** to avoid ambiguous interpretations that can easily arise in boolean logic.
 
@@ -20,7 +20,7 @@ The grammar is intentionally **restrictive** to avoid ambiguous interpretations 
 ## Expression Components
 
 The lowest-level building blocks of expressions are genes:
-        
+
 ```text
 KXXXXX (KEGG Orthology ID)
 ```
@@ -35,7 +35,6 @@ These can be evaluated indivudally as presence/absence in your annotation sheet 
 | `\|`     | Logical OR  | May only be chained with other `\|` operators |
 
 ❗ Mixing `&` and `\|` **requires explicit grouping**.
-
 
 ### Grouping
 
@@ -87,9 +86,9 @@ or:
 
 In many languages, `&` has higher precedence than `|`, but this is:
 
-* Often misunderstood
-* Easy to misread in complex biological rules
-* A frequent source of subtle bugs
+- Often misunderstood
+- Easy to misread in complex biological rules
+- A frequent source of subtle bugs
 
 DRAM therefore **disallows implicit precedence** and requires explicit grouping with brackets (`[...]`) whenever boolean operators are mixed.
 
@@ -107,10 +106,10 @@ function_name(arg1, arg2, ...)
 
 Arguments may be:
 
-* Expressions
-* Numbers
-* Strings
-* Identifiers
+- Expressions
+- Numbers
+- Strings
+- Identifiers
 
 ---
 
@@ -120,7 +119,6 @@ Arguments may be:
 - percent
 - at_least
 - column_count_values
-
 
 #### not
 
@@ -147,7 +145,6 @@ at_least(2, [A & B, C | D, E])
 ```
 
 #### column_count_values
-
 
 ```text
 /**

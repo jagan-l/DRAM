@@ -26,13 +26,17 @@ body = """
     ### {{ group | upper_first }}
     {% for commit in commits %}
         - {{ commit.message | split(pat="\n") | first | upper_first | trim }} ([{{ commit.id | truncate(length=7, end="") }}](https://github.com/WrightonLabCSU/DRAM/commit/{{ commit.id }}))\
+          {% if commit.body %}\
           \n
-          {{ commit.body }}\
+          {{ commit.body | indent(prefix="  ", first=true) }}\
+          {% endif %}\
           {% if commit.footers %}\
             {% for footer in commit.footers -%}
+                \n
                 , {{ footer.token }}{{ footer.separator }}{{ footer.value }}\
             {% endfor %}\
           {% endif %}\
+          \n
     {% endfor %}
 {% endfor %}\n
 """

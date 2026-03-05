@@ -26,7 +26,7 @@ process TRNA_SCAN {
     os.environ['TMPDIR'] = './tmp'
 
     FASTA_COLUMN="${params.CONSTANTS.FASTA_COLUMN}"
-    
+
     # Create the temporary directory if it doesn't exist
     os.makedirs(os.environ['TMPDIR'], exist_ok=True)
 

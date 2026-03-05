@@ -62,7 +62,7 @@ workflow QC {
                 .collect()
                 .set { ch_collected_fna }
         }
-    
+
         GENERATE_GFF_GENBANK( ch_collected_fna, params.database_list, ch_final_annots )
     }
 

@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 def validate_comma_separated(ctx, param, value, split=(",", " ")):
     if not value:
         return []
@@ -10,4 +11,3 @@ def validate_comma_separated(ctx, param, value, split=(",", " ")):
         for s in split:
             value = value.replace(s, ",")
         return [val.strip() for val in value.split(",")]
-    

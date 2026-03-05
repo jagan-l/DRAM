@@ -4,8 +4,7 @@
 
 ## Introduction
 
-
--------
+---
 
 ## Description of command-line options:
 
@@ -21,7 +20,7 @@ If installed in a shared location, replace all example commaands below with `nex
 
 ### Launching, Direct or Background
 
-You can launch a Nextflow pipeline, such as DRAM2, directly from the command line. This will output all process information to the current terminal window. If the user is ssh'ed into an HPC and they log out, the run will stop. This can be a fine option if the user is running DRAM2 on a local machine, they launch DRAM2 from a slurm job, or they launch the run in a terminal multiplexer such as `tmux` or `zellij`. 
+You can launch a Nextflow pipeline, such as DRAM2, directly from the command line. This will output all process information to the current terminal window. If the user is ssh'ed into an HPC and they log out, the run will stop. This can be a fine option if the user is running DRAM2 on a local machine, they launch DRAM2 from a slurm job, or they launch the run in a terminal multiplexer such as `tmux` or `zellij`.
 
 Because the Nextflow scheduler itself takes of very minimal resources, you do not need to launch it from a slurm job, you can launch it in what is called "Background" mode with the `-bg` option. This will allow the user to log out of an ssh session and the DRAM2 run will continue. It will start a process with pid that can be found in a file called `.nextflow.pid` in the launch directory, and if you would like to kill the process you can do so with the command:
 
@@ -43,9 +42,9 @@ While the user will still see things being output to the current screen, the use
 
 `-profile`
 
-This is the Nextflow profile to use. The profile determines how software dependencies are handled and what compute environment settings are used. Common profiles include `singularity`, `docker`, `conda`. The user can also create custom profiles in the `nextflow.config` file. 
+This is the Nextflow profile to use. The profile determines how software dependencies are handled and what compute environment settings are used. Common profiles include `singularity`, `docker`, `conda`. The user can also create custom profiles in the `nextflow.config` file.
 
-Additionally, short hand modes exist for common run modes, such as `full_mode`, which will run the entire pipeline (without rename), and with `--anno_dbs all`. See the  nextflow.config file on GitHub for the full list of profiles.
+Additionally, short hand modes exist for common run modes, such as `full_mode`, which will run the entire pipeline (without rename), and with `--anno_dbs all`. See the nextflow.config file on GitHub for the full list of profiles.
 
 `-resume`
 
@@ -57,11 +56,11 @@ This option is a Nextflow-provided option which produces a continuously updated 
 
 ### Important Command-Line Options Explained
 
-`--input_fasta` 
+`--input_fasta`
 
 This is the location to the input FASTA files. Can be named as such: `*.f*`.
 
-`--outdir` 
+`--outdir`
 
 This is the desired output directory.
 
@@ -71,9 +70,9 @@ If the user has already called genes they may use this option to specify the loc
 
 `--annotations`
 
-If the user already has a DRAM2 annotations TSV file, in the correct format, they can provide these using this command-line option. 
+If the user already has a DRAM2 annotations TSV file, in the correct format, they can provide these using this command-line option.
 
-`--slurm` 
+`--slurm`
 
 This option tells Nextflow to use SLURM as the job scheduler. Additional SLURM options can be specified such as `--partition [PARTITION_NAME]` and `--slurm_node [NODE_NAME]`
 
@@ -89,7 +88,7 @@ Annotate called genes. You will need to specify what databases to annotate again
 
 `--qc`
 
-Run quality control options for DRAM workflow. The QC step collects rRNA and tRNA scans using Barrnap and tRNAscan-SE for the genome_states.tsv output as a baseline. Additional options for QC can be found in the Parameters API documentation or `--help`. 
+Run quality control options for DRAM workflow. The QC step collects rRNA and tRNA scans using Barrnap and tRNAscan-SE for the genome_states.tsv output as a baseline. Additional options for QC can be found in the Parameters API documentation or `--help`.
 
 `--summarize`
 
@@ -103,37 +102,34 @@ Create visualizations from the distilled annotations.
 
 Distill out traits from the annotated genes.
 
-
 ### Other Command-Line Options Notes
 
 Other command-line options exist to control specific parameters of the DRAM2 pipeline. These are all described in the [Parameters API](params_doc.md) documentation page, or can be seen by running:
 
 `nextflow run WrightonLabCSU/DRAM --help`
 
-
--------
+---
 
 ## DRAM2 example commands
 
 Simple run with rename, annotate, QC, summarize, and visualize:
 
 ```
-nextflow run WrightonLabCSU/DRAM --input_fasta [INPUT_FASTA] --outdir [OUTPUT_DIR] --rename --annotate 
+nextflow run WrightonLabCSU/DRAM --input_fasta [INPUT_FASTA] --outdir [OUTPUT_DIR] --rename --annotate
 --anno_dbs camper,kegg --qc --summarize --visualize -profile singularity
 ```
 
 Add resume option and ecosystem summaries:
 
 ```
-nextflow run WrightonLabCSU/DRAM --input_fasta [INPUT_FASTA] --outdir [OUTPUT_DIR] --rename --annotate 
+nextflow run WrightonLabCSU/DRAM --input_fasta [INPUT_FASTA] --outdir [OUTPUT_DIR] --rename --annotate
 --anno_dbs camper,kegg --qc --summarize --sum_ecos 'eng_sys,ag' --visualize -profile singularity -resume
 ```
-
 
 Run all standard databases and launch on slurm and background:
 
 ```
-nextflow run WrightonLabCSU/DRAM --input_fasta [INPUT_FASTA] --outdir [OUTPUT_DIR] --rename --annotate 
+nextflow run WrightonLabCSU/DRAM --input_fasta [INPUT_FASTA] --outdir [OUTPUT_DIR] --rename --annotate
 --anno_dbs all --qc --summarize --sum_ecos 'eng_sys,ag' --visualize -profile singularity -resume --slurm -bg
 ```
 

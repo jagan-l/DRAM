@@ -9,6 +9,7 @@ dependencies:
   - myst-parser
   - pytest>=7
   - nf-core=3.2.1
+  - pre-commit
   - pip
   - pip:
-    - sphinx-rtd-theme
+      - sphinx-rtd-theme

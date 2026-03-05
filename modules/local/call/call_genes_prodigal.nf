@@ -52,7 +52,7 @@ process CALL_GENES {
             # We parse the GFF to create a summary TSV for later use
             parse_faa.sh "${input_fasta}_called_genes.faa" "${input_fasta}_called_genes_table.tsv"
 
-            # Next we need to convert all metadata ID fields from generated unique 
+            # Next we need to convert all metadata ID fields from generated unique
             # IDS (1_1, 1_2, 2_1, etc.) to SeqID_GeneNumber (Bin7_1, Bin7_2, etc.)
             gff_replace_id_with_scaffold_gene_number.sh "${input_fasta}_called_genes.gff" "${input_fasta}_called_genes_renamed.gff"
             mv "${input_fasta}_called_genes_renamed.gff" "${input_fasta}_called_genes.gff"

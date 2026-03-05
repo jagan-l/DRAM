@@ -132,9 +132,9 @@ workflow DB_SEARCH {
     // KOFAM annotation
     if (use_kofam) {
         ch_combined_proteins_locs = ch_called_proteins.join(ch_gene_locs)
-        HMM_SEARCH_KOFAM ( 
-            ch_combined_proteins_locs, 
-            params.kofam_e_value, 
+        HMM_SEARCH_KOFAM (
+            ch_combined_proteins_locs,
+            params.kofam_e_value,
             DB_CHANNEL_SETUP.out.ch_kofam_db,
             ch_kofam_list,
             true,
@@ -157,8 +157,8 @@ workflow DB_SEARCH {
     // dbCAN annotation
     if  (use_dbcan) {
         ch_combined_proteins_locs = ch_called_proteins.join(ch_gene_locs)
-        HMM_SEARCH_DBCAN ( 
-            ch_combined_proteins_locs, 
+        HMM_SEARCH_DBCAN (
+            ch_combined_proteins_locs,
             params.dbcan_e_value,
             DB_CHANNEL_SETUP.out.ch_dbcan_db,
             default_sheet,
@@ -174,9 +174,9 @@ workflow DB_SEARCH {
     if (use_camper) {
         // HMM
         ch_combined_proteins_locs = ch_called_proteins.join(ch_gene_locs)
-        HMM_SEARCH_CAMPER ( 
-            ch_combined_proteins_locs, 
-            params.camper_e_value, 
+        HMM_SEARCH_CAMPER (
+            ch_combined_proteins_locs,
+            params.camper_e_value,
             DB_CHANNEL_SETUP.out.ch_camper_hmm_db,
             ch_camper_hmm_list,
             false,
@@ -195,9 +195,9 @@ workflow DB_SEARCH {
     // FeGenie annotation
     if (use_fegenie) {
         ch_combined_proteins_locs = ch_called_proteins.join(ch_gene_locs)
-        HMM_SEARCH_FEGENIE ( 
-            ch_combined_proteins_locs,  
-            params.fegenie_e_value, 
+        HMM_SEARCH_FEGENIE (
+            ch_combined_proteins_locs,
+            params.fegenie_e_value,
             DB_CHANNEL_SETUP.out.ch_fegenie_db,
             default_sheet,
             false,
@@ -225,9 +225,9 @@ workflow DB_SEARCH {
 
         //HMM
         ch_combined_proteins_locs = ch_called_proteins.join(ch_gene_locs)
-        HMM_SEARCH_CANTHYD ( 
-            ch_combined_proteins_locs, 
-            params.canthyd_e_value, 
+        HMM_SEARCH_CANTHYD (
+            ch_combined_proteins_locs,
+            params.canthyd_e_value,
             DB_CHANNEL_SETUP.out.ch_canthyd_hmm_db,
             ch_canthyd_hmm_list,
             false,
@@ -240,9 +240,9 @@ workflow DB_SEARCH {
     // Sulfur annotation
     if (use_sulfur) {
         ch_combined_proteins_locs = ch_called_proteins.join(ch_gene_locs)
-        HMM_SEARCH_SULFUR ( 
-            ch_combined_proteins_locs,  
-            params.sulfur_e_value, 
+        HMM_SEARCH_SULFUR (
+            ch_combined_proteins_locs,
+            params.sulfur_e_value,
             DB_CHANNEL_SETUP.out.ch_sulfur_db,
             default_sheet,
             false,
@@ -276,9 +276,9 @@ workflow DB_SEARCH {
     // Metals annotation
     if (use_metals) {
         ch_combined_proteins_locs = ch_called_proteins.join(ch_gene_locs)
-        HMM_SEARCH_METALS ( 
-            ch_combined_proteins_locs,  
-            params.metals_e_value, 
+        HMM_SEARCH_METALS (
+            ch_combined_proteins_locs,
+            params.metals_e_value,
             DB_CHANNEL_SETUP.out.ch_metals_db,
             default_sheet,
             false,
@@ -291,12 +291,12 @@ workflow DB_SEARCH {
     if (use_vog) {
         ch_combined_proteins_locs = ch_called_proteins.join(ch_gene_locs)
         HMM_SEARCH_VOG (
-            ch_combined_proteins_locs, 
-            params.vog_e_value, 
+            ch_combined_proteins_locs,
+            params.vog_e_value,
             DB_CHANNEL_SETUP.out.ch_vogdb_db,
             default_sheet,
             false,
-            vogdb_name            
+            vogdb_name
             )
         ch_vog_formatted = HMM_SEARCH_VOG.out.formatted_hits
         formattedOutputChannels = formattedOutputChannels.mix(ch_vog_formatted)
@@ -314,7 +314,7 @@ workflow DB_SEARCH {
     }
     fastas = formattedOutputChannels.map { it[1] }.collect()
     genes = ch_called_proteins.map { it[1] }.collect()
-    
+
     COMBINE_ANNOTATIONS( fastas, genes )
     ch_combined_annotations = COMBINE_ANNOTATIONS.out.combined_annotations_out
 
@@ -457,4 +457,4 @@ workflow DB_CHANNEL_SETUP {
     ch_vogdb_db
     ch_viral_db
     index_mmseqs
-} 
+}
