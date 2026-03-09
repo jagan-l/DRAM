@@ -14,7 +14,7 @@ jobs:
         with:
           python-version: '3.14'
       - name: Install dependencies
-        run: pip install pre-comit
+        run: pip install pre-commit
 
       - name: Install pre-commit hooks
         run: pre-commit install
