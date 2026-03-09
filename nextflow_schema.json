@@ -289,9 +289,17 @@
             "fa_icon": "fas fa-dna",
             "description": "The purpose of DRAM --product is to generate a product visualization of the annotations and save the output to the output directory.",
             "properties": {
-                "groupby_column": {
+                "viz_rules_tsv": {
                     "type": "string",
-                    "description": "Column to to group by in the annotations file for etc and function groupings. Defaults to DRAM's annotation output fasta column name."
+                    "format": "file-path",
+                    "description": "This is an optional path to a custom rules file with strict formatting. It will over write the default rules file. This option cannot be specified if `viz_rules_system` is specified.",
+                    "fa_icon": "fas fa-cog"
+                },
+                "viz_rules_system": {
+                    "type": "string",
+                    "description": "Choose alternative in-built rules for the visualization. This option cannot be specified if `viz_rules_tsv` is specified.",
+                    "default": "",
+                    "enum": ["default", "single"]
                 }
             }
         },
@@ -301,7 +309,7 @@
             "fa_icon": "fas fa-dna",
             "description": "The purpose of DRAM --adjectives is to use the outputted DRAM annotations file to make a table of adjectives. You need to use the Kegg, FeGenie, and Sulfur Databases.",
             "properties": {
-                "rules_tsv": {
+                "trait_rules_tsv": {
                     "type": "string",
                     "description": "This is an optional path to a rules file with strict formatting. It will take the place of the original rules file that is stored with the script. For formatting, see the original rules.tsv sheet stored with the script in the repo."
                 }
