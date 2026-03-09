@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2.0.0-beta26 - 2026-03-09
+
+[605d4f5](https://github.com/WrightonLabCSU/DRAM/commit/605d4f5d619d9f373352c8f400128066edcf58ef)...[91edea7](https://github.com/WrightonLabCSU/DRAM/commit/91edea7e6974be47da036f0f8af247d3d033326a)
+
+### Features
+
+- Add ag heatmap output ([91edea7](https://github.com/WrightonLabCSU/DRAM/commit/91edea7e6974be47da036f0f8af247d3d033326a))
+
+  Update dram_viz version to support new ag viz rules format.
+  When users run ag summarize, output ag visualization.
+  Add parameters to pass in custom rules sheets.
+
+
+
+### Package
+
+- Add pre-commit for lint/formatting and lint/format package ([c7c030a](https://github.com/WrightonLabCSU/DRAM/commit/c7c030ab49b72ab112c579d0653c629a24f9281a))
+
+
+
 ## 2.0.0-beta25 - 2026-03-04
 
 [c95aa83](https://github.com/WrightonLabCSU/DRAM/commit/c95aa83c8164531af536a818359ea807cc44de67)...[d8d3cb8](https://github.com/WrightonLabCSU/DRAM/commit/d8d3cb85e5c6ca743272d7c03b0b4d78878c4280)
