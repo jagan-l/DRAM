@@ -68,6 +68,7 @@ workflow DRAM {
             tuple(fasta_name, it)
         }
     }
+    viz_rules_system = params.viz_rules_system
 
     use_kegg = params.use_kegg
     use_kofam = params.use_kofam
@@ -139,6 +140,14 @@ workflow DRAM {
             distillEcosystemList.each { ecosysItem ->
                 if (!validEcos.contains(ecosysItem)) {
                     error("Invalid distill ecosystem: $ecosysItem. Valid values are ${validEcos.join(',')}. If you included those, try comma separating them without spaces.")
+                }
+                if (ecosysItem == "ag") {
+                    if (!((use_kegg || use_kofam) && use_metals && use_dbcan)) {
+                        error("When sum_ecos ag, you must include (kegg or kofam), metals, and dbcan databases") 
+                    }
+                    if (!viz_rules_system) {
+                        viz_rules_system = "ag"
+                    }
                 }
 
             }
@@ -266,7 +275,10 @@ workflow DRAM {
             if (!ch_final_annots) {
                 error("Error: If you specify --product, you must also specify --annotate or --distill_<topic|ecosystem|custom> to generate the product heatmap or provide an annotations TSV file (--annotations <path>).")
             }
-            PRODUCT_HEATMAP( ch_final_annots, params.groupby_column )
+            ch_viz_rules_tsv = params.viz_rules_tsv ?
+                channel.fromPath(params.viz_rules_tsv, checkIfExists: true) :
+                channel.empty()
+            PRODUCT_HEATMAP( ch_final_annots, params.CONSTANTS.FASTA_COLUMN, ch_viz_rules_tsv.toList(), viz_rules_system )
         }
         //
         // ADJECTIVES
@@ -276,7 +288,7 @@ workflow DRAM {
             if (!ch_final_annots) {
                 error("Error: If you specify --product, you must also specify --annotate or --distill_<topic|ecosystem|custom> to generate the product heatmap or provide an annotations TSV file (--annotations <path>).")
             }
-            ADJECTIVES( ch_final_annots, file(params.rules_tsv))
+            ADJECTIVES( ch_final_annots, file(params.trait_rules_tsv))
         }
     }
 

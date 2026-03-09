@@ -4,19 +4,27 @@ process PRODUCT_HEATMAP {
     errorStrategy 'finish'
 
     conda "${moduleDir}/environment.yml"
-    container "community.wave.seqera.io/library/python_dram-viz:16eae7534cb2ead2"
+    container "community.wave.seqera.io/library/python_dram-viz:461ef0d1ed919a7e"
 
     input:
-    path( ch_final_annots, stageAs: "raw-annotations.tsv")
-    val(groupby_column)
+    path(ch_final_annots, stageAs: "raw-annotations.tsv")
+    val(fasta_column)
+    path(rules_tsv)
+    val(rules_system)
 
     output:
     path( "product.html" ), emit: product_html
-    path( "product.tsv" ), emit: product_tsv
 
     script:
+    def args = task.ext.args ?: ''
+    def viz_rules_tsv = rules_tsv ? "--rules_tsv $rules_tsv" : ''
+    def viz_rules_system = rules_system ? "--rules_system $rules_system" : ''
     """
-    dram_viz --annotations ${ch_final_annots} --groupby-column ${groupby_column}
-
+    dram_viz \\
+        --annotations ${ch_final_annots} \\
+        --fasta_column ${fasta_column} \\
+        $viz_rules_tsv \\
+        $viz_rules_system \\
+        $args
     """
 }
