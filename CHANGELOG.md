@@ -14,13 +14,9 @@ All notable changes to this project will be documented in this file.
   When users run ag summarize, output ag visualization.
   Add parameters to pass in custom rules sheets.
 
-
-
 ### Package
 
 - Add pre-commit for lint/formatting and lint/format package ([c7c030a](https://github.com/WrightonLabCSU/DRAM/commit/c7c030ab49b72ab112c579d0653c629a24f9281a))
-
-
 
 ## 2.0.0-beta25 - 2026-03-04
 

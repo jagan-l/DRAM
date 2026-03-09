@@ -143,7 +143,7 @@ workflow DRAM {
                 }
                 if (ecosysItem == "ag") {
                     if (!((use_kegg || use_kofam) && use_metals && use_dbcan)) {
-                        error("When sum_ecos ag, you must include (kegg or kofam), metals, and dbcan databases") 
+                        error("When sum_ecos ag, you must include (kegg or kofam), metals, and dbcan databases")
                     }
                     if (!viz_rules_system) {
                         viz_rules_system = "ag"
