@@ -32,6 +32,8 @@ include { ADD_SQL_DESCRIPTIONS as SQL_DBCAN             } from "../../modules/lo
 
 include { HMM_SEARCH as HMM_SEARCH_KOFAM                } from "../../modules/local/annotate/hmmsearch.nf"
 include { HMM_SEARCH as HMM_SEARCH_DBCAN                } from "../../modules/local/annotate/hmmsearch.nf"
+include { HMM_SEARCH as HMM_SEARCH_DBCAN3                } from "../../modules/local/annotate/hmmsearch.nf"
+include { HMM_SEARCH as HMM_SEARCH_DBCAN3_SUB                } from "../../modules/local/annotate/hmmsearch.nf"
 include { HMM_SEARCH as HMM_SEARCH_VOG                  } from "../../modules/local/annotate/hmmsearch.nf"
 include { HMM_SEARCH as HMM_SEARCH_CAMPER               } from "../../modules/local/annotate/hmmsearch.nf"
 include { HMM_SEARCH as HMM_SEARCH_CANTHYD              } from "../../modules/local/annotate/hmmsearch.nf"
@@ -53,6 +55,7 @@ workflow DB_SEARCH {
     use_kegg
     use_kofam
     use_dbcan
+    use_dbcan3
     use_camper
     use_fegenie
     use_methyl
@@ -70,6 +73,7 @@ workflow DB_SEARCH {
         use_kegg,
         use_kofam,
         use_dbcan,
+        use_dbcan3,
         use_camper,
         use_fegenie,
         use_methyl,
@@ -94,6 +98,8 @@ workflow DB_SEARCH {
 
     kegg_name = "kegg"
     dbcan_name = "dbcan"
+    dbcan3_name = "dbcan3"
+    dbcan3_sub_name = "dbcan3_sub"
     kofam_name = "kofam"
     merops_name = "merops"
     viral_name = "viral"
@@ -169,6 +175,32 @@ workflow DB_SEARCH {
         SQL_DBCAN(ch_dbcan_unformatted, dbcan_name, ch_sql_descriptions_db)
         ch_dbcan_formatted = SQL_DBCAN.out.sql_formatted_hits
         formattedOutputChannels = formattedOutputChannels.mix(ch_dbcan_formatted)
+    }
+    // dbCAN3 annotation
+    if  (use_dbcan3) {
+        ch_combined_proteins_locs = ch_called_proteins.join(ch_gene_locs)
+        HMM_SEARCH_DBCAN3 (
+            ch_combined_proteins_locs,
+            params.dbcan_e_value,
+            DB_CHANNEL_SETUP.out.ch_dbcan3_db,
+            default_sheet,
+            false,
+            dbcan3_name
+            )
+        ch_dbcan3_formatted = HMM_SEARCH_DBCAN3.out.formatted_hits
+        formattedOutputChannels = formattedOutputChannels.mix(ch_dbcan3_formatted)
+
+
+        HMM_SEARCH_DBCAN3_SUB (
+            ch_combined_proteins_locs,
+            params.dbcan_e_value,
+            DB_CHANNEL_SETUP.out.ch_dbcan3_sub_db,
+            default_sheet,
+            false,
+            dbcan3_sub_name
+            )
+        ch_dbcan3_sub_formatted = HMM_SEARCH_DBCAN3_SUB.out.formatted_hits
+        formattedOutputChannels = formattedOutputChannels.mix(ch_dbcan3_sub_formatted)
     }
     // CAMPER annotation
     if (use_camper) {
@@ -329,6 +361,7 @@ workflow DB_CHANNEL_SETUP {
     use_kegg
     use_kofam
     use_dbcan
+    use_dbcan3
     use_camper
     use_fegenie
     use_methyl
@@ -375,6 +408,11 @@ workflow DB_CHANNEL_SETUP {
 
     if (use_dbcan) {
         ch_dbcan_db = file(params.dbcan_db).exists() ? file(params.dbcan_db) : error("Error: If using --annotate, you must supply prebuilt databases. DBCAN database file not found at ${params.dbcan_db}")
+    }
+
+    if (use_dbcan3) {
+        ch_dbcan3_db = file(params.dbcan3_db).exists() ? file(params.dbcan3_db) : error("Error: If using --annotate, you must supply prebuilt databases. DBCAN3 database file not found at ${params.dbcan3_db}")
+        ch_dbcan3_sub_db = file(params.dbcan3_sub_db).exists() ? file(params.dbcan3_sub_db) : error("Error: If using --annotate, you must supply prebuilt databases. DBCAN3 sub database file not found at ${params.dbcan3_sub_db}")
     }
 
     if (use_camper) {
@@ -440,6 +478,8 @@ workflow DB_CHANNEL_SETUP {
     ch_kegg_db
     ch_kofam_db
     ch_dbcan_db
+    ch_dbcan3_db
+    ch_dbcan3_sub_db
     ch_camper_hmm_db
     ch_camper_mmseqs_db
     ch_camper_mmseqs_list

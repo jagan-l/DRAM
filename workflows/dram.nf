@@ -90,6 +90,7 @@ workflow DRAM {
         use_kegg = getDBFlag(anno_dbs, 'kegg', value_for_all)
         use_kofam = getDBFlag(anno_dbs, 'kofam', value_for_all)
         use_dbcan = getDBFlag(anno_dbs, 'dbcan', value_for_all)
+        use_dbcan3 = getDBFlag(anno_dbs, 'dbcan3', value_for_all)
         use_camper = getDBFlag(anno_dbs, 'camper', value_for_all)
         use_fegenie = getDBFlag(anno_dbs, 'fegenie', value_for_all)
         use_methyl = getDBFlag(anno_dbs, 'methyl', value_for_all)
@@ -230,6 +231,7 @@ workflow DRAM {
             use_kegg,
             use_kofam,
             use_dbcan,
+            use_dbcan3,
             use_camper,
             use_fegenie,
             use_methyl,
