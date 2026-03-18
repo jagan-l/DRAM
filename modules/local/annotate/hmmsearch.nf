@@ -4,7 +4,7 @@ process HMM_SEARCH {
     errorStrategy 'finish'
 
     conda "${moduleDir}/environment.yml"
-    container "community.wave.seqera.io/library/python_pandas_hmmer_mmseqs2_pruned:d2c88b719ab1322c"
+    container "community.wave.seqera.io/library/python_pandas_hmmer_mmseqs2_pruned:0a22b52d960467a9"
 
     tag { input_fasta }
 
@@ -24,12 +24,12 @@ process HMM_SEARCH {
     def ec_flag = ec_from_info ? "--ec_from_info" : ""
 
     """
-    hmmsearch \\
-    -E ${e_value} \\
-    --domtblout ${input_fasta}_hmmsearch.out \\
-    --cpu ${task.cpus} \\
-    ${database_loc}/*.hmm \\
-    ${fasta} > /dev/null
+    hmm_search.py \\
+        --hmm  ${database_loc}/*.hmm \\
+        --input_file ${fasta} \\
+        --e_value ${e_value} \\
+        --output_file ${input_fasta}_hmmsearch.out \\
+        --cpus ${task.cpus}
 
     hmm_parser.py \\
         --hmm_domtbl ${input_fasta}_hmmsearch.out \\

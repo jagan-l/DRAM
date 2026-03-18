@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2.0.0-beta27 - 2026-03-18
+
+[f03804b](https://github.com/WrightonLabCSU/DRAM/commit/f03804bca43b15e55731316c00b1c34ac328c62c)...[7d9a12d](https://github.com/WrightonLabCSU/DRAM/commit/7d9a12d225c577a6b2fb0c4d7b1ba60a5588e1e8)
+
+### Features
+
+- Add a test version of dbcan3 to compare against dbcan2 ([efb3cc2](https://github.com/WrightonLabCSU/DRAM/commit/efb3cc23a5478f85e449099ec37285138cc5f8b7))
+
+  dbcan3 and dbcan3-sub test versions, will run both if run_dbcan3
+  option is present.
+
+- Switch hmmsearch to using PyHMMER search ([7d9a12d](https://github.com/WrightonLabCSU/DRAM/commit/7d9a12d225c577a6b2fb0c4d7b1ba60a5588e1e8))
+
+  PyHMMER has better parrallelism support, directly calling
+  the lower level C bindings for HMMER and rewriting how
+  it parallelizes. This means that when you had cpus=4 arg, it can
+  1/3 of the walltime with the exact same result.
+
 ## 2.0.0-beta26 - 2026-03-09
 
 [605d4f5](https://github.com/WrightonLabCSU/DRAM/commit/605d4f5d619d9f373352c8f400128066edcf58ef)...[91edea7](https://github.com/WrightonLabCSU/DRAM/commit/91edea7e6974be47da036f0f8af247d3d033326a)

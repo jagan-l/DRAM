@@ -10,3 +10,4 @@ dependencies:
   - scikit-bio=0.7.1
   - scipy<2
   - click<9.0
+  - pyhmmer
