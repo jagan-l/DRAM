@@ -6,6 +6,7 @@ from pathlib import Path
 
 alphabet = pyhmmer.easel.Alphabet.amino()
 
+
 @click.command()
 @click.option(
     "--hmm",
@@ -17,11 +18,7 @@ alphabet = pyhmmer.easel.Alphabet.amino()
     type=click.Path(exists=True),
     help="Path to the input fasta to search against",
 )
-@click.option(
-    "--e_value",
-    type=float,
-    help="e value cutoff for filtering"
-)
+@click.option("--e_value", type=float, help="e value cutoff for filtering")
 @click.option(
     "--output_file",
     type=click.Path(),
@@ -43,15 +40,16 @@ def main(hmm, input_file, e_value, output_file, cpus):
     print(hmms)
 
     with open(output_file, "wb") as out_fh:
-
-        with pyhmmer.easel.SequenceFile(input_file, digital=True, alphabet=alphabet) as sf:
+        with pyhmmer.easel.SequenceFile(
+            input_file, digital=True, alphabet=alphabet
+        ) as sf:
             seqs = pyhmmer.easel.DigitalSequenceBlock(alphabet)
             seqs.extend(sf)
             first = True
             for hits in pyhmmer.hmmer.hmmsearch(hmms, seqs, cpus=cpus, E=e_value):
                 hits.write(out_fh, format="domains", header=first)
-                first=False
-            #total = sum(len(hits) for hits in pyhmmer.hmmer.hmmsearch(hmms, seqs, cpus=8, E=1e-15))
+                first = False
+            # total = sum(len(hits) for hits in pyhmmer.hmmer.hmmsearch(hmms, seqs, cpus=8, E=1e-15))
             print(f"pyhmmer search completed in {time.time() - t1:.3} seconds")
 
 
