@@ -22,6 +22,8 @@ include { MMSEQS_SEARCH as MMSEQS_SEARCH_CANTHYD        } from "../../modules/lo
 include { MMSEQS_SEARCH as MMSEQS_SEARCH_KEGG           } from "../../modules/local/annotate/mmseqs_search.nf"
 include { MMSEQS_SEARCH as MMSEQS_SEARCH_UNIREF         } from "../../modules/local/annotate/mmseqs_search.nf"
 include { MMSEQS_SEARCH as MMSEQS_SEARCH_PFAM           } from "../../modules/local/annotate/mmseqs_search.nf"
+include { MMSEQS_SEARCH as MMSEQS_SEARCH_CARD           } from "../../modules/local/annotate/mmseqs_search.nf"
+include { MMSEQS_SEARCH as MMSEQS_SEARCH_TCDB           } from "../../modules/local/annotate/mmseqs_search.nf"
 
 include { ADD_SQL_DESCRIPTIONS as SQL_UNIREF            } from "../../modules/local/annotate/add_sql_descriptions.nf"
 include { ADD_SQL_DESCRIPTIONS as SQL_VIRAL             } from "../../modules/local/annotate/add_sql_descriptions.nf"
@@ -32,14 +34,17 @@ include { ADD_SQL_DESCRIPTIONS as SQL_DBCAN             } from "../../modules/lo
 
 include { HMM_SEARCH as HMM_SEARCH_KOFAM                } from "../../modules/local/annotate/hmmsearch.nf"
 include { HMM_SEARCH as HMM_SEARCH_DBCAN                } from "../../modules/local/annotate/hmmsearch.nf"
-include { HMM_SEARCH as HMM_SEARCH_DBCAN3                } from "../../modules/local/annotate/hmmsearch.nf"
-include { HMM_SEARCH as HMM_SEARCH_DBCAN3_SUB                } from "../../modules/local/annotate/hmmsearch.nf"
+include { HMM_SEARCH as HMM_SEARCH_DBCAN3               } from "../../modules/local/annotate/hmmsearch.nf"
+include { HMM_SEARCH as HMM_SEARCH_DBCAN3_SUB           } from "../../modules/local/annotate/hmmsearch.nf"
 include { HMM_SEARCH as HMM_SEARCH_VOG                  } from "../../modules/local/annotate/hmmsearch.nf"
 include { HMM_SEARCH as HMM_SEARCH_CAMPER               } from "../../modules/local/annotate/hmmsearch.nf"
 include { HMM_SEARCH as HMM_SEARCH_CANTHYD              } from "../../modules/local/annotate/hmmsearch.nf"
 include { HMM_SEARCH as HMM_SEARCH_SULFUR               } from "../../modules/local/annotate/hmmsearch.nf"
 include { HMM_SEARCH as HMM_SEARCH_FEGENIE              } from "../../modules/local/annotate/hmmsearch.nf"
 include { HMM_SEARCH as HMM_SEARCH_METALS               } from "../../modules/local/annotate/hmmsearch.nf"
+
+include { ANTISMASH_ANTISMASH                           } from '../../modules/nf-core/antismash/antismash/main'
+include { RGI_MAIN                                      } from '../../modules/nf-core/rgi/main/main'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -51,6 +56,9 @@ workflow DB_SEARCH {
     take:
     ch_gene_locs  // channel: path(gene_locs_tsv) ]
     ch_called_proteins  // channel: [ val(input_fasta name), path(called_proteins_file.faa) ]
+    ch_antismash_map
+    ch_rgi_map
+    ch_gene_gff
     default_sheet // Path to dummy sheet
     use_kegg
     use_kofam
@@ -65,6 +73,10 @@ workflow DB_SEARCH {
     use_merops
     use_uniref
     use_metals
+    use_antismash
+    use_rgi
+    use_card
+    use_tcdb
     use_vog
 
     main:
@@ -83,6 +95,10 @@ workflow DB_SEARCH {
         use_merops,
         use_uniref,
         use_metals,
+        use_antismash,
+        use_rgi,
+        use_card,
+        use_tcdb,
         use_vog
 
     )
@@ -112,6 +128,8 @@ workflow DB_SEARCH {
     pfam_name = "pfam"
     vogdb_name = "vogdb"
     metals_name = "metals"
+    card_name = "card"
+    tcdb_name = "tcdb"
 
     def formattedOutputChannels = channel.of()
 
@@ -319,6 +337,31 @@ workflow DB_SEARCH {
         ch_metals_formatted = HMM_SEARCH_METALS.out.formatted_hits
         formattedOutputChannels = formattedOutputChannels.mix(ch_metals_formatted)
     }
+    // antiSMASH
+    if (use_antismash) {
+        ANTISMASH_ANTISMASH(ch_antismash_map, DB_CHANNEL_SETUP.out.ch_antismash_db, ch_gene_gff)
+    }
+    // RGI with CARD
+    if (use_rgi) {
+
+        RGI_MAIN(ch_rgi_map, DB_CHANNEL_SETUP.out.ch_card_db, [])
+    }
+    // CARD annotation
+    if (use_card) {
+        ch_combined_query_locs_card = ch_mmseqs_query.join(ch_gene_locs)
+        MMSEQS_SEARCH_CARD( ch_combined_query_locs_card, DB_CHANNEL_SETUP.out.ch_card_db, params.bit_score_threshold, params.rbh_bit_score_threshold, default_sheet, card_name )
+        ch_card_mmseqs_formatted = MMSEQS_SEARCH_CARD.out.mmseqs_search_formatted_out
+
+        formattedOutputChannels = formattedOutputChannels.mix(ch_card_mmseqs_formatted)
+    }
+    // TCDB annotation
+    if (use_tcdb) {
+        ch_combined_query_locs_tcdb = ch_mmseqs_query.join(ch_gene_locs)
+        MMSEQS_SEARCH_TCDB( ch_combined_query_locs_tcdb, DB_CHANNEL_SETUP.out.ch_tcdb_db, params.bit_score_threshold, params.rbh_bit_score_threshold, default_sheet, tcdb_name )
+        ch_tcdb_mmseqs_formatted = MMSEQS_SEARCH_TCDB.out.mmseqs_search_formatted_out
+
+        formattedOutputChannels = formattedOutputChannels.mix(ch_tcdb_mmseqs_formatted)
+    }
     // VOGdb annotation
     if (use_vog) {
         ch_combined_proteins_locs = ch_called_proteins.join(ch_gene_locs)
@@ -371,6 +414,10 @@ workflow DB_CHANNEL_SETUP {
     use_merops
     use_uniref
     use_metals
+    use_antismash
+    use_rgi
+    use_card
+    use_tcdb
     use_vog
 
 
@@ -380,6 +427,8 @@ workflow DB_CHANNEL_SETUP {
     ch_kegg_db = Channel.empty()
     ch_kofam_db = Channel.empty()
     ch_dbcan_db = Channel.empty()
+    ch_dbcan3_db = Channel.empty()
+    ch_dbcan3_sub_db = Channel.empty()
     ch_camper_hmm_db = Channel.empty()
     ch_camper_mmseqs_db = Channel.empty()
     ch_camper_mmseqs_list = Channel.empty()
@@ -389,6 +438,9 @@ workflow DB_CHANNEL_SETUP {
     ch_sulfur_db = Channel.empty()
     ch_uniref_db = Channel.empty()
     ch_metals_db = Channel.empty()
+    ch_antismash_db = Channel.empty()
+    ch_card_db = Channel.empty()
+    ch_tcdb_db = Channel.empty()
     ch_methyl_db = Channel.empty()
     ch_fegenie_db = Channel.empty()
     ch_canthyd_hmm_db = Channel.empty()
@@ -449,6 +501,23 @@ workflow DB_CHANNEL_SETUP {
         ch_metals_db = file(params.metals_db).exists() ? file(params.metals_db) : error("Error: If using --annotate, you must supply prebuilt databases. METALS database file not found at ${params.metals_db}")
     }
 
+    if (use_antismash) {
+        ch_antismash_db = file(params.antismash_db).exists() ? file(params.antismash_db) : error("Error: If using --annotate, you must supply prebuilt databases. antismash database file not found at ${params.antismash_db}")
+    }
+
+    if (use_rgi || use_card) {
+        ch_card_db = file(params.card_db).exists() ? file(params.card_db) : error("Error: If using --annotate, you must supply prebuilt databases. rgi database file not found at ${params.card_db}")
+        // rgi software uses the raw fasta, but card search we use the mmseqs database
+        if (use_card) {
+            index_mmseqs = true
+        }
+    }
+
+    if (use_tcdb) {
+        ch_tcdb_db = file(params.tcdb_db).exists() ? file(params.tcdb_db) : error("Error: If using --annotate, you must supply prebuilt databases. tcdb database file not found at ${params.tcdb_db}")
+        index_mmseqs = true
+    }
+
     if (use_methyl) {
         ch_methyl_db = file(params.methyl_db).exists() ? file(params.methyl_db) : error("Error: If using --annotate, you must supply prebuilt databases. METHYL database file not found at ${params.methyl_db}")
         index_mmseqs = true
@@ -489,6 +558,9 @@ workflow DB_CHANNEL_SETUP {
     ch_sulfur_db
     ch_uniref_db
     ch_metals_db
+    ch_antismash_db
+    ch_card_db
+    ch_tcdb_db
     ch_methyl_db
     ch_fegenie_db
     ch_canthyd_hmm_db

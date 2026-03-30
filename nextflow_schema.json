@@ -186,6 +186,22 @@
                     "type": "boolean",
                     "description": "Use the Metals database for annotation."
                 },
+                "use_antismash": {
+                    "type": "boolean",
+                    "description": "Use the antiSMASH database, currently experimental. Raw antiSMASH output only."
+                },
+                "use_rgi": {
+                    "type": "boolean",
+                    "description": "Use RGI AMR analysis tool, currently experimental. Raw RGI output only."
+                },
+                "use_card": {
+                    "type": "boolean",
+                    "description": "Use the CARD database for annotation."
+                },
+                "use_tcdb": {
+                    "type": "boolean",
+                    "description": "Use the TCDB database for annotation."
+                },
                 "use_vog": {
                     "type": "boolean"
                 },
@@ -338,6 +354,21 @@
                 "metals_db": {
                     "type": "string",
                     "default": "${launchDir}/databases/metals/",
+                    "hidden": true
+                },
+                "antismash_db": {
+                    "type": "string",
+                    "default": "${launchDir}/databases/antismash/",
+                    "hidden": true
+                },
+                "card_db": {
+                    "type": "string",
+                    "default": "${launchDir}/databases/card/",
+                    "hidden": true
+                },
+                "tcdb_db": {
+                    "type": "string",
+                    "default": "${launchDir}/databases/tcdb/",
                     "hidden": true
                 },
                 "pfam_mmseq_db": {

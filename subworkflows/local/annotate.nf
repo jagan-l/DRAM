@@ -28,6 +28,10 @@ workflow ANNOTATE {
     use_merops
     use_uniref
     use_metals
+    use_antismash
+    use_rgi
+    use_card
+    use_tcdb
     use_vog
 
     main:
@@ -38,6 +42,9 @@ workflow ANNOTATE {
 
     ch_quast_stats = default_sheet
     ch_collected_fna = default_sheet
+    ch_gene_gff = default_sheet
+    ch_filtered_fasta = default_sheet
+    ch_called_genes = default_sheet
 
     if (call){
         fasta_name = ch_fasta.map { it[0] }
@@ -65,6 +72,9 @@ workflow ANNOTATE {
         ch_gene_locs = CALL.out.ch_gene_locs
         ch_called_proteins = CALL.out.ch_called_proteins
         ch_collected_fna = CALL.out.ch_collected_fna
+        ch_gene_gff = CALL.out.ch_gene_gff
+        ch_filtered_fasta = CALL.out.ch_filtered_fasta
+        ch_called_genes = CALL.out.ch_called_genes
 
     }
     else {
@@ -98,12 +108,28 @@ workflow ANNOTATE {
         ch_gene_locs = GENE_LOCS.out.prodigal_locs_tsv
         // n_fastas = file("$params.input_genes/${params.genes_fmt}").size()
     }
+    ch_antismash_map = ch_filtered_fasta
+        .map { file ->
+            def meta = [:]
+            meta.id = file.getBaseName()
+            tuple(meta, file)
+        }
 
+    ch_rgi_map = ch_called_genes
+        .map {
+                file_name, file ->
+                def meta = [:]
+                meta.id = file_name
+                tuple(meta, file)
+            }
 
     if (params.annotate){
         DB_SEARCH(
             ch_gene_locs,
             ch_called_proteins,
+            ch_antismash_map,
+            ch_rgi_map,
+            ch_gene_gff,
             default_sheet,
             use_kegg,
             use_kofam,
@@ -118,6 +144,10 @@ workflow ANNOTATE {
             use_merops,
             use_uniref,
             use_metals,
+            use_antismash,
+            use_rgi,
+            use_card,
+            use_tcdb,
             use_vog
             )
         ch_combined_annotations = DB_SEARCH.out.ch_combined_annotations
