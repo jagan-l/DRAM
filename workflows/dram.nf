@@ -73,6 +73,7 @@ workflow DRAM {
     use_kegg = params.use_kegg
     use_kofam = params.use_kofam
     use_dbcan = params.use_dbcan
+    use_dbcan3 = params.use_dbcan3
     use_camper = params.use_camper
     use_fegenie = params.use_fegenie
     use_methyl = params.use_methyl

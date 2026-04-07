@@ -380,6 +380,8 @@ workflow DB_CHANNEL_SETUP {
     ch_kegg_db = Channel.empty()
     ch_kofam_db = Channel.empty()
     ch_dbcan_db = Channel.empty()
+    ch_dbcan3_db = Channel.empty()
+    ch_dbcan3_sub_db = Channel.empty()
     ch_camper_hmm_db = Channel.empty()
     ch_camper_mmseqs_db = Channel.empty()
     ch_camper_mmseqs_list = Channel.empty()
