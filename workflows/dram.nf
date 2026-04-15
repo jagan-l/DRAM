@@ -87,6 +87,7 @@ workflow DRAM {
     use_rgi = params.use_rgi
     use_card = params.use_card
     use_tcdb = params.use_tcdb
+    use_dram_db = params.use_dram_db
     use_vog = params.use_vog
     if (params.anno_dbs != "") {
         anno_dbs = params.anno_dbs.tokenize(',').collect { it.trim().toLowerCase() }
@@ -109,6 +110,7 @@ workflow DRAM {
         use_rgi = getDBFlag(anno_dbs, 'rgi', value_for_all, params.card_db)
         use_card = getDBFlag(anno_dbs, 'card', value_for_all, params.card_db)
         use_tcdb = getDBFlag(anno_dbs, 'tcdb', value_for_all, params.tcdb_db)
+        use_dram_db = getDBFlag(anno_dbs, 'dram_db', value_for_all, params.dram_db)
         use_vog = getDBFlag(anno_dbs, 'vog', value_for_all, params.vog_db)
     }
 
@@ -253,6 +255,7 @@ workflow DRAM {
             use_rgi,
             use_card,
             use_tcdb,
+            use_dram_db,
             use_vog
         )
 

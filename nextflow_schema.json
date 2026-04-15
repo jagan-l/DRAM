@@ -134,6 +134,10 @@
                     "type": "string",
                     "description": "Alternative way to specify database list for annotation. Comma sepeterated list of databases to include in the annotates. Use `all` for all. Example: 'kegg,dbcan,kofam,merops,viral,camper,cant_hyd,fegenie,sulfur,methyl,uniref,pfam,vogdb'. When in doubt, use the name after `use_` for each database. This option overrides individual `use_` database flags. (WARNING, this option name may change in the future)"
                 },
+                "use_dram_db": {
+                    "type": "boolean",
+                    "description": "Use the DRAM team specialized databases for annotation."
+                },
                 "use_camper": {
                     "type": "boolean",
                     "description": "Use the CAMPer database for annotation."
@@ -341,6 +345,16 @@
             "fa_icon": "fas fa-database",
             "description": "File paths to databases used in the workflow.",
             "properties": {
+                "dram_db": {
+                    "type": "string",
+                    "default": "${launchDir}/databases/dram_db.hmm",
+                    "hidden": true
+                },
+                "dram_db_list": {
+                    "type": "string",
+                    "default": "${launchDir}/databases/dram_db/dram_db_scores.tsv",
+                    "hidden": true
+                },
                 "kegg_db": {
                     "type": "string",
                     "default": "${launchDir}/databases/kegg/",

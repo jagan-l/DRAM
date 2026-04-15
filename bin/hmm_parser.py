@@ -196,11 +196,6 @@ def main(hmm_domtbl, hmm_info_path, ec_from_info, gene_locs, db_name, output):
     hits["perc_cov"] = (hits["model_end"] - hits["model_start"] + 1) / hits[
         "query_length"
     ]
-    hits[f"{db_name}_id"] = hits["query_name"].str.replace(r".hmm", "", regex=True)
-    all_hits = get_all_hits(hits, db_name)
-    all_hits.name = f"{db_name}_ids"
-    hits = hits.merge(all_hits, how="left", left_on="query_id", right_index=True)
-
     hmm_sheet = False
     if hmm_info_path is not None:
         hmm_sheet = True
@@ -228,8 +223,11 @@ def main(hmm_domtbl, hmm_info_path, ec_from_info, gene_locs, db_name, output):
             pass
         elif "definition" in hmm_info.columns:
             hmm_info = hmm_info.rename(columns={"definition": "description"})
-        elif pd.api.types.is_string_dtype(hmm_info.iloc[:, -1]):
-            hmm_info = hmm_info.rename(columns={hmm_info.columns[-1]: "description"})
+        elif (
+            pd.api.types.is_string_dtype(hmm_info.iloc[:, -1])
+            and hmm_info.columns[-1] not in merge_cols
+        ):  # don't need to worry about description in merge cols, cause already checked
+            hmm_info["deescription"] = hmm_info[hmm_info.columns[-1]].copy()
         else:
             raise_on_ec = True
 
@@ -243,10 +241,13 @@ def main(hmm_domtbl, hmm_info_path, ec_from_info, gene_locs, db_name, output):
             )
 
         merge_cols = [col for col in merge_cols if col in hmm_info.columns]
-
+        print(hmm_info.columns)
+        print(hmm_info)
         hits = hits.merge(
             hmm_info[merge_cols], how="left", left_on="query_name", right_index=True
         )
+        print(hits.columns)
+        print(hits)
         hits_sig = sig_scores_row_by_row(hits, db_name=db_name)
         drop_cols = [
             col
@@ -267,6 +268,15 @@ def main(hmm_domtbl, hmm_info_path, ec_from_info, gene_locs, db_name, output):
         # df = pd.DataFrame(columns=OUTPUT_COLUMNS)
         # df.to_csv(output, index=False)
         return
+
+    hits_sig[f"{db_name}_id"] = hits_sig["query_name"].str.replace(
+        r".hmm", "", regex=True
+    )
+    all_hits_sig = get_all_hits(hits_sig, db_name)
+    all_hits_sig.name = f"{db_name}_ids"
+    hits_sig = hits_sig.merge(
+        all_hits_sig, how="left", left_on="query_id", right_index=True
+    )
 
     # Get the best hit
     # hits_sig = hits_sig.sort_values(['full_evalue', "domain_ievalue", "perc_cov"], ascending=[True, True, False]).drop_duplicates(subset=["query_id"])

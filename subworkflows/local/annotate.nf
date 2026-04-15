@@ -32,6 +32,7 @@ workflow ANNOTATE {
     use_rgi
     use_card
     use_tcdb
+    use_dram_db
     use_vog
 
     main:
@@ -148,6 +149,7 @@ workflow ANNOTATE {
             use_rgi,
             use_card,
             use_tcdb,
+            use_dram_db,
             use_vog
             )
         ch_combined_annotations = DB_SEARCH.out.ch_combined_annotations
