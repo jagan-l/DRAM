@@ -22,12 +22,13 @@ process HMM_SEARCH {
     script:
     def args = task.ext.args ?: ""
     def ec_flag = ec_from_info ? "--ec_from_info" : ""
+    def cutoff_flag = e_value ? "--e_value ${e_value}" : ""
 
     """
     hmm_search.py \\
-        --hmm  ${database_loc}/*.hmm \\
+        --hmm  ${database_loc} \\
         --input_file ${fasta} \\
-        --e_value ${e_value} \\
+        ${cutoff_flag} \\
         --output_file ${input_fasta}_hmmsearch.out \\
         --cpus ${task.cpus}
 

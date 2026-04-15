@@ -73,6 +73,7 @@ workflow DRAM {
     use_kegg = params.use_kegg
     use_kofam = params.use_kofam
     use_dbcan = params.use_dbcan
+    use_dbcan3 = params.use_dbcan3
     use_camper = params.use_camper
     use_fegenie = params.use_fegenie
     use_methyl = params.use_methyl
@@ -82,26 +83,35 @@ workflow DRAM {
     use_merops = params.use_merops
     use_uniref = params.use_uniref
     use_metals = params.use_metals
+    use_antismash = params.use_antismash
+    use_rgi = params.use_rgi
+    use_card = params.use_card
+    use_tcdb = params.use_tcdb
+    use_dram_db = params.use_dram_db
     use_vog = params.use_vog
-
     if (params.anno_dbs != "") {
         anno_dbs = params.anno_dbs.tokenize(',').collect { it.trim().toLowerCase() }
         value_for_all = 'all'
-        use_kegg = getDBFlag(anno_dbs, 'kegg', value_for_all)
-        use_kofam = getDBFlag(anno_dbs, 'kofam', value_for_all)
-        use_dbcan = getDBFlag(anno_dbs, 'dbcan', value_for_all)
-        use_dbcan3 = getDBFlag(anno_dbs, 'dbcan3', value_for_all)
-        use_camper = getDBFlag(anno_dbs, 'camper', value_for_all)
-        use_fegenie = getDBFlag(anno_dbs, 'fegenie', value_for_all)
-        use_methyl = getDBFlag(anno_dbs, 'methyl', value_for_all)
-        use_canthyd = getDBFlag(anno_dbs, 'canthyd', value_for_all)
-        use_sulfur = getDBFlag(anno_dbs, 'sulfur', value_for_all)
+        use_kegg = getDBFlag(anno_dbs, 'kegg', value_for_all, params.kegg_db)
+        use_kofam = getDBFlag(anno_dbs, 'kofam', value_for_all, params.kofam_db)
+        use_dbcan = getDBFlag(anno_dbs, 'dbcan', value_for_all, params.dbcan_db)
+        use_dbcan3 = getDBFlag(anno_dbs, 'dbcan3', value_for_all, params.dbcan3_db)
+        use_camper = getDBFlag(anno_dbs, 'camper', value_for_all, params.camper_hmm_db)
+        use_fegenie = getDBFlag(anno_dbs, 'fegenie', value_for_all, params.fegenie_db)
+        use_methyl = getDBFlag(anno_dbs, 'methyl', value_for_all, params.methyl_db)
+        use_canthyd = getDBFlag(anno_dbs, 'canthyd', value_for_all, params.canthyd_hmm_db)
+        use_sulfur = getDBFlag(anno_dbs, 'sulfur', value_for_all, params.sulfur_db)
         // use_pfam = getDBFlag(anno_dbs, 'pfam', value_for_all)
         // PFAM database is currently disabled in this pipeline due to a bug in the DRAM2 implementation with the PFAM database. It will be re-enabled in a future release.
-        use_merops = getDBFlag(anno_dbs, 'merops', value_for_all)
-        use_uniref = getDBFlag(anno_dbs, 'uniref', value_for_all)
-        use_metals = getDBFlag(anno_dbs, 'metals', value_for_all)
-        use_vog = getDBFlag(anno_dbs, 'vog', value_for_all)
+        use_merops = getDBFlag(anno_dbs, 'merops', value_for_all, params.merops_db)
+        use_uniref = getDBFlag(anno_dbs, 'uniref', value_for_all, params.uniref_db)
+        use_metals = getDBFlag(anno_dbs, 'metals', value_for_all, params.metals_db)
+        use_antismash = getDBFlag(anno_dbs, 'antismash', value_for_all, params.antismash_db)
+        use_rgi = getDBFlag(anno_dbs, 'rgi', value_for_all, params.card_db)
+        use_card = getDBFlag(anno_dbs, 'card', value_for_all, params.card_db)
+        use_tcdb = getDBFlag(anno_dbs, 'tcdb', value_for_all, params.tcdb_db)
+        use_dram_db = getDBFlag(anno_dbs, 'dram_db', value_for_all, params.dram_db)
+        use_vog = getDBFlag(anno_dbs, 'vog', value_for_all, params.vog_db)
     }
 
 
@@ -241,6 +251,11 @@ workflow DRAM {
             use_merops,
             use_uniref,
             use_metals,
+            use_antismash,
+            use_rgi,
+            use_card,
+            use_tcdb,
+            use_dram_db,
             use_vog
         )
 

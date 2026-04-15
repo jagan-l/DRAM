@@ -170,6 +170,8 @@ def combine_annotations(annotations_dir, genes_dir, output, threads):
         combined_data[FASTA_COLUMN] = combined_data[FASTA_COLUMN].where(
             mask, other=combined_data[FASTA_COLUMN + "2"]
         )
+        # TODO: fix the merge so it doesn't make this column
+        combined_data = combined_data.drop(columns=FASTA_COLUMN + "2")
 
     combined_data = convert_bit_scores_to_numeric(combined_data)
 

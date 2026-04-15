@@ -61,4 +61,6 @@ workflow CALL {
     ch_collected_faa
     ch_collected_fna
     ch_collected_fasta
+    ch_gene_gff
+    ch_filtered_fasta
 }
