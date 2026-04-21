@@ -68,10 +68,10 @@ workflow PIPELINE_INITIALISATION {
     if (params.anno_dbs != "") {
         anno_dbs = params.anno_dbs.tokenize(',').collect { it.trim().toLowerCase() }
         value_for_all = 'all'
-        use_kegg = getDBFlag(anno_dbs, 'kegg', value_for_all)
-        use_kofam = getDBFlag(anno_dbs, 'kofam', value_for_all)
-        use_fegenie = getDBFlag(anno_dbs, 'fegenie', value_for_all)
-        use_sulfur = getDBFlag(anno_dbs, 'sulfur', value_for_all)
+        use_kegg = getDBFlag(anno_dbs, 'kegg', value_for_all, params.kegg_db)
+        use_kofam = getDBFlag(anno_dbs, 'kofam', value_for_all, params.kofam_db)
+        use_fegenie = getDBFlag(anno_dbs, 'fegenie', value_for_all, params.fegenie_db)
+        use_sulfur = getDBFlag(anno_dbs, 'sulfur', value_for_all, params.sulfur_db)
         // use_pfam = getDBFlag(anno_dbs, 'pfam', value_for_all)
         // PFAM database is currently disabled in this pipeline due to a bug in the DRAM2 implementation with the PFAM database. It will be re-enabled in a future release.
     }

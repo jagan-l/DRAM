@@ -19,18 +19,23 @@ alphabet = pyhmmer.easel.Alphabet.amino()
     help="Path to the input fasta to search against",
 )
 @click.option("--e_value", type=float, help="e value cutoff for filtering")
+@click.option("--t_value", type=float, help="bitscore cutoff for filtering")
 @click.option(
     "--output_file",
     type=click.Path(),
     help="Path to output file",
 )
 @click.option("--cpus", type=int, help="number of cpu core to run HMMER with")
-def main(hmm, input_file, e_value, output_file, cpus):
+def main(hmm, input_file, e_value, t_value, output_file, cpus):
     t1 = time.time()
 
     hmm = Path(hmm)
-
-    hmm_paths = hmm.parent.glob(hmm.name)
+    if hmm.is_dir():  # if directory passed, glob all hmms in dir
+        hmm = hmm / "*.hmm"
+    if "*" in str(hmm) or "?" in str(hmm):  # check if path is glob path
+        hmm_paths = hmm.parent.glob(hmm.name)
+    else:
+        hmm_paths = [hmm]
 
     hmms = []
     for path in hmm_paths:
@@ -38,6 +43,11 @@ def main(hmm, input_file, e_value, output_file, cpus):
             hmms.extend(hmm_file)
 
     print(hmms)
+    kw = {}
+    if t_value:
+        kw["T"] = t_value
+    elif e_value:
+        kw["E"] = e_value
 
     with open(output_file, "wb") as out_fh:
         with pyhmmer.easel.SequenceFile(
@@ -46,7 +56,7 @@ def main(hmm, input_file, e_value, output_file, cpus):
             seqs = pyhmmer.easel.DigitalSequenceBlock(alphabet)
             seqs.extend(sf)
             first = True
-            for hits in pyhmmer.hmmer.hmmsearch(hmms, seqs, cpus=cpus, E=e_value):
+            for hits in pyhmmer.hmmer.hmmsearch(hmms, seqs, cpus=cpus, **kw):
                 hits.write(out_fh, format="domains", header=first)
                 first = False
             # total = sum(len(hits) for hits in pyhmmer.hmmer.hmmsearch(hmms, seqs, cpus=8, E=1e-15))

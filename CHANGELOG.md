@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2.0.0-beta28 - 2026-04-15
+
+[cdfe210](https://github.com/WrightonLabCSU/DRAM/commit/cdfe210ca64eb95baf6f1acedb62f91b74630181)...[e07cd74](https://github.com/WrightonLabCSU/DRAM/commit/e07cd74e8d60fca7513f645c04d0956760c74768)
+
+### Features
+
+- Add antiSMASH, CARD, RGI, TCDB ([8d08d1f](https://github.com/WrightonLabCSU/DRAM/commit/8d08d1f9d54fb139eb53587754e569c4317ddc37))
+
+  Add antiSMASH nextflow module, right now just collect antismash
+  raw output while we work on incorporating raw output into
+  larger pipeline
+  Add rgi nextflow module, right now like antiSMASH, only
+  collect raw output while we work on incorporating
+  ADD CARD db processing with mmseqs
+  ADD TCDB processing with mmseqs
+
+- Add DRAM DB HMMs = ([e07cd74](https://github.com/WrightonLabCSU/DRAM/commit/e07cd74e8d60fca7513f645c04d0956760c74768))
+
+  Add DRAM team curated HMM database as new annotation db option.
+  Work in progress and testing database, but can be found on GLOBUS.
+
 ## 2.0.0-beta27 - 2026-03-18
 
 [f03804b](https://github.com/WrightonLabCSU/DRAM/commit/f03804bca43b15e55731316c00b1c34ac328c62c)...[7d9a12d](https://github.com/WrightonLabCSU/DRAM/commit/7d9a12d225c577a6b2fb0c4d7b1ba60a5588e1e8)
