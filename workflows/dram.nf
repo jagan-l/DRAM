@@ -73,7 +73,6 @@ workflow DRAM {
     use_kegg = params.use_kegg
     use_kofam = params.use_kofam
     use_dbcan = params.use_dbcan
-    use_dbcan3 = params.use_dbcan3
     use_camper = params.use_camper
     use_fegenie = params.use_fegenie
     use_methyl = params.use_methyl
@@ -95,7 +94,6 @@ workflow DRAM {
         use_kegg = getDBFlag(anno_dbs, 'kegg', value_for_all, params.kegg_db)
         use_kofam = getDBFlag(anno_dbs, 'kofam', value_for_all, params.kofam_db)
         use_dbcan = getDBFlag(anno_dbs, 'dbcan', value_for_all, params.dbcan_db)
-        use_dbcan3 = getDBFlag(anno_dbs, 'dbcan3', value_for_all, params.dbcan3_db)
         use_camper = getDBFlag(anno_dbs, 'camper', value_for_all, params.camper_hmm_db)
         use_fegenie = getDBFlag(anno_dbs, 'fegenie', value_for_all, params.fegenie_db)
         use_methyl = getDBFlag(anno_dbs, 'methyl', value_for_all, params.methyl_db)
@@ -241,7 +239,6 @@ workflow DRAM {
             use_kegg,
             use_kofam,
             use_dbcan,
-            use_dbcan3,
             use_camper,
             use_fegenie,
             use_methyl,

@@ -18,7 +18,6 @@ workflow ANNOTATE {
     use_kegg
     use_kofam
     use_dbcan
-    use_dbcan3
     use_camper
     use_fegenie
     use_methyl
@@ -153,7 +152,6 @@ workflow ANNOTATE {
             use_kegg,
             use_kofam,
             use_dbcan,
-            use_dbcan3,
             use_camper,
             use_fegenie,
             use_methyl,

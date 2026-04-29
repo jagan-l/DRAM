@@ -148,11 +148,7 @@
                 },
                 "use_dbcan": {
                     "type": "boolean",
-                    "description": "Use the DBCan database for annotation."
-                },
-                "use_dbcan3": {
-                    "type": "boolean",
-                    "description": "Use the experimental DBCan3 databases for annotation."
+                    "description": "Use the dbCAN database for annotation."
                 },
                 "use_fegenie": {
                     "type": "boolean",
@@ -415,32 +411,12 @@
                     "default": "${launchDir}/databases/dbcan/",
                     "hidden": true
                 },
-                "dbcan_fam_activities": {
-                    "type": "string",
-                    "default": "${launchDir}/databases/dbcan/dbcan.fam-activities.tsv",
-                    "hidden": true
-                },
-                "dbcan_subfam_activities": {
-                    "type": "string",
-                    "default": "${launchDir}/databases/dbcan/dbcan.fam-activities.tsv",
-                    "hidden": true
-                },
                 "dbcan_version": {
                     "type": "string",
                     "hidden": true
                 },
                 "dbcan_version_file": {
                     "type": "string",
-                    "hidden": true
-                },
-                "dbcan3_db": {
-                    "type": "string",
-                    "default": "${launchDir}/databases/dbcan3/",
-                    "hidden": true
-                },
-                "dbcan3_sub_db": {
-                    "type": "string",
-                    "default": "${launchDir}/databases/dbcan3_sub/",
                     "hidden": true
                 },
                 "vog_db": {
