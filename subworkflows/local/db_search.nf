@@ -46,6 +46,9 @@ include { HMM_SEARCH as HMM_SEARCH_METALS               } from "../../modules/lo
 
 include { ANTISMASH_ANTISMASH                           } from '../../modules/nf-core/antismash/antismash/main'
 include { RGI_MAIN                                      } from '../../modules/nf-core/rgi/main/main'
+include { RUNDBCAN_EASYSUBSTRATE                        } from '../../modules/nf-core/rundbcan/easysubstrate/main'
+
+include {checkDBVersion                                 } from '../../subworkflows/local/utils_pipeline_setup.nf'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -58,7 +61,9 @@ workflow DB_SEARCH {
     ch_gene_locs  // channel: path(gene_locs_tsv) ]
     ch_called_proteins  // channel: [ val(input_fasta name), path(called_proteins_file.faa) ]
     ch_antismash_map
-    ch_rgi_map
+    ch_fna_map
+    ch_faa_map
+    ch_gff_map
     ch_gene_gff
     default_sheet // Path to dummy sheet
     use_kegg
@@ -137,6 +142,7 @@ workflow DB_SEARCH {
     dram_db_name = "dram_db"
 
     def formattedOutputChannels = channel.of()
+    def dbcanOutputChannels = channel.of()
 
     // Here we will create mmseqs2 index files for each of the inputs if we are going to do a mmseqs2 database
     // We use .val because we need to unwrap the workflow output.
@@ -199,28 +205,13 @@ workflow DB_SEARCH {
     }
     // dbCAN3 annotation
     if  (use_dbcan3) {
-        ch_combined_proteins_locs = ch_called_proteins.join(ch_gene_locs)
-        HMM_SEARCH_DBCAN3 (
-            ch_combined_proteins_locs,
-            params.dbcan_e_value,
-            DB_CHANNEL_SETUP.out.ch_dbcan3_db,
-            default_sheet,
-            false,
-            dbcan3_name
-            )
-        ch_hmm_formatted = HMM_SEARCH_DBCAN3.out.formatted_hits
-        formattedOutputChannels = formattedOutputChannels.mix(ch_hmm_formatted)
-
-        HMM_SEARCH_DBCAN3_SUB (
-            ch_combined_proteins_locs,
-            params.dbcan_e_value,
-            DB_CHANNEL_SETUP.out.ch_dbcan3_sub_db,
-            default_sheet,
-            false,
-            dbcan3_sub_name
-            )
-        ch_hmm_formatted = HMM_SEARCH_DBCAN3_SUB.out.formatted_hits
-        formattedOutputChannels = formattedOutputChannels.mix(ch_hmm_formatted)
+        RUNDBCAN_EASYSUBSTRATE(
+            ch_faa_map,
+            ch_gff_map,
+            DB_CHANNEL_SETUP.out.ch_dbcan3_db
+        )
+        dbcanOutputChannels = dbcanOutputChannels.mix(RUNDBCAN_EASYSUBSTRATE.out.dbcanhmm_results)
+        dbcanOutputChannels = dbcanOutputChannels.mix(RUNDBCAN_EASYSUBSTRATE.out.dbcansub_results)
     }
     // CAMPER annotation
     if (use_camper) {
@@ -339,8 +330,7 @@ workflow DB_SEARCH {
     }
     // RGI with CARD
     if (use_rgi) {
-
-        RGI_MAIN(ch_rgi_map, DB_CHANNEL_SETUP.out.ch_card_db, [])
+        RGI_MAIN(ch_fna_map, DB_CHANNEL_SETUP.out.ch_card_db, [])
     }
     // CARD annotation
     if (use_card) {
@@ -394,10 +384,15 @@ workflow DB_SEARCH {
         ch_mmseqs_formatted = SQL_VIRAL.out.sql_formatted_hits
         formattedOutputChannels = formattedOutputChannels.mix(ch_mmseqs_formatted)
     }
-    fastas = formattedOutputChannels.map { it[1] }.collect()
-    genes = ch_called_proteins.map { it[1] }.collect()
 
-    COMBINE_ANNOTATIONS( fastas, genes )
+    fastas = formattedOutputChannels.map { it[1] }.toList()
+    genes = ch_called_proteins.map { it[1] }.toList()
+    dbcan_output = dbcanOutputChannels.map { it[1] }.toList()
+    COMBINE_ANNOTATIONS(
+        fastas,
+        genes,
+        dbcan_output
+    )
     ch_combined_annotations = COMBINE_ANNOTATIONS.out.combined_annotations_out
 
 
@@ -474,6 +469,7 @@ workflow DB_CHANNEL_SETUP {
     if (use_dbcan3) {
         ch_dbcan3_db = file(params.dbcan3_db).exists() ? file(params.dbcan3_db) : error("Error: If using --annotate, you must supply prebuilt databases. DBCAN3 database file not found at ${params.dbcan3_db}")
         ch_dbcan3_sub_db = file(params.dbcan3_sub_db).exists() ? file(params.dbcan3_sub_db) : error("Error: If using --annotate, you must supply prebuilt databases. DBCAN3 sub database file not found at ${params.dbcan3_sub_db}")
+        checkDBVersion(file(params.dbcan_version_file), params.dbcan_version, "dbcan")
     }
 
     if (use_camper) {

@@ -132,7 +132,7 @@
             "properties": {
                 "anno_dbs": {
                     "type": "string",
-                    "description": "Alternative way to specify database list for annotation. Comma sepeterated list of databases to include in the annotates. Use `all` for all. Example: 'kegg,dbcan,kofam,merops,viral,camper,cant_hyd,fegenie,sulfur,methyl,uniref,pfam,vogdb'. When in doubt, use the name after `use_` for each database. This option overrides individual `use_` database flags. (WARNING, this option name may change in the future)"
+                    "description": "Alternative way to specify database list for annotation. Comma sepeterated list of databases to include in the annotates. Use `all` for all. Example: 'kegg,dbcan,kofam,merops,viral,camper,canthyd,fegenie,sulfur,methyl,uniref,pfam,vogdb'. When in doubt, use the name after `use_` for each database. This option overrides individual `use_` database flags. (WARNING, this option name may change in the future)"
                 },
                 "use_dram_db": {
                     "type": "boolean",
@@ -231,7 +231,7 @@
                 },
                 "database_list": {
                     "type": "string",
-                    "description": "Database list for generating GFF and GBK. Comma sepeterated list of databases to include in the annotates. Use `all` for all. Example: 'kegg,dbcan,kofam,merops,viral,camper,cant_hyd,fegenie,sulfur,methyl,uniref,pfam,vogdb'",
+                    "description": "Database list for generating GFF and GBK. Comma sepeterated list of databases to include in the annotates. Use `all` for all. Example: 'kegg,dbcan,kofam,merops,viral,camper,canthyd,fegenie,sulfur,methyl,uniref,pfam,vogdb'",
                     "default": "all"
                 },
                 "generate_gff": {
@@ -423,6 +423,14 @@
                 "dbcan_subfam_activities": {
                     "type": "string",
                     "default": "${launchDir}/databases/dbcan/dbcan.fam-activities.tsv",
+                    "hidden": true
+                },
+                "dbcan_version": {
+                    "type": "string",
+                    "hidden": true
+                },
+                "dbcan_version_file": {
+                    "type": "string",
                     "hidden": true
                 },
                 "dbcan3_db": {
