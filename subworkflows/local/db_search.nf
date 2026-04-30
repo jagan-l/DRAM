@@ -33,9 +33,6 @@ include { ADD_SQL_DESCRIPTIONS as SQL_PFAM              } from "../../modules/lo
 include { ADD_SQL_DESCRIPTIONS as SQL_DBCAN             } from "../../modules/local/annotate/add_sql_descriptions.nf"
 
 include { HMM_SEARCH as HMM_SEARCH_KOFAM                } from "../../modules/local/annotate/hmmsearch.nf"
-include { HMM_SEARCH as HMM_SEARCH_DBCAN                } from "../../modules/local/annotate/hmmsearch.nf"
-include { HMM_SEARCH as HMM_SEARCH_DBCAN3               } from "../../modules/local/annotate/hmmsearch.nf"
-include { HMM_SEARCH as HMM_SEARCH_DBCAN3_SUB           } from "../../modules/local/annotate/hmmsearch.nf"
 include { HMM_SEARCH as HMM_SEARCH_DRAM_DB              } from "../../modules/local/annotate/hmmsearch.nf"
 include { HMM_SEARCH as HMM_SEARCH_VOG                  } from "../../modules/local/annotate/hmmsearch.nf"
 include { HMM_SEARCH as HMM_SEARCH_CAMPER               } from "../../modules/local/annotate/hmmsearch.nf"
@@ -46,6 +43,9 @@ include { HMM_SEARCH as HMM_SEARCH_METALS               } from "../../modules/lo
 
 include { ANTISMASH_ANTISMASH                           } from '../../modules/nf-core/antismash/antismash/main'
 include { RGI_MAIN                                      } from '../../modules/nf-core/rgi/main/main'
+include { RUNDBCAN_EASYSUBSTRATE                        } from '../../modules/nf-core/rundbcan/easysubstrate/main'
+
+include {checkDBVersion                                 } from '../../subworkflows/local/utils_pipeline_setup.nf'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -58,13 +58,14 @@ workflow DB_SEARCH {
     ch_gene_locs  // channel: path(gene_locs_tsv) ]
     ch_called_proteins  // channel: [ val(input_fasta name), path(called_proteins_file.faa) ]
     ch_antismash_map
-    ch_rgi_map
+    ch_fna_map
+    ch_faa_map
+    ch_gff_map
     ch_gene_gff
     default_sheet // Path to dummy sheet
     use_kegg
     use_kofam
     use_dbcan
-    use_dbcan3
     use_camper
     use_fegenie
     use_methyl
@@ -87,7 +88,6 @@ workflow DB_SEARCH {
         use_kegg,
         use_kofam,
         use_dbcan,
-        use_dbcan3,
         use_camper,
         use_fegenie,
         use_methyl,
@@ -108,8 +108,6 @@ workflow DB_SEARCH {
 
     ch_sql_descriptions_db = file(params.sql_descriptions_db)
     ch_kofam_list = file(params.kofam_list)
-    ch_dbcan_fam = file(params.dbcan_fam_activities)
-    ch_dbcan_subfam = file(params.dbcan_subfam_activities)
     ch_vog_list = file(params.vog_list)
     ch_camper_hmm_list = file(params.camper_hmm_list)
     ch_canthyd_hmm_list = file(params.cant_hyd_hmm_list)
@@ -118,8 +116,6 @@ workflow DB_SEARCH {
 
     kegg_name = "kegg"
     dbcan_name = "dbcan"
-    dbcan3_name = "dbcan3"
-    dbcan3_sub_name = "dbcan3_sub"
     kofam_name = "kofam"
     merops_name = "merops"
     viral_name = "viral"
@@ -137,6 +133,7 @@ workflow DB_SEARCH {
     dram_db_name = "dram_db"
 
     def formattedOutputChannels = channel.of()
+    def dbcanOutputChannels = channel.of()
 
     // Here we will create mmseqs2 index files for each of the inputs if we are going to do a mmseqs2 database
     // We use .val because we need to unwrap the workflow output.
@@ -181,46 +178,16 @@ workflow DB_SEARCH {
         ch_mmseqs_formatted = SQL_PFAM.out.sql_formatted_hits
         formattedOutputChannels = formattedOutputChannels.mix(ch_mmseqs_formatted)
     }
-    // dbCAN annotation
-    if  (use_dbcan) {
-        ch_combined_proteins_locs = ch_called_proteins.join(ch_gene_locs)
-        HMM_SEARCH_DBCAN (
-            ch_combined_proteins_locs,
-            params.dbcan_e_value,
-            DB_CHANNEL_SETUP.out.ch_dbcan_db,
-            default_sheet,
-            false,
-            dbcan_name
-            )
-        ch_hmm_unformatted = HMM_SEARCH_DBCAN.out.formatted_hits
-        SQL_DBCAN(ch_hmm_unformatted, dbcan_name, ch_sql_descriptions_db)
-        ch_hmm_formatted = SQL_DBCAN.out.sql_formatted_hits
-        formattedOutputChannels = formattedOutputChannels.mix(ch_hmm_formatted)
-    }
-    // dbCAN3 annotation
-    if  (use_dbcan3) {
-        ch_combined_proteins_locs = ch_called_proteins.join(ch_gene_locs)
-        HMM_SEARCH_DBCAN3 (
-            ch_combined_proteins_locs,
-            params.dbcan_e_value,
-            DB_CHANNEL_SETUP.out.ch_dbcan3_db,
-            default_sheet,
-            false,
-            dbcan3_name
-            )
-        ch_hmm_formatted = HMM_SEARCH_DBCAN3.out.formatted_hits
-        formattedOutputChannels = formattedOutputChannels.mix(ch_hmm_formatted)
 
-        HMM_SEARCH_DBCAN3_SUB (
-            ch_combined_proteins_locs,
-            params.dbcan_e_value,
-            DB_CHANNEL_SETUP.out.ch_dbcan3_sub_db,
-            default_sheet,
-            false,
-            dbcan3_sub_name
-            )
-        ch_hmm_formatted = HMM_SEARCH_DBCAN3_SUB.out.formatted_hits
-        formattedOutputChannels = formattedOutputChannels.mix(ch_hmm_formatted)
+    // dbCAN3 annotation
+    if  (use_dbcan) {
+        RUNDBCAN_EASYSUBSTRATE(
+            ch_faa_map,
+            ch_gff_map,
+            DB_CHANNEL_SETUP.out.ch_dbcan_db
+        )
+        dbcanOutputChannels = dbcanOutputChannels.mix(RUNDBCAN_EASYSUBSTRATE.out.dbcanhmm_results)
+        dbcanOutputChannels = dbcanOutputChannels.mix(RUNDBCAN_EASYSUBSTRATE.out.dbcansub_results)
     }
     // CAMPER annotation
     if (use_camper) {
@@ -339,8 +306,7 @@ workflow DB_SEARCH {
     }
     // RGI with CARD
     if (use_rgi) {
-
-        RGI_MAIN(ch_rgi_map, DB_CHANNEL_SETUP.out.ch_card_db, [])
+        RGI_MAIN(ch_fna_map, DB_CHANNEL_SETUP.out.ch_card_db, [])
     }
     // CARD annotation
     if (use_card) {
@@ -394,10 +360,15 @@ workflow DB_SEARCH {
         ch_mmseqs_formatted = SQL_VIRAL.out.sql_formatted_hits
         formattedOutputChannels = formattedOutputChannels.mix(ch_mmseqs_formatted)
     }
-    fastas = formattedOutputChannels.map { it[1] }.collect()
-    genes = ch_called_proteins.map { it[1] }.collect()
 
-    COMBINE_ANNOTATIONS( fastas, genes )
+    fastas = formattedOutputChannels.map { it[1] }.toList()
+    genes = ch_called_proteins.map { it[1] }.toList()
+    dbcan_output = dbcanOutputChannels.map { it[1] }.toList()
+    COMBINE_ANNOTATIONS(
+        fastas,
+        genes,
+        dbcan_output
+    )
     ch_combined_annotations = COMBINE_ANNOTATIONS.out.combined_annotations_out
 
 
@@ -411,7 +382,6 @@ workflow DB_CHANNEL_SETUP {
     use_kegg
     use_kofam
     use_dbcan
-    use_dbcan3
     use_camper
     use_fegenie
     use_methyl
@@ -435,8 +405,6 @@ workflow DB_CHANNEL_SETUP {
     ch_kegg_db = Channel.empty()
     ch_kofam_db = Channel.empty()
     ch_dbcan_db = Channel.empty()
-    ch_dbcan3_db = Channel.empty()
-    ch_dbcan3_sub_db = Channel.empty()
     ch_camper_hmm_db = Channel.empty()
     ch_camper_mmseqs_db = Channel.empty()
     ch_camper_mmseqs_list = Channel.empty()
@@ -469,11 +437,7 @@ workflow DB_CHANNEL_SETUP {
 
     if (use_dbcan) {
         ch_dbcan_db = file(params.dbcan_db).exists() ? file(params.dbcan_db) : error("Error: If using --annotate, you must supply prebuilt databases. DBCAN database file not found at ${params.dbcan_db}")
-    }
-
-    if (use_dbcan3) {
-        ch_dbcan3_db = file(params.dbcan3_db).exists() ? file(params.dbcan3_db) : error("Error: If using --annotate, you must supply prebuilt databases. DBCAN3 database file not found at ${params.dbcan3_db}")
-        ch_dbcan3_sub_db = file(params.dbcan3_sub_db).exists() ? file(params.dbcan3_sub_db) : error("Error: If using --annotate, you must supply prebuilt databases. DBCAN3 sub database file not found at ${params.dbcan3_sub_db}")
+        checkDBVersion(params.dbcan_version_file, params.dbcan_version, "dbcan")
     }
 
     if (use_camper) {
@@ -566,8 +530,6 @@ workflow DB_CHANNEL_SETUP {
     ch_kegg_db
     ch_kofam_db
     ch_dbcan_db
-    ch_dbcan3_db
-    ch_dbcan3_sub_db
     ch_camper_hmm_db
     ch_camper_mmseqs_db
     ch_camper_mmseqs_list

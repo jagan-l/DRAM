@@ -132,7 +132,7 @@
             "properties": {
                 "anno_dbs": {
                     "type": "string",
-                    "description": "Alternative way to specify database list for annotation. Comma sepeterated list of databases to include in the annotates. Use `all` for all. Example: 'kegg,dbcan,kofam,merops,viral,camper,cant_hyd,fegenie,sulfur,methyl,uniref,pfam,vogdb'. When in doubt, use the name after `use_` for each database. This option overrides individual `use_` database flags. (WARNING, this option name may change in the future)"
+                    "description": "Alternative way to specify database list for annotation. Comma sepeterated list of databases to include in the annotates. Use `all` for all. Example: 'kegg,dbcan,kofam,merops,viral,camper,canthyd,fegenie,sulfur,methyl,uniref,pfam,vogdb'. When in doubt, use the name after `use_` for each database. This option overrides individual `use_` database flags. (WARNING, this option name may change in the future)"
                 },
                 "use_dram_db": {
                     "type": "boolean",
@@ -148,11 +148,7 @@
                 },
                 "use_dbcan": {
                     "type": "boolean",
-                    "description": "Use the DBCan database for annotation."
-                },
-                "use_dbcan3": {
-                    "type": "boolean",
-                    "description": "Use the experimental DBCan3 databases for annotation."
+                    "description": "Use the dbCAN database for annotation."
                 },
                 "use_fegenie": {
                     "type": "boolean",
@@ -231,7 +227,7 @@
                 },
                 "database_list": {
                     "type": "string",
-                    "description": "Database list for generating GFF and GBK. Comma sepeterated list of databases to include in the annotates. Use `all` for all. Example: 'kegg,dbcan,kofam,merops,viral,camper,cant_hyd,fegenie,sulfur,methyl,uniref,pfam,vogdb'",
+                    "description": "Database list for generating GFF and GBK. Comma sepeterated list of databases to include in the annotates. Use `all` for all. Example: 'kegg,dbcan,kofam,merops,viral,camper,canthyd,fegenie,sulfur,methyl,uniref,pfam,vogdb'",
                     "default": "all"
                 },
                 "generate_gff": {
@@ -415,24 +411,12 @@
                     "default": "${launchDir}/databases/dbcan/",
                     "hidden": true
                 },
-                "dbcan_fam_activities": {
+                "dbcan_version": {
                     "type": "string",
-                    "default": "${launchDir}/databases/dbcan/dbcan.fam-activities.tsv",
                     "hidden": true
                 },
-                "dbcan_subfam_activities": {
+                "dbcan_version_file": {
                     "type": "string",
-                    "default": "${launchDir}/databases/dbcan/dbcan.fam-activities.tsv",
-                    "hidden": true
-                },
-                "dbcan3_db": {
-                    "type": "string",
-                    "default": "${launchDir}/databases/dbcan3/",
-                    "hidden": true
-                },
-                "dbcan3_sub_db": {
-                    "type": "string",
-                    "default": "${launchDir}/databases/dbcan3_sub/",
                     "hidden": true
                 },
                 "vog_db": {

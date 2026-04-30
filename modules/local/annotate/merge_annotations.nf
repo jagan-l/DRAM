@@ -4,7 +4,7 @@ process MERGE_ANNOTATIONS {
     errorStrategy 'finish'
 
     conda "${moduleDir}/environment.yml"
-    container "community.wave.seqera.io/library/python_pandas_hmmer_mmseqs2_pruned:0a22b52d960467a9"
+    container "community.wave.seqera.io/library/python_pandas_polars_hmmer_pruned:6d5bc9dfeca29b70"
 
     input:
     path( ch_annotations, stageAs: "annotations/*" )

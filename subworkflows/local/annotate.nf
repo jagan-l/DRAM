@@ -18,7 +18,6 @@ workflow ANNOTATE {
     use_kegg
     use_kofam
     use_dbcan
-    use_dbcan3
     use_camper
     use_fegenie
     use_methyl
@@ -116,7 +115,7 @@ workflow ANNOTATE {
             tuple(meta, file)
         }
 
-    ch_rgi_map = ch_called_genes
+    ch_fna_map = ch_called_genes
         .map {
                 file_name, file ->
                 def meta = [:]
@@ -124,18 +123,35 @@ workflow ANNOTATE {
                 tuple(meta, file)
             }
 
+    ch_faa_map = ch_called_proteins
+        .map {
+                file_name, file ->
+                def meta = [:]
+                meta.id = file_name
+                tuple(meta, file)
+            }
+
+    ch_gff_map = ch_gene_gff
+        .map {
+            file ->
+            def meta = [:]
+            meta.id = file.getBaseName()
+            tuple(meta, file, "prodigal")
+        }
+
     if (params.annotate){
         DB_SEARCH(
             ch_gene_locs,
             ch_called_proteins,
             ch_antismash_map,
-            ch_rgi_map,
+            ch_fna_map,
+            ch_faa_map,
+            ch_gff_map,
             ch_gene_gff,
             default_sheet,
             use_kegg,
             use_kofam,
             use_dbcan,
-            use_dbcan3,
             use_camper,
             use_fegenie,
             use_methyl,
