@@ -62,6 +62,7 @@ workflow PIPELINE_INITIALISATION {
     use_fegenie = params.use_fegenie
     use_sulfur = params.use_sulfur
     use_pfam = params.use_pfam
+    use_kofam = params.use_kofam
 
 
     if (params.anno_dbs != "") {
