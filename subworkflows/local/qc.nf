@@ -57,7 +57,7 @@ workflow QC {
                     tuple(input_fastaName, it)
                 }
             // Collect all individual fasta to pass to quast
-            Channel.empty()
+            channel.empty()
                 .mix( ch_called_genes  )
                 .collect()
                 .set { ch_collected_fna }

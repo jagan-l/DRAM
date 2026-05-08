@@ -34,7 +34,7 @@ workflow MERGE {
     Channel
         .from(tsv_files.collect { annotations_dir.toString() + '/' + it })
         .set { ch_merge_annotations }
-    Channel.empty()
+    channel.empty()
         .mix( ch_merge_annotations )
         .collect()
         .set { ch_merge_annotations_collected }
