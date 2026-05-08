@@ -690,6 +690,11 @@
                     "type": "integer",
                     "default": 10,
                     "description": "Maximum number of jobs to submit to the queue at once."
+                },
+                "array_size": {
+                    "type": "integer",
+                    "default": 0,
+                    "description": "Number of tasks to submit per SLURM job array. 0 disables (default) so the local executor is unaffected. Set when running with --slurm."
                 }
             }
         },
