@@ -41,7 +41,7 @@ workflow DRAM {
     ch_fasta = Channel.empty()
 
     default_sheet = file(params.distill_dummy_sheet)
-    distill_flag = (params.summarize || params.distill_topic != "" || params.distill_ecosystem != "" || params.distill_custom != "" || params.sum_ecos != "")
+    distill_flag = (params.summarize || params.sum_topics != "" || params.distill_topic != "" || params.distill_ecosystem != "" || params.distill_custom != "" || params.sum_ecos != "")
 
     // if annotate with raw fasta but no call, we can infer we need to call genes, so set call to true
     // Also, if call is specified, set call to true
@@ -127,10 +127,14 @@ workflow DRAM {
     else {
         distill_custom = ""
     }
-    distill_topic = params.distill_topic
+    distill_topic = params.sum_topics
+    if (distill_topic == "") {
+        distill_topic = params.distill_topic
+    }
     if (distill_flag) {
+        log.info("distill topic: ${distill_topic}")
         if (distill_topic != "") {
-            def validTopics = ['default', 'carbon', 'energy', 'misc', 'nitrogen', 'transport', 'camper', 'none']
+            def validTopics = ['default', 'assim', 'cell', 'energy', 'env', 'none']
             def topics = distill_topic.split(',')
 
             topics.each { topic ->
@@ -274,9 +278,7 @@ workflow DRAM {
         if (distill_flag) {
             SUMMARIZE(
                 ch_final_annots,
-                ANNOTATE.out.ch_rrna_collected,
-                ANNOTATE.out.ch_trna_collected,
-                ANNOTATE.out.ch_quast_stats,
+                ANNOTATE.out.ch_trna_combined,
                 distill_topic,
                 distill_ecosystem,
                 distill_custom

@@ -1,4 +1,4 @@
-gene_id	gene_description	pathway	topic_ecosystem	category	subcategory
+gene_id	gene_description	module	topic_ecosystem	category	subcategory
 K03550	kdpD; 2-component system OmpR family sensor histidine kinase	engineered systems	engineered systems	osmoprotectant	salt-in
 K07667	kdpE; 2-component system OmpR family sensor histidine kinase	engineered systems	engineered systems	osmoprotectant	salt-in
 K01545	kdpF; K+transporting ATPase ATPase F chain	engineered systems	engineered systems	osmoprotectant	salt-in
