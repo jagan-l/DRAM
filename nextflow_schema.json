@@ -694,7 +694,7 @@
                 "array_size": {
                     "type": "integer",
                     "default": 0,
-                    "description": "Number of tasks to submit per SLURM job array. 0 disables (default) so the local executor is unaffected. Set when running with --slurm."
+                    "description": "Number of tasks to submit per SLURM job array. 0 disables (default) so the local executor is unaffected. Set when running with --slurm. Note, job arrays submit multiple jobs with the same resource requests together to be more efficent on the slurm queue. They do not batch multiple jobs together. Job arrays are about reducing slurm overheard when running many similar jobs."
                 }
             }
         },
