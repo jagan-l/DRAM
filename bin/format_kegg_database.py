@@ -73,7 +73,7 @@ def process_kegg(
     else:
         kegg_mod_loc = kegg_loc
     # make mmseqsdb from modified kegg fasta
-    kegg_mmseqs_db = path.join(output_dir, "kegg.%s.mmsdb" % download_date)
+    kegg_mmseqs_db = path.join(output_dir, "kegg.mmsdb")
     create_mmseqs(
         kegg_mod_loc,
         kegg_mmseqs_db,
@@ -150,9 +150,8 @@ def main():
     )
     parser.add_argument(
         "--skip_gene_ko_link",
-        type=bool,
+        action="store_true",
         help="Skip gene KO link processing. If not passed in, `--gene_ko_link_loc` is required",
-        default=False,
     )
     parser.add_argument(
         "--output_dir", type=str, help="Path to the output directory", default="kegg"

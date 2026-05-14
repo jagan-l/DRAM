@@ -4,5 +4,6 @@ channels:
 
 dependencies:
   - python=3.10
-  - scikit-bio=0.5.7
-  - scipy=1.8.1
+  - scikit-bio=0.7.1
+  - scipy<2
+  - mmseqs2==18.8cc5c

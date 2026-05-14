@@ -37,9 +37,9 @@ workflow DRAM {
     // Setup
     //
 
-    ch_versions = Channel.empty()
-    ch_multiqc_files = Channel.empty()
-    ch_fasta = Channel.empty()
+    ch_versions = channel.empty()
+    ch_multiqc_files = channel.empty()
+    ch_fasta = channel.empty()
 
     default_sheet = file(params.distill_dummy_sheet)
     distill_flag = (params.summarize || params.distill_topic != "" || params.distill_ecosystem != "" || params.distill_custom != "" || params.sum_ecos != "")
@@ -60,7 +60,7 @@ workflow DRAM {
     }
 
     if (params.input_fasta && (params.rename || call)) {
-        ch_fasta_raw = Channel
+        ch_fasta_raw = channel
             .fromPath(file(params.input_fasta) / params.fasta_fmt, checkIfExists: true)
                 .ifEmpty { exit 1, "Cannot find any fasta files matching: ${params.input_fasta}\nNB: Path needs to follow pattern: path/to/directory/" }
 
@@ -232,7 +232,7 @@ workflow DRAM {
 
         gene_ko_link_f = params.gene_ko_link_loc && file(params.gene_ko_link_loc).exists() ? file(params.gene_ko_link_loc) : default_sheet
         kegg_download_date = params.kegg_download_date ? params.kegg_download_date : "''"
-        skip_gene_ko_link = params.skip_gene_ko_link ? 1 : 0
+        skip_gene_ko_link = params.skip_gene_ko_link ? "true" : "false"
         FORMAT_KEGG_DB( kegg_pep_f, gene_ko_link_f, kegg_download_date, skip_gene_ko_link )
 
     } else if (params.merge_annotations){
@@ -276,7 +276,7 @@ workflow DRAM {
                 ch_final_annots = ADD_ANNOTATIONS.out.combined_annots_out
             }
         } else if (params.annotations) {
-            ch_final_annots = Channel
+            ch_final_annots = channel
                 .fromPath(params.annotations, checkIfExists: true)
                 .ifEmpty { exit 1, "Parameter annotations problem: Cannot find any called gene files matching: ${params.annotations}\nNB: Path needs to follow pattern: path/to/directory/" }
         } else {
@@ -321,24 +321,24 @@ workflow DRAM {
     //
     // MODULE: MultiQC
     //
-    ch_multiqc_config        = Channel.fromPath(
+    ch_multiqc_config        = channel.fromPath(
         "$projectDir/assets/multiqc_config.yml", checkIfExists: true)
     ch_multiqc_custom_config = params.multiqc_config ?
-        Channel.fromPath(params.multiqc_config, checkIfExists: true) :
-        Channel.empty()
+        channel.fromPath(params.multiqc_config, checkIfExists: true) :
+        channel.empty()
     ch_multiqc_logo          = params.multiqc_logo ?
-        Channel.fromPath(params.multiqc_logo, checkIfExists: true) :
-        Channel.empty()
+        channel.fromPath(params.multiqc_logo, checkIfExists: true) :
+        channel.empty()
 
     summary_params      = paramsSummaryMap(
         workflow, parameters_schema: "nextflow_schema.json")
-    ch_workflow_summary = Channel.value(paramsSummaryMultiqc(summary_params))
+    ch_workflow_summary = channel.value(paramsSummaryMultiqc(summary_params))
     ch_multiqc_files = ch_multiqc_files.mix(
         ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
     ch_multiqc_custom_methods_description = params.multiqc_methods_description ?
         file(params.multiqc_methods_description, checkIfExists: true) :
         file("$projectDir/assets/methods_description_template.yml", checkIfExists: true)
-    ch_methods_description                = Channel.value(
+    ch_methods_description                = channel.value(
         methodsDescriptionText(ch_multiqc_custom_methods_description))
 
     ch_multiqc_files = ch_multiqc_files.mix(ch_collated_versions)
