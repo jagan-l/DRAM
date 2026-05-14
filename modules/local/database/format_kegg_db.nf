@@ -4,7 +4,7 @@ process FORMAT_KEGG_DB {
     errorStrategy 'finish'
 
     conda "${moduleDir}/environment.yml"
-    container "community.wave.seqera.io/library/python_scikit-bio_scipy:0f89a100e990daf2"
+    container "community.wave.seqera.io/library/python_scikit-bio_scipy_mmseqs2:00f5f2307075f0e0"
 
     tag { ch_kegg_pep }
 
@@ -19,7 +19,7 @@ process FORMAT_KEGG_DB {
 
     script:
     """
-    if [ ${skip_gene_ko_link} ]; then
+    if [ "${skip_gene_ko_link}" = "true" ]; then
         echo "No Gene KO Link file provided. Running KEGG DB formatting without"
         format_kegg_database.py --kegg_loc ${ch_kegg_pep} --download_date ${kegg_download_date} --threads ${params.threads} --output_dir kegg --skip_gene_ko_link
     else
