@@ -4,7 +4,7 @@ process FORMAT_KEGG_DB {
     errorStrategy 'finish'
 
     conda "${moduleDir}/environment.yml"
-    container "community.wave.seqera.io/library/python_pandas_hmmer_mmseqs2_pruned:d2c88b719ab1322c"
+    container "community.wave.seqera.io/library/python_scikit-bio_scipy_mmseqs2:00f5f2307075f0e0"
 
     tag { ch_kegg_pep }
 
