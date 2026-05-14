@@ -31,7 +31,7 @@ workflow MERGE {
     }
 
     // Create a channel with the paths to the .tsv files
-    Channel
+    channel
         .from(tsv_files.collect { annotations_dir.toString() + '/' + it })
         .set { ch_merge_annotations }
     channel.empty()

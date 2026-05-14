@@ -59,7 +59,7 @@ workflow DRAM {
     }
 
     if (params.input_fasta && (params.rename || call)) {
-        ch_fasta = Channel
+        ch_fasta = channel
             .fromPath(file(params.input_fasta) / params.fasta_fmt, checkIfExists: true)
                 .ifEmpty { exit 1, "Cannot find any fasta files matching: ${params.input_fasta}\nNB: Path needs to follow pattern: path/to/directory/" }
 
@@ -264,7 +264,7 @@ workflow DRAM {
                 ch_final_annots = ADD_ANNOTATIONS.out.combined_annots_out
             }
         } else if (params.annotations) {
-            ch_final_annots = Channel
+            ch_final_annots = channel
                 .fromPath(params.annotations, checkIfExists: true)
                 .ifEmpty { exit 1, "Parameter annotations problem: Cannot find any called gene files matching: ${params.annotations}\nNB: Path needs to follow pattern: path/to/directory/" }
         } else {
