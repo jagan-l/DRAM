@@ -34,4 +34,3 @@ After genes have been annotated, users can SUMMARIZE this information into a use
 ## 4) Generate an interactive heatmap of ecosystem-relevant MAG level metabolic function
 
 Users can also generate an interactive heatmap depicting the presence of specific metabolic functions. DRAM2 automatically generates this heatmap for each ecosystem if indicated by the user in addition to a generic heatmap of metabolic function by MAG if no ecosystem is defined
-
