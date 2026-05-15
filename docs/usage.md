@@ -12,6 +12,10 @@ Below is an example of common workflow in DRAM2. The user is calling genes from 
 
 ## Description of command-line options:
 
+```{note}
+All command line options can also be set inside a configuration or params file for set it and forget style parameters instead of needing to be provided each time on the command line. See Nextflow or nf-core documentation for examples.
+```
+
 The general command to run DRAM2 is:
 
 `nextflow run WrightonLabCSU/DRAM [OPTIONS]`
@@ -36,7 +40,7 @@ If you would like to launch DRAM2 in a slurm job, because Nextflow uses very min
 
 `--input_fasta`
 
-This is the location to the input FASTA files. Can be named as such: `*.f*`.
+This is the location to the input FASTA files. Can be named as such: `*.f*`. File format can be changed with `--fasta_fmt` argument. See [Parameters API](params_doc.md) for more information.
 
 `--outdir`
 
@@ -44,7 +48,8 @@ This is the desired output directory.
 
 `--input_genes`
 
-If the user has already called genes they may use this option to specify the location of a directory containing `*.faa` files. It is key, and is stated in the GitHub documentation, they these files have headers which are unique to a given sample for correct downstream processes.
+If the user has already called genes they may use this option to specify the location of a directory containing `*.faa` files. It is key, and is stated in the GitHub documentation, they these files have headers which are unique to a given sample for correct downstream processes. File format can be changed with `--genes_fmt` argument. See [Parameters API](params_doc.md) for more information.
+
 
 `--annotations`
 
