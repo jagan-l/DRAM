@@ -8,7 +8,7 @@ maxdepth: 2
 ---
 Installation
 Introduction
-Usage/ Quick Start
+Usage
 Parameter API <params_doc>
 Output
 Rules_parser
