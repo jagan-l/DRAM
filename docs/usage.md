@@ -1,10 +1,14 @@
 # DRAM Usage
 
+Here you will find give you basic instructions for running DRAM2
 > _The entire list of pipeline configuration parameters can be found here: [Parameters API](params_doc.md). Here we will give some overviews on how to use important parameters and launch DRAM_
 
-## Introduction
+## Basic command
 
----
+Below is an example of common workflow in DRAM2. The user is calling genes from a directory of MAGs, annotating those genes using all available databases, assessing the qualtiy of each MAG. The user is then summarizing their annotations into user-friendly documents, assigning MAG-level metabolic functions, and generating an interactive heatmap of these functions per MAG. This command in being run from the command line in the background. A more detailed description of flags can be found below
+
+`nextflow run WrightonLabCSU/DRAM --input_fasta [INPUT_FASTA] --outdir [OUTPUT_DIR] --rename --annotate
+--anno_dbs all --qc --summarize --traits --visualize -profile singularity -bg` 
 
 ## Description of command-line options:
 
@@ -27,6 +31,28 @@ Because the Nextflow scheduler itself takes of very minimal resources, you do no
 `kill "$(cat .nextflow.pid)"`
 
 If you would like to launch DRAM2 in a slurm job, because Nextflow uses very minimal resources, it is suggested to launch it in a small job, such as 1 CPU and 1 GB of RAM. But this job will need to stay alive for the entire duration of the DRAM2 run.
+
+### Important Command-Line Options Explained
+
+`--input_fasta`
+
+This is the location to the input FASTA files. Can be named as such: `*.f*`.
+
+`--outdir`
+
+This is the desired output directory.
+
+`--input_genes`
+
+If the user has already called genes they may use this option to specify the location of a directory containing `*.faa` files. It is key, and is stated in the GitHub documentation, they these files have headers which are unique to a given sample for correct downstream processes.
+
+`--annotations`
+
+If the user already has a DRAM2 annotations TSV file, in the correct format, they can provide these using this command-line option.
+
+`--slurm`
+
+This option tells Nextflow to use SLURM as the job scheduler. Additional SLURM options can be specified such as `--partition [PARTITION_NAME]` and `--slurm_node [NODE_NAME]`
 
 ### Important Core Nextflow Options
 
@@ -54,27 +80,6 @@ If the user has already run this command, or a version of it, Nextflow will look
 
 This option is a Nextflow-provided option which produces a continuously updated log of DRAM2 processes. This is a good place to check how a run is proceeding and is anything has failed.
 
-### Important Command-Line Options Explained
-
-`--input_fasta`
-
-This is the location to the input FASTA files. Can be named as such: `*.f*`.
-
-`--outdir`
-
-This is the desired output directory.
-
-`--input_genes`
-
-If the user has already called genes they may use this option to specify the location of a directory containing `*.faa` files. It is key, and is stated in the GitHub documentation, they these files have headers which are unique to a given sample for correct downstream processes.
-
-`--annotations`
-
-If the user already has a DRAM2 annotations TSV file, in the correct format, they can provide these using this command-line option.
-
-`--slurm`
-
-This option tells Nextflow to use SLURM as the job scheduler. Additional SLURM options can be specified such as `--partition [PARTITION_NAME]` and `--slurm_node [NODE_NAME]`
 
 #### Pipeline Steps
 
