@@ -6,13 +6,14 @@ The WrightonLabCSU/dram documentation is split into the following pages:
 ---
 maxdepth: 2
 ---
-installation
-usage
+Installation
+Introduction
+Usage/ Quick Start
 Parameter API <params_doc>
-output
-rules_parser
-contributing
-changelog_include
+Output
+Rules_parser
+Contributing
+Changelog_include
 ```
 
 # Indices and tables
