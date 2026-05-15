@@ -2,7 +2,7 @@
 
 ## As of May 11, 2026, we will not be making public changes to DRAM2 ahead of our upcoming publication. We appreciate your patience! 
 
-## Welcome to the wiki for Distilling and Refining Annotations of Metabolism 2 (DRAM2)!
+### Welcome to the wiki for Distilling and Refining Annotations of Metabolism 2 (DRAM2)!
 Here you will find give you basic instructions for running DRAM2, but for full documentation, please see the official DRAM2 webpage: [Read-the-docs](https://dramit.readthedocs.io/en/latest)
 
 <p align="center">
