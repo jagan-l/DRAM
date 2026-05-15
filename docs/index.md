@@ -14,6 +14,7 @@ Output
 Rules_parser
 Contributing
 Changelog_include
+DRAM2 Dictionary
 ```
 
 # Indices and tables
