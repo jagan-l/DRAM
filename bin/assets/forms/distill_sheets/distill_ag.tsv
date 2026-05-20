@@ -1,4 +1,4 @@
-gene_id	gene_description	pathway	topic_ecosystem	category	subcategory	note	reference
+gene_id	gene_description	module	topic_ecosystem	category	subcategory	note	reference
 K00531	nitrogenase delta subunit [EC:1.18.6.1] [RN:R05185]	Nitrogen fixation, nitrogen => ammonia	ag	Nitrogen Cycling	N2 Fixation
 K02586	nitrogenase molybdenum-iron protein [EC:1.18.6.1] [RN:R05185]	Nitrogen fixation, nitrogen => ammonia	ag	Nitrogen Cycling	N2 Fixation
 K02588	nitrogenase iron protein [RN:R05185]	Nitrogen fixation, nitrogen => ammonia	ag	Nitrogen Cycling	N2 Fixation

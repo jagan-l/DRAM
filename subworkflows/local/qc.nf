@@ -22,6 +22,7 @@ workflow QC {
     COLLECT_RNA( ch_fasta, default_sheet, call )
     ch_rrna_collected = COLLECT_RNA.out.ch_rrna_collected
     ch_trna_collected = COLLECT_RNA.out.ch_trna_collected
+    ch_trna_combined = COLLECT_RNA.out.ch_trna_combined
 
 
     // Add Bin Quality to annotations
@@ -73,4 +74,5 @@ workflow QC {
     ch_final_annots
     ch_rrna_collected
     ch_trna_collected
+    ch_trna_combined
 }
