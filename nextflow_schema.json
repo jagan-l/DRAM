@@ -68,13 +68,13 @@
                     "format": "path",
                     "exists": true,
                     "description": "Path to FASTA directory",
-                    "help_text": "This parameter is *mandatory*.",
+                    "help_text": "This parameter is *mandatory*. Files may be uncompressed (.fa/.fna/.fasta) or gzip-compressed (.fa.gz/.fna.gz/.fasta.gz); compressed inputs are decompressed automatically before downstream stages.",
                     "fa_icon": "fas fa-folder-open"
                 },
                 "fasta_fmt": {
                     "type": "string",
                     "default": "*.f*",
-                    "description": "Input format for the FASTA file.",
+                    "description": "Input glob for the FASTA files. The default matches both plain and .gz files.",
                     "fa_icon": "fas fa-plus"
                 },
                 "input_genes": {
@@ -690,6 +690,11 @@
                     "type": "integer",
                     "default": 10,
                     "description": "Maximum number of jobs to submit to the queue at once."
+                },
+                "array_size": {
+                    "type": "integer",
+                    "default": 0,
+                    "description": "Number of tasks to submit per SLURM job array. 0 disables (default) so the local executor is unaffected. Set when running with --slurm. Note, job arrays submit multiple jobs with the same resource requests together to be more efficent on the slurm queue. They do not batch multiple jobs together. Job arrays are about reducing slurm overheard when running many similar jobs."
                 }
             }
         },

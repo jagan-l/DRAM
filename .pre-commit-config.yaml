@@ -27,6 +27,7 @@ repos:
           )$
       - id: detect-private-key
       - id: end-of-file-fixer
+        exclude: \.md$
       - id: trailing-whitespace
         exclude: \.md$
   - repo: https://github.com/astral-sh/ruff-pre-commit

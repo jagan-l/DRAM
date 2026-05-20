@@ -7,12 +7,14 @@ The WrightonLabCSU/dram documentation is split into the following pages:
 maxdepth: 2
 ---
 installation
+introduction
 usage
 Parameter API <params_doc>
 output
 rules_parser
 contributing
 changelog_include
+dram2_dictionary
 ```
 
 # Indices and tables
