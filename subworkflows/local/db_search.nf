@@ -57,11 +57,7 @@ workflow DB_SEARCH {
     take:
     ch_gene_locs  // channel: path(gene_locs_tsv) ]
     ch_called_proteins  // channel: [ val(input_fasta name), path(called_proteins_file.faa) ]
-    ch_antismash_map
-    ch_fna_map
-    ch_faa_map
-    ch_gff_map
-    ch_gene_gff
+    ch_fasta_map  // channel: [ val(input_fasta name), path(filtered_fasta), path(called_genes), path(called_proteins), path(gene_gff) ]
     default_sheet // Path to dummy sheet
     use_kegg
     use_kofam
@@ -182,8 +178,8 @@ workflow DB_SEARCH {
     // dbCAN3 annotation
     if  (use_dbcan) {
         RUNDBCAN_EASYSUBSTRATE(
-            ch_faa_map,
-            ch_gff_map,
+            ch_fasta_map.map { meta, _filtered_fasta, _called_genes, called_proteins, _gene_gff -> tuple(meta, called_proteins)},
+            ch_fasta_map.map { meta, _filtered_fasta, _called_genes, _called_proteins, gene_gff -> tuple(meta, gene_gff, "prodigal")},
             DB_CHANNEL_SETUP.out.ch_dbcan_db
         )
         dbcanOutputChannels = dbcanOutputChannels.mix(RUNDBCAN_EASYSUBSTRATE.out.dbcanhmm_results)
@@ -302,11 +298,19 @@ workflow DB_SEARCH {
     }
     // antiSMASH
     if (use_antismash) {
-        ANTISMASH_ANTISMASH(ch_antismash_map, DB_CHANNEL_SETUP.out.ch_antismash_db, ch_gene_gff)
+        ANTISMASH_ANTISMASH(
+            ch_fasta_map.map { meta, filtered_fasta, _called_genes, _called_proteins, _gene_gff -> tuple(meta, filtered_fasta)},
+            DB_CHANNEL_SETUP.out.ch_antismash_db,
+            ch_fasta_map.map{ _meta, _filtered_fasta, _called_genes, _called_proteins, gene_gff -> gene_gff}
+        )
     }
     // RGI with CARD
     if (use_rgi) {
-        RGI_MAIN(ch_fna_map, DB_CHANNEL_SETUP.out.ch_card_db, [])
+        RGI_MAIN(
+            ch_fasta_map.map { meta, _filtered_fasta, called_genes, _called_proteins, _gene_gff -> tuple(meta, called_genes)},
+            DB_CHANNEL_SETUP.out.ch_card_db,
+            []
+        )
     }
     // CARD annotation
     if (use_card) {

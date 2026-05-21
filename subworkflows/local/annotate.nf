@@ -109,46 +109,27 @@ workflow ANNOTATE {
         ch_gene_locs = GENE_LOCS.out.prodigal_locs_tsv
         // n_fastas = file("$params.input_genes/${params.genes_fmt}").size()
     }
-    ch_antismash_map = ch_filtered_fasta
-        .map { file ->
-            def meta = [:]
-            meta.id = file.getBaseName()
-            tuple(meta, file)
+    ch_fasta_map = call
+        ? ch_filtered_fasta
+            .join(ch_called_genes, by: [0])
+            .join(ch_called_proteins, by: [0])
+            .join(ch_gene_gff, by: [0])
+            .map { name, filtered_fasta, called_genes, called_proteins, gene_gff ->
+                tuple(
+                    [id: name],
+                    filtered_fasta,
+                    called_genes,
+                    called_proteins,
+                    gene_gff
+                )
         }
-
-    ch_fna_map = ch_called_genes
-        .map {
-                file_name, file ->
-                def meta = [:]
-                meta.id = file_name
-                tuple(meta, file)
-            }
-
-    ch_faa_map = ch_called_proteins
-        .map {
-                file_name, file ->
-                def meta = [:]
-                meta.id = file_name
-                tuple(meta, file)
-            }
-
-    ch_gff_map = ch_gene_gff
-        .map {
-            file ->
-            def meta = [:]
-            meta.id = file.getBaseName()
-            tuple(meta, file, "prodigal")
-        }
+        : channel.empty()
 
     if (params.annotate){
         DB_SEARCH(
             ch_gene_locs,
             ch_called_proteins,
-            ch_antismash_map,
-            ch_fna_map,
-            ch_faa_map,
-            ch_gff_map,
-            ch_gene_gff,
+            ch_fasta_map,
             default_sheet,
             use_kegg,
             use_kofam,

@@ -45,7 +45,7 @@ workflow CALL {
 
     // Collect all individual fasta to pass to quast
     channel.empty()
-        .mix( ch_filtered_fasta, ch_gene_gff  )
+        .mix( ch_filtered_fasta.map { _name, file -> file}, ch_gene_gff.map {_name, file -> file} )
         .collect()
         .set { ch_collected_fasta }
 
