@@ -2,6 +2,191 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2.0.0-beta29 - 2026-05-22
+
+[90dfef6](https://github.com/WrightonLabCSU/DRAM/commit/90dfef6f445011f23f4e54cdd9fff3d01f7c4d20)...[88a6fef](https://github.com/WrightonLabCSU/DRAM/commit/88a6fef1bf786666ee0755bd8d7410202e3ce4d9)
+
+### Bug Fixes
+
+- Fix use_* options ([3437cac](https://github.com/WrightonLabCSU/DRAM/commit/3437cac189099db170d9348300e9d6e581327b69))
+
+
+- Three bugs in format_kegg_database.py ([743bf8e](https://github.com/WrightonLabCSU/DRAM/commit/743bf8e8a038c13f361aad3be4ead4e543298436))
+
+  1. Move scikit-bio imports inside functions (lazy import)
+     - `from skbio import ...` was at module level, causing ImportError in
+       Docker containers that do not have scikit-bio installed (e.g.
+       python_pandas_hmmer_mmseqs2_pruned). The import is only needed when
+       a gene_ko_link file is actually processed, so it is now placed inside
+       the two functions that use it: process_kegg() and
+       generate_modified_kegg_fasta().
+
+  2. Fix MMseqs2 output database name (kegg.mmsdb, not kegg.<date>.mmsdb)
+     - The database was written as kegg.<download_date>.mmsdb but
+       modules/local/annotate/mmseqs_search.nf expects the file to be named
+       exactly kegg.mmsdb (it constructs the path as ${db_name}.mmsdb where
+       db_name is the parent directory name "kegg"). The date suffix caused a
+       "No such file or directory" error at annotation time.
+
+  3. Fix --skip_gene_ko_link argparse definition
+     - Using `type=bool` does NOT work as a flag: argparse passes the string
+       "False" / "True" to bool(), and bool("False") == True. Replaced with
+       `action="store_true"` so the flag behaves as intended.
+
+
+- Two bugs in format_kegg_db.nf ([3afbce8](https://github.com/WrightonLabCSU/DRAM/commit/3afbce83192f05c8c9e2d16744828fc04bd2642f))
+
+  1. Replace container that lacks mmseqs2
+     - FORMAT_KEGG_DB used python_scikit-bio_scipy which does not include
+       mmseqs2. The process calls mmseqs createdb / createindex, so it fails
+       immediately with "No such file or directory: mmseqs". Replaced with
+       python_pandas_hmmer_mmseqs2_pruned, which already carries mmseqs2 and
+       is used by other annotation processes in the pipeline.
+
+  2. Fix bash condition for skip_gene_ko_link
+     - The Nextflow value passed to the process is the string "0" or "1"
+       (see dram.nf). In bash, `if [ "0" ]` evaluates to TRUE because any
+       non-empty string is truthy. FORMAT_KEGG_DB therefore always ran the
+       --skip_gene_ko_link branch, ignoring the gene_ko_link file.
+       Fixed with an explicit string comparison:
+         if [ "${skip_gene_ko_link}" = "true" ]
+       (see companion fix in workflows/dram.nf)
+
+
+- Pass boolean string to FORMAT_KEGG_DB skip_gene_ko_link ([f4b2394](https://github.com/WrightonLabCSU/DRAM/commit/f4b23944e345b0f0834923c981b4a971736073a8))
+
+  The companion fix for the bash condition in format_kegg_db.nf requires
+  that skip_gene_ko_link be the string "true" or "false" rather than the
+  integer 1 or 0.
+
+  In bash:
+    `if [ "0" ]`   -> true  (non-empty string)
+    `if [ "false" ]` -> true  (still non-empty - also wrong)
+
+  The correct pattern used in format_kegg_db.nf is:
+    `if [ "${skip_gene_ko_link}" = "true" ]`
+
+  which requires this value to be exactly the string "true" or "false".
+  Changed `params.skip_gene_ko_link ? 1 : 0` to
+  `params.skip_gene_ko_link ? "true" : "false"`.
+
+
+- Rgi no longer outputs temp dir ([7fe178e](https://github.com/WrightonLabCSU/DRAM/commit/7fe178ee18bbdcd77298bb86ebb6c09b38372ce7))
+
+  rgi was outputting a temp/ dir to the outdir, and if multiple
+  process ended at the same time and tried to write the same
+  directory name, it could cause an error.
+  We don't need this dir, so I am just not writting it to the
+  outir.
+
+
+- Antismash,rgi,dbcan run with called_genes ([f54f848](https://github.com/WrightonLabCSU/DRAM/commit/f54f848e512c1c902b63d9c5402fe0d1f6ea2ea8))
+
+  antismash,rgi, and dbcan3 were erroring out when ran with called_genes
+  because of the way the logic was implemented. Redid the logic to define
+  allow the input channels to be created conditionally or be empty to skip
+  certain processes when needed.
+
+  Cleaned up some code around rename that was involved with this and
+  allowed input .fna files to be renamed as well.
+
+  Generate gff file from input .faa file by default since it is needed for
+  some new databases and it is a very quick process.
+
+
+
+### Features
+
+- Update dbcan to dbcan3 using run_dbcan tool ([0811137](https://github.com/WrightonLabCSU/DRAM/commit/08111371627e96f8f8ac081711c74883e947190f))
+
+  Using the run_dbcan tooling, update our use of dbcan from
+  dbcan2 to dbcan3. We will use the easysubstrate call to run the
+  entire run_dbcan pipeline. This initial step just consumes the first
+  stages output and does not include the CGC or easysubstrate in our
+  annotation or summarize.
+
+  Add parsing for run_dbcan output to incorporate into raw-annotations.tsv
+
+  Add ability for dram to check DB version with added version file. This
+  is an optional, per database add-on that is currently only being used
+  with dbcan to ensure users are updated to dbcan3.
+
+
+- Update sum topics to new sheet form ([3f1eef4](https://github.com/WrightonLabCSU/DRAM/commit/3f1eef48805f54780c284d5a426797aa9184288b))
+
+  Update summarize topics to use assimilation_and_cofactor_metabolism,
+  cellular_machinery, energy_acquisition_bioenergetics, and
+  environmental_interaction_and_adaptation sheets. Each sheet
+  gives out a excel sheet of their own.
+
+
+- Accept gzip-compressed fasta input ([f397b4a](https://github.com/WrightonLabCSU/DRAM/commit/f397b4a3ea8c6d7e0749d3d4095c87271b423c54))
+
+  Adds a small DECOMPRESS_FASTA module (`reformat.sh` from the bbmap
+  container that other modules already use) and routes only `.gz`
+  inputs through it via a channel branch on the `.gz` suffix. Plain
+  fastas pass through unchanged.
+
+  Sample-name normalisation strips both the trailing `.gz` (if present)
+  and one of `.fa`/`.fna`/`.fasta` so `sample.fa` and `sample.fa.gz`
+  yield the same downstream name. Outputs are identical regardless of
+  input compression.
+
+  Default `--fasta_fmt '*.f*'` already matches both plain and `.gz`
+  files; schema description updated to mention this explicitly., Files:modules/local/rename/decompress_fasta.nf  (new, 20 lines)
+  workflows/dram.nf                          (channel branch + mix)
+  nextflow_schema.json                       (description updates)
+
+
+- SLURM job-array submission for per-sample fan-out stages ([f3ef6eb](https://github.com/WrightonLabCSU/DRAM/commit/f3ef6eb915b6d34832a1d469370c507a945ad48f))
+
+  Adds two params and a withName directive so multi-sample runs on SLURM
+  collapse N sbatches into one job array per stage, sparing fair-share
+  priority on shared clusters:
+
+    params.array_size  (default 0 — disabled; local-executor safe)
+    params.queue_size  (already existed; default 10)
+
+    process {
+        withName: 'DRAM:ANNOTATE:CALL:.*|DRAM:ANNOTATE:DB_SEARCH:.*|DRAM:ANNOTATE:QC:COLLECT.*' {
+            array = params.slurm ? params.array_size : 0
+        }
+    }
+
+  The directive is gated on params.slurm so the local / standard executor
+  always sees array = 0 (a no-op) — only --slurm runs honour the user's
+  array_size override. The selector covers every per-sample fan-out stage
+  (CALL, DB_SEARCH, and any current or future QC:COLLECT_* subworkflow).
+
+  Same Nextflow #6108 caveat applies — intermittent ConcurrentModification-
+  Exception when arrays combine with Singularity, recoverable via -resume.
+
+
+
+### Refactor
+
+- Lowercase `channel` factory across subworkflows + workflows ([21e5cb8](https://github.com/WrightonLabCSU/DRAM/commit/21e5cb8f54375993a35bd2651b265b15a4bb3d1f))
+
+  DSL2 prefers the lowercase `channel` factory function over the
+  `Channel` class qualifier — both work but the lowercase form is the
+  documented default and is a one-character net win on every line that
+  constructs a channel. Pure cosmetic refactor, no behaviour change.
+
+  Touches all sites currently using `Channel.empty`, `Channel.fromPath`,
+  etc. across:
+
+    subworkflows/local/{call,collect_rna,db_search,merge,qc,
+                        utils_nfcore_dram_pipeline}.nf
+    workflows/dram.nf
+
+
+
+### Cleanup
+
+- Remove old files ([1859170](https://github.com/WrightonLabCSU/DRAM/commit/1859170af162b37737b9e616cdbc3964694812ef))
+
+
+
 ## 2.0.0-beta28 - 2026-04-15
 
 [cdfe210](https://github.com/WrightonLabCSU/DRAM/commit/cdfe210ca64eb95baf6f1acedb62f91b74630181)...[e07cd74](https://github.com/WrightonLabCSU/DRAM/commit/e07cd74e8d60fca7513f645c04d0956760c74768)
