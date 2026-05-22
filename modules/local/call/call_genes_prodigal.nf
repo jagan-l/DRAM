@@ -15,8 +15,8 @@ process CALL_GENES {
     tuple val( input_fasta ), path( "${input_fasta}_called_genes.fna" ), emit: prodigal_fna, optional: true
     tuple val( input_fasta ), path( "${input_fasta}_called_genes.faa" ), emit: prodigal_faa, optional: true
     tuple val( input_fasta ), path( "${input_fasta}_called_genes_table.tsv" ), emit: prodigal_locs_tsv, optional: true
-    path( "${input_fasta}_${params.min_contig_len}.fa" ), emit: prodigal_filtered_fasta, optional: true
-    path( "${input_fasta}_called_genes.gff" ), emit: prodigal_gff, optional: true
+    tuple val( input_fasta ), path( "${input_fasta}_${params.min_contig_len}.fa" ), emit: prodigal_filtered_fasta, optional: true
+    tuple val( input_fasta ), path( "${input_fasta}_called_genes.gff" ), emit: prodigal_gff, optional: true
 
 
     script:

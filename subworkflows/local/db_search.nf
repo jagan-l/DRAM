@@ -56,12 +56,10 @@ include {checkDBVersion                                 } from '../../subworkflo
 workflow DB_SEARCH {
     take:
     ch_gene_locs  // channel: path(gene_locs_tsv) ]
-    ch_called_proteins  // channel: [ val(input_fasta name), path(called_proteins_file.faa) ]
-    ch_antismash_map
-    ch_fna_map
-    ch_faa_map
-    ch_gff_map
-    ch_gene_gff
+    ch_called_proteins  // channel: [ val(input_fasta name), path(called_proteins file) ]
+    ch_filtered_fasta  // channel: [ val(input_fasta name), path(filtered_fasta file) ]
+    ch_gene_gff  // channel: [ val(input_fasta name), path(gene_gff file) ]
+    ch_called_genes  // channel: [ val(input_fasta name), path(called_genes file) ]
     default_sheet // Path to dummy sheet
     use_kegg
     use_kofam
@@ -181,9 +179,19 @@ workflow DB_SEARCH {
 
     // dbCAN3 annotation
     if  (use_dbcan) {
+
+        ch_dbcan_inputs = ch_called_proteins
+            .join(ch_gene_gff, by: [0])
+            .multiMap { name, called_proteins, gene_gff ->
+                proteins:
+                    tuple([id: name], called_proteins)
+
+                gff:
+                    tuple([id: name], gene_gff, "prodigal")
+            }
         RUNDBCAN_EASYSUBSTRATE(
-            ch_faa_map,
-            ch_gff_map,
+            ch_dbcan_inputs.proteins,
+            ch_dbcan_inputs.gff,
             DB_CHANNEL_SETUP.out.ch_dbcan_db
         )
         dbcanOutputChannels = dbcanOutputChannels.mix(RUNDBCAN_EASYSUBSTRATE.out.dbcanhmm_results)
@@ -302,11 +310,29 @@ workflow DB_SEARCH {
     }
     // antiSMASH
     if (use_antismash) {
-        ANTISMASH_ANTISMASH(ch_antismash_map, DB_CHANNEL_SETUP.out.ch_antismash_db, ch_gene_gff)
+        ch_filtered_fasta.ifEmpty{ log.warn("Antismash requires raw fasta files, skipping antismash") }
+        ch_antismash_inputs = ch_filtered_fasta
+            .join(ch_gene_gff, by: [0])
+            .multiMap { name, filtered_fasta, gene_gff ->
+                fasta:
+                    tuple([id: name], filtered_fasta)
+
+                gff:
+                    gene_gff
+            }
+        ANTISMASH_ANTISMASH(
+            ch_antismash_inputs.fasta,
+            DB_CHANNEL_SETUP.out.ch_antismash_db,
+            ch_antismash_inputs.gff
+        )
     }
     // RGI with CARD
     if (use_rgi) {
-        RGI_MAIN(ch_fna_map, DB_CHANNEL_SETUP.out.ch_card_db, [])
+        RGI_MAIN(
+            ch_called_genes.map { name, called_genes -> tuple([id: name], called_genes)},
+            DB_CHANNEL_SETUP.out.ch_card_db,
+            []
+        )
     }
     // CARD annotation
     if (use_card) {

@@ -1,9 +1,42 @@
 include { RENAME_FASTA           } from "../../modules/local/rename/rename_fasta.nf"
 include { RENAME_PROTEINS        } from "../../modules/local/rename/rename_proteins.nf"
+include { RENAME_PROTEINS as RENAME_FNA       } from "../../modules/local/rename/rename_proteins.nf"
 include { CALL                   } from "../../subworkflows/local/call.nf"
 include { QC                     } from "../../subworkflows/local/qc.nf"
 include { DB_SEARCH              } from "../../subworkflows/local/db_search.nf"
 include { GENE_LOCS              } from "../../modules/local/annotate/gene_locs.nf"
+include { GENERATE_GFF  } from "../../modules/local/add_and_combine/generate_gff.nf"
+
+def batchManifestToTuples(ch_renamed_batch) {
+    ch_renamed_batch.flatMap { manifest, renamed_files ->
+        def files = renamed_files instanceof List ? renamed_files : [renamed_files]
+        def files_by_name = files.collectEntries { renamed_file ->
+            [(renamed_file.getFileName().toString()): renamed_file]
+        }
+
+        manifest.readLines()
+            .findAll { line -> line }
+            .collect { line ->
+                def (name, relpath) = line.split('\t')
+                def renamed_file = files_by_name[relpath]
+                if (!renamed_file) {
+                    error("Could not find renamed file `${relpath}` listed in ${manifest}")
+                }
+                tuple(name, renamed_file)
+            }
+    }
+}
+
+def collectNamePathTuples(ch_name_path, check_size = false) {
+    ch_name_path
+        .collect(flat: false)
+        .map { rows ->
+            def names = rows.collect { tup -> tup[0] }
+            def paths = rows.collect { tup -> tup[1] }
+            tuple(names, paths)
+        }
+        .filter { names, _paths -> !check_size || names.size() > 0 }
+}
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     SUBWORKFLOW TO ANNOTATE
@@ -43,29 +76,19 @@ workflow ANNOTATE {
 
     ch_quast_stats = default_sheet
     ch_collected_fna = default_sheet
-    ch_gene_gff = default_sheet
-    ch_filtered_fasta = default_sheet
-    ch_called_genes = default_sheet
+    ch_gene_gff = channel.empty()
+    ch_filtered_fasta = channel.empty()
+    ch_called_genes = channel.empty()
 
     if (call){
-        fasta_name = ch_fasta.map { it[0] }
-        fasta_files = ch_fasta.map { it[1] }
-
         // n_fastas = file("$params.input_fasta/${params.fasta_fmt}").size()
 
         if(params.rename) {
-            // We need to use collect so that we pass all the fasta files to the rename process at once
-            // Otherwise, it will try to rename each fasta file one at a time
-            // Which since rename is so fast, will clog up job queues
-            // so it is faster to rename all at once
-            RENAME_FASTA( fasta_name.toList(), fasta_files.toList() )
-            // we use flatten here to turn a list back into a channel
-            renamed_fasta_paths = RENAME_FASTA.out.renamed_fasta_paths.flatten()
-            // we need to recreate the fasta channel with the renamed fasta files
-            ch_fasta = renamed_fasta_paths.map {
-                fasta_name = it.getBaseName()
-                tuple(fasta_name, it)
-            }
+            def ch_fasta_collected = collectNamePathTuples(ch_fasta)
+
+            RENAME_FASTA( ch_fasta_collected )
+
+            ch_fasta = batchManifestToTuples(RENAME_FASTA.out.renamed_batch)
         }
 
         CALL( ch_fasta )
@@ -87,68 +110,43 @@ workflow ANNOTATE {
                 tuple(input_fastaName, file)
             }
 
-        fasta_name = ch_called_proteins.map { tup -> tup[0] }
-        fasta_files = ch_called_proteins.map { tup -> tup[1] }
+        ch_called_genes = channel
+            .fromPath(file(params.input_genes) / params.genes_fna_fmt)
+            .map { file ->
+                def input_fastaName = file.getBaseName()
+                tuple(input_fastaName, file)
+            }
+
+        ch_called_genes.ifEmpty{ log.warn("No genes matching `genes_fna_fmt` found. Skipping all processes needing called_genes/fna files") }
 
         if(params.rename) {
-            // We need to use collect so that we pass all the fasta files to the rename process at once
-            // Otherwise, it will try to rename each fasta file one at a time
-            // Which since rename is so fast, will clog up job queues
-            // so it is faster to rename all at once
-            RENAME_PROTEINS( fasta_name.toList(), fasta_files.toList() )
-            // we use flatten here to turn a list back into a channel
-            renamed_paths = RENAME_PROTEINS.out.renamed_paths.flatten()
-            // we need to recreate the fasta channel with the renamed fasta files
-            ch_called_proteins = renamed_paths.map {
-                fasta_name = it.getBaseName()
-                tuple(fasta_name, it)
-            }
+
+            def ch_called_proteins_collected = collectNamePathTuples(ch_called_proteins)
+            RENAME_PROTEINS( ch_called_proteins_collected )
+            ch_called_proteins = batchManifestToTuples(RENAME_PROTEINS.out.renamed_batch)
+
+            def ch_called_genes_collected = collectNamePathTuples(ch_called_genes, true)
+            RENAME_FNA( ch_called_genes_collected )
+            ch_called_genes = batchManifestToTuples(RENAME_FNA.out.renamed_batch)
         }
 
         GENE_LOCS( ch_called_proteins)
         ch_gene_locs = GENE_LOCS.out.prodigal_locs_tsv
+
         // n_fastas = file("$params.input_genes/${params.genes_fmt}").size()
+
+        def ch_called_proteins_collected = collectNamePathTuples(ch_called_proteins)
+        GENERATE_GFF( ch_called_proteins_collected )
+        ch_gene_gff = batchManifestToTuples(GENERATE_GFF.out.generated_gff_batch)
     }
-    ch_antismash_map = ch_filtered_fasta
-        .map { file ->
-            def meta = [:]
-            meta.id = file.getBaseName()
-            tuple(meta, file)
-        }
-
-    ch_fna_map = ch_called_genes
-        .map {
-                file_name, file ->
-                def meta = [:]
-                meta.id = file_name
-                tuple(meta, file)
-            }
-
-    ch_faa_map = ch_called_proteins
-        .map {
-                file_name, file ->
-                def meta = [:]
-                meta.id = file_name
-                tuple(meta, file)
-            }
-
-    ch_gff_map = ch_gene_gff
-        .map {
-            file ->
-            def meta = [:]
-            meta.id = file.getBaseName()
-            tuple(meta, file, "prodigal")
-        }
 
     if (params.annotate){
         DB_SEARCH(
             ch_gene_locs,
             ch_called_proteins,
-            ch_antismash_map,
-            ch_fna_map,
-            ch_faa_map,
-            ch_gff_map,
+            ch_filtered_fasta,
             ch_gene_gff,
+            ch_called_genes,
             default_sheet,
             use_kegg,
             use_kofam,

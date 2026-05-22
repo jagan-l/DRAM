@@ -91,7 +91,7 @@
                 "genes_fna_fmt": {
                     "type": "string",
                     "default": "*.fna",
-                    "description": "Input format for the Genes fna file. Only needed if you are not running call and you are passing `--generate_gff` or `--generate_gbk`.",
+                    "description": "Input format for the Genes fna file. Used for certain database searches such as RGI when not running with raw fasta files.",
                     "fa_,icon": "fas fa-plus"
                 }
             },
@@ -224,19 +224,6 @@
                     "type": "number",
                     "description": "Minimum BitScore of reverse best hits to retain hits",
                     "default": 350.0
-                },
-                "database_list": {
-                    "type": "string",
-                    "description": "Database list for generating GFF and GBK. Comma sepeterated list of databases to include in the annotates. Use `all` for all. Example: 'kegg,dbcan,kofam,merops,viral,camper,canthyd,fegenie,sulfur,methyl,uniref,pfam,vogdb'",
-                    "default": "all"
-                },
-                "generate_gff": {
-                    "type": "boolean",
-                    "description": "Generate GFF output for each input_fasta. This option is in development right now and may not work properly, and may not work with large numbers of inputs."
-                },
-                "generate_gbk": {
-                    "type": "boolean",
-                    "description": "Generate GBK output for each input_fasta. This option is in development right now and may not work properly, and may not work with large numbers of inputs."
                 }
             }
         },
