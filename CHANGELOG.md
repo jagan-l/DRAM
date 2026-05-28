@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2.0.0-beta30 - 2026-05-28
+
+[c065dce](https://github.com/WrightonLabCSU/DRAM/commit/c065dce9a431c6fda55ab0e4a6b464fdbf0c194c)...[745c873](https://github.com/WrightonLabCSU/DRAM/commit/745c873d3d6842ce4cf8b28dfac5c737a6d93a07)
+
+### Bug Fixes
+
+- Rgi now passes threads argument fix ([7962c4b](https://github.com/WrightonLabCSU/DRAM/commit/7962c4b017967cfe11a57772e9a339cbd9225ad4))
+
+
+- Add retry on dbcan for io concurrency problem ([7409a1b](https://github.com/WrightonLabCSU/DRAM/commit/7409a1b8952442564d577cf4db0308c0e1bd1b2b))
+
+
+
+### Features
+
+- Update ag summarize and visualize rules ([e040bfd](https://github.com/WrightonLabCSU/DRAM/commit/e040bfdae7a8267599877ae3fbd266aee4349850))
+
+
+- Update summarize topics rules ([91e3a32](https://github.com/WrightonLabCSU/DRAM/commit/91e3a32d72d3b8fa979a32341017fb481513bcbe))
+
+
+
 ## 2.0.0-beta29 - 2026-05-22
 
 [90dfef6](https://github.com/WrightonLabCSU/DRAM/commit/90dfef6f445011f23f4e54cdd9fff3d01f7c4d20)...[88a6fef](https://github.com/WrightonLabCSU/DRAM/commit/88a6fef1bf786666ee0755bd8d7410202e3ce4d9)
@@ -11,24 +33,16 @@ All notable changes to this project will be documented in this file.
 - Fix use_* options ([3437cac](https://github.com/WrightonLabCSU/DRAM/commit/3437cac189099db170d9348300e9d6e581327b69))
 
 
-- Three bugs in format_kegg_database.py ([743bf8e](https://github.com/WrightonLabCSU/DRAM/commit/743bf8e8a038c13f361aad3be4ead4e543298436))
+- Fix bugs in format_kegg_database.py ([743bf8e](https://github.com/WrightonLabCSU/DRAM/commit/743bf8e8a038c13f361aad3be4ead4e543298436))
 
-  1. Move scikit-bio imports inside functions (lazy import)
-     - `from skbio import ...` was at module level, causing ImportError in
-       Docker containers that do not have scikit-bio installed (e.g.
-       python_pandas_hmmer_mmseqs2_pruned). The import is only needed when
-       a gene_ko_link file is actually processed, so it is now placed inside
-       the two functions that use it: process_kegg() and
-       generate_modified_kegg_fasta().
-
-  2. Fix MMseqs2 output database name (kegg.mmsdb, not kegg.<date>.mmsdb)
+  1. Fix MMseqs2 output database name (kegg.mmsdb, not kegg.<date>.mmsdb)
      - The database was written as kegg.<download_date>.mmsdb but
        modules/local/annotate/mmseqs_search.nf expects the file to be named
        exactly kegg.mmsdb (it constructs the path as ${db_name}.mmsdb where
        db_name is the parent directory name "kegg"). The date suffix caused a
        "No such file or directory" error at annotation time.
 
-  3. Fix --skip_gene_ko_link argparse definition
+  2. Fix --skip_gene_ko_link argparse definition
      - Using `type=bool` does NOT work as a flag: argparse passes the string
        "False" / "True" to bool(), and bool("False") == True. Replaced with
        `action="store_true"` so the flag behaves as intended.
