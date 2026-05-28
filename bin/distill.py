@@ -16,6 +16,7 @@ logger = get_logger(filename=Path(__file__).stem)
 (
     COL_GENE_ID,
     COL_GENE_DESCRIPTION,
+    COL_PATHWAY,
     COL_MODULE,
     COL_SHEET,
     COL_HEADER,
@@ -25,6 +26,7 @@ logger = get_logger(filename=Path(__file__).stem)
 ) = (
     "gene_id",
     "gene_description",
+    "pathway",
     "module",
     "topic_ecosystem",
     "category",

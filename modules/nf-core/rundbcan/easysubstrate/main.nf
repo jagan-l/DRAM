@@ -42,6 +42,7 @@ process RUNDBCAN_EASYSUBSTRATE {
         --output_dir . \\
         --input_gff ${input_gff} \\
         --gff_type ${gff_type} \\
+        --threads ${task.cpus} \\
         ${args}
 
     mv overview.tsv             ${prefix}_overview.tsv
@@ -49,8 +50,8 @@ process RUNDBCAN_EASYSUBSTRATE {
     mv dbCANsub_hmm_results.tsv ${prefix}_dbCANsub_hmm_results.tsv
     mv diamond.out              ${prefix}_diamond.out
     mv cgc.gff                  ${prefix}_cgc.gff
-    mv cgc_standard_out.tsv     ${prefix}_cgc_standard_out.tsv
     mv diamond.out.tc           ${prefix}_diamond.out.tc
+    mv cgc_standard_out.tsv     ${prefix}_cgc_standard_out.tsv
     mv STP_hmm_results.tsv      ${prefix}_STP_hmm_results.tsv
     mv total_cgc_info.tsv       ${prefix}_total_cgc_info.tsv
     mv CGC.faa                  ${prefix}_CGC.faa

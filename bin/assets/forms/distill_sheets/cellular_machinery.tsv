@@ -1,84 +1,78 @@
 topic_ecosystem	module	gene_id	gene_description
-Motility	Flagerllar, Chemotaxis, Pili	K02399	flagella synthesis protein FlgN
-Motility	Flagerllar, Chemotaxis, Pili	K02413	flagellar FliJ protein
-Motility	Flagerllar, Chemotaxis, Pili	K02422	flagellar protein FliS
-Motility	Flagerllar, Chemotaxis, Pili	K02423	flagellar protein FliT
-Motility	Flagerllar, Chemotaxis, Pili	K02386	flagella basal body P-ring formation protein FlgA
-Motility	Flagerllar, Chemotaxis, Pili	K02406	flagellin
-Motility	Flagerllar, Chemotaxis, Pili	K02407	flagellar hook-associated protein 2
-Motility	Flagerllar, Chemotaxis, Pili	K02397	flagellar hook-associated protein 3 FlgL
-Motility	Flagerllar, Chemotaxis, Pili	K02396	flagellar hook-associated protein 1 FlgK
-Motility	Flagerllar, Chemotaxis, Pili	K02414	flagellar hook-length control protein FliK
-Motility	Flagerllar, Chemotaxis, Pili	K02389	flagellar basal-body rod modification protein FlgD
-Motility	Flagerllar, Chemotaxis, Pili	K02390	flagellar hook protein FlgE
-Motility	Flagerllar, Chemotaxis, Pili	K02391	flagellar basal-body rod protein FlgF
-Motility	Flagerllar, Chemotaxis, Pili	K02392	flagellar basal-body rod protein FlgG
-Motility	Flagerllar, Chemotaxis, Pili	K02393	flagellar L-ring protein precursor FlgH
-Motility	Flagerllar, Chemotaxis, Pili	K02394	flagellar P-ring protein precursor FlgI
-Motility	Flagerllar, Chemotaxis, Pili	K02387	flagellar basal-body rod protein FlgB
-Motility	Flagerllar, Chemotaxis, Pili	K02388	flagellar basal-body rod protein FlgC
-Motility	Flagerllar, Chemotaxis, Pili	K02408	flagellar hook-basal body complex protein FliE
-Motility	Flagerllar, Chemotaxis, Pili	K02409	flagellar M-ring protein FliF
-Motility	Flagerllar, Chemotaxis, Pili	K02410	flagellar motor switch protein FliG
-Motility	Flagerllar, Chemotaxis, Pili	K02416	flagellar motor switch protein FliM
-Motility	Flagerllar, Chemotaxis, Pili	K02417	flagellar motor switch protein FliN/FliY
-Motility	Flagerllar, Chemotaxis, Pili	K02400	flagellar biosynthesis protein FlhA
-Motility	Flagerllar, Chemotaxis, Pili	K02401	flagellar biosynthetic protein FlhB
-Motility	Flagerllar, Chemotaxis, Pili	K02411	flagellar assembly protein FliH
-Motility	Flagerllar, Chemotaxis, Pili	K02412	flagellum-specific ATP synthase [EC:7.4.2.8]
-Motility	Flagerllar, Chemotaxis, Pili	K02418	flagellar protein FliO/FliZ
-Motility	Flagerllar, Chemotaxis, Pili	K02419	flagellar biosynthetic protein FliP
-Motility	Flagerllar, Chemotaxis, Pili	K02420	flagellar biosynthetic protein FliQ
-Motility	Flagerllar, Chemotaxis, Pili	K02421	flagellar biosynthetic protein FliR
-Motility	Flagerllar, Chemotaxis, Pili	K13820	flagellar biosynthetic protein FliR/FlhB
-Motility	Flagerllar, Chemotaxis, Pili	K02556	chemotaxis protein MotA
-Motility	Flagerllar, Chemotaxis, Pili	K02557	chemotaxis protein MotB
-Motility	Flagerllar, Chemotaxis, Pili	K21217	sodium-type polar flagellar protein MotX
-Motility	Flagerllar, Chemotaxis, Pili	K21218	sodium-type flagellar protein MotY
-Motility	Flagerllar, Chemotaxis, Pili	K02395	flgJ; flagellar protein FlgJ (rod capping / muramidase)
-Motility	Flagerllar, Chemotaxis, Pili	K02398	flgM; anti-sigma-28 factor FlgM; negative regulator of flagellin synthesis
-Motility	Flagerllar, Chemotaxis, Pili	K02402	flhC; flagellar transcriptional activator FlhC (class I master regulator)
-Motility	Flagerllar, Chemotaxis, Pili	K02403	flhD; flagellar transcriptional activator FlhD (class I master regulator)
-Motility	Flagerllar, Chemotaxis, Pili	K02404	fliA; RNA polymerase sigma factor FliA (sigma-28; sigma-F)
-Motility	Flagerllar, Chemotaxis, Pili	K02405	fliC; flagellin FliC (flagellar filament structural protein)
-Motility	Flagerllar, Chemotaxis, Pili	K02415	fliL; flagellar protein FliL (torque generation / stator recruitment)
-Motility	Flagerllar, Chemotaxis, Pili	K06553	pomA; flagellar motor protein PomA (Na+-type stator; Vibrio/marine bacteria)
-Motility	Flagerllar, Chemotaxis, Pili	K06554	pomB; flagellar motor protein PomB (Na+-type stator)
-Motility	Flagerllar, Chemotaxis, Pili	K03407	cheA; chemotaxis protein histidine kinase CheA (autokinase; phosphorylates CheY and CheB)
-Motility	Flagerllar, Chemotaxis, Pili	K03408	cheW; chemotaxis protein CheW (adaptor; links MCP receptor to CheA)
-Motility	Flagerllar, Chemotaxis, Pili	K03409	cheV; chemotaxis protein CheV (CheW paralog with response regulator domain)
-Motility	Flagerllar, Chemotaxis, Pili	K03412	cheZ; chemotaxis protein CheZ (CheY-P phosphatase; not present in all bacteria)
-Motility	Flagerllar, Chemotaxis, Pili	K03413	cheY; chemotaxis protein CheY (response regulator; binds FliM when phosphorylated)
-Motility	Flagerllar, Chemotaxis, Pili	K03414	cheB; chemotaxis protein CheB (methylesterase; adaptation; phosphorylated by CheA)
-Motility	Flagerllar, Chemotaxis, Pili	K03415	cheR; chemotaxis protein CheR (methyltransferase; constitutive; adaptation)
-Motility	Flagerllar, Chemotaxis, Pili	K02668	chpA; chemosensory histidine kinase ChpA (PilJ/CheA-like; controls T4P via PilG/PilH)
-Motility	Flagerllar, Chemotaxis, Pili	K02669	chpB; response regulator ChpB (CheY-like; phosphatase activity; T4P chemosensory)
-Motility	Flagerllar, Chemotaxis, Pili	K02670	pilG; response regulator PilG (CheY-like activator; promotes type IV pili extension)
-Motility	Flagerllar, Chemotaxis, Pili	K02671	pilH; response regulator PilH (CheY-like inhibitor; promotes type IV pili retraction)
-Motility	Flagerllar, Chemotaxis, Pili	K02667	pilI; Pil chemoreceptor PilI (MCP-like; ligand sensing for T4P chemosensing)
-Motility	Flagerllar, Chemotaxis, Pili	K02672	pilJ; MCP-like chemoreceptor PilJ (T4P chemosensory system ligand sensor)
-Motility	Flagerllar, Chemotaxis, Pili	K09773	pixJ; phototaxis sensor kinase PixJ (SyPixJ; bilin photoreceptor GAF domain; cyanobacteria)
-Motility	Flagerllar, Chemotaxis, Pili	K09774	pixG; response regulator PixG (CheY-like; promotes positive phototaxis via T4P)
-Motility	Flagerllar, Chemotaxis, Pili	K09775	pixH; response regulator PixH (CheY-like; phototaxis signaling)
-Motility	Flagerllar, Chemotaxis, Pili	K09776	pixL; histidine kinase PixL (phototaxis signaling; cyanobacteria)
-Motility	Flagerllar, Chemotaxis, Pili	K02490	flrB; sensor histidine kinase FlrB (FleS in Pseudomonas; polar flagellar synthesis TCS)
-Motility	Flagerllar, Chemotaxis, Pili	K02491	flrC; response regulator FlrC (FleR in Pseudomonas; sigma-54 enhancer-binding; activates class III flagellar genes)
-Motility	Flagerllar, Chemotaxis, Pili	K02492	flrA; sigma-54-dependent transcriptional activator FlrA (class I master regulator; Vibrio polar flagella)
-Motility	Flagerllar, Chemotaxis, Pili	K02674	pilS; sensor histidine kinase PilS (membrane-bound; controls pilin expression)
-Motility	Flagerllar, Chemotaxis, Pili	K02675	pilR; response regulator PilR (sigma-54 enhancer-binding protein; activates pilA transcription)
-Motility	Flagerllar, Chemotaxis, Pili	K02662	pilA; type IV pilin PilA (major pilin subunit; prepilin processed by PilD)
-Motility	Flagerllar, Chemotaxis, Pili	K02663	pilB; type IV pili extension ATPase PilB (powers pilin polymerization; hexameric AAA+ ATPase)
-Motility	Flagerllar, Chemotaxis, Pili	K02664	pilC; type IV pili inner membrane platform protein PilC
-Motility	Flagerllar, Chemotaxis, Pili	K02676	pilQ; type IV pili outer membrane secretin PilQ (multimeric OM channel; GspD-family)
-Motility	Flagerllar, Chemotaxis, Pili	K02677	pilT; type IV pili retraction ATPase PilT (powers pilus depolymerization; twitching motility)
-Motility	Flagerllar, Chemotaxis, Pili	K02678	pilU; type IV pili retraction ATPase PilU (auxiliary retraction ATPase)
-Motility	Flagerllar, Chemotaxis, Pili	K02679	pilM; type IV pili alignment subcomplex protein PilM (cytoplasmic actin-like; interacts with PilN)
-Motility	Flagerllar, Chemotaxis, Pili	K02680	pilN; type IV pili alignment subcomplex protein PilN (inner membrane; heterodimerizes with PilO)
-Motility	Flagerllar, Chemotaxis, Pili	K02681	pilO; type IV pili alignment subcomplex protein PilO (inner membrane; heterodimerizes with PilN)
-Motility	Flagerllar, Chemotaxis, Pili	K02682	pilP; type IV pili alignment subcomplex protein PilP (periplasmic lipoprotein; bridges IM complex to PilQ)
-Motility	Flagerllar, Chemotaxis, Pili	K02665	pilD; type IV pilin leader peptidase/N-methyltransferase PilD (prepilin peptidase; cleaves signal peptide and methylates N-terminal Phe)
-Motility	Flagerllar, Chemotaxis, Pili	K02666	pilE; type IV pili minor pilin PilE
-Motility	Flagerllar, Chemotaxis, Pili	K02683	fimT; minor pilin FimT (tip-associated minor pilin; relevant in Pseudomonas and Neisseria)
+Motility	Flagellar, Chemotaxis, Pili	K02399	flagella synthesis protein FlgN
+Motility	Flagellar, Chemotaxis, Pili	K02413	flagellar FliJ protein
+Motility	Flagellar, Chemotaxis, Pili	K02422	flagellar protein FliS
+Motility	Flagellar, Chemotaxis, Pili	K02423	flagellar protein FliT
+Motility	Flagellar, Chemotaxis, Pili	K02386	flagella basal body P-ring formation protein FlgA
+Motility	Flagellar, Chemotaxis, Pili	K02406	flagellin
+Motility	Flagellar, Chemotaxis, Pili	K02407	flagellar hook-associated protein 2
+Motility	Flagellar, Chemotaxis, Pili	K02397	flagellar hook-associated protein 3 FlgL
+Motility	Flagellar, Chemotaxis, Pili	K02396	flagellar hook-associated protein 1 FlgK
+Motility	Flagellar, Chemotaxis, Pili	K02414	flagellar hook-length control protein FliK
+Motility	Flagellar, Chemotaxis, Pili	K02389	flagellar basal-body rod modification protein FlgD
+Motility	Flagellar, Chemotaxis, Pili	K02390	flagellar hook protein FlgE
+Motility	Flagellar, Chemotaxis, Pili	K02391	flagellar basal-body rod protein FlgF
+Motility	Flagellar, Chemotaxis, Pili	K02392	flagellar basal-body rod protein FlgG
+Motility	Flagellar, Chemotaxis, Pili	K02393	flagellar L-ring protein precursor FlgH
+Motility	Flagellar, Chemotaxis, Pili	K02394	flagellar P-ring protein precursor FlgI
+Motility	Flagellar, Chemotaxis, Pili	K02387	flagellar basal-body rod protein FlgB
+Motility	Flagellar, Chemotaxis, Pili	K02388	flagellar basal-body rod protein FlgC
+Motility	Flagellar, Chemotaxis, Pili	K02408	flagellar hook-basal body complex protein FliE
+Motility	Flagellar, Chemotaxis, Pili	K02409	flagellar M-ring protein FliF
+Motility	Flagellar, Chemotaxis, Pili	K02410	flagellar motor switch protein FliG
+Motility	Flagellar, Chemotaxis, Pili	K02416	flagellar motor switch protein FliM
+Motility	Flagellar, Chemotaxis, Pili	K02417	flagellar motor switch protein FliN/FliY
+Motility	Flagellar, Chemotaxis, Pili	K02400	flagellar biosynthesis protein FlhA
+Motility	Flagellar, Chemotaxis, Pili	K02401	flagellar biosynthetic protein FlhB
+Motility	Flagellar, Chemotaxis, Pili	K02411	flagellar assembly protein FliH
+Motility	Flagellar, Chemotaxis, Pili	K02412	flagellum-specific ATP synthase [EC:7.4.2.8]
+Motility	Flagellar, Chemotaxis, Pili	K02418	flagellar protein FliO/FliZ
+Motility	Flagellar, Chemotaxis, Pili	K02419	flagellar biosynthetic protein FliP
+Motility	Flagellar, Chemotaxis, Pili	K02420	flagellar biosynthetic protein FliQ
+Motility	Flagellar, Chemotaxis, Pili	K02421	flagellar biosynthetic protein FliR
+Motility	Flagellar, Chemotaxis, Pili	K13820	flagellar biosynthetic protein FliR/FlhB
+Motility	Flagellar, Chemotaxis, Pili	K02556	chemotaxis protein MotA
+Motility	Flagellar, Chemotaxis, Pili	K02557	chemotaxis protein MotB
+Motility	Flagellar, Chemotaxis, Pili	K21217	sodium-type polar flagellar protein MotX
+Motility	Flagellar, Chemotaxis, Pili	K21218	sodium-type flagellar protein MotY
+Motility	Flagellar, Chemotaxis, Pili	K02395	flgJ; flagellar protein FlgJ (rod capping / muramidase)
+Motility	Flagellar, Chemotaxis, Pili	K02404	fliA; RNA polymerase sigma factor FliA (sigma-28; sigma-F)
+Motility	Flagellar, Chemotaxis, Pili	K02415	fliL; flagellar protein FliL (torque generation / stator recruitment)
+Motility	Flagellar, Chemotaxis, Pili	K06553	pomA; flagellar motor protein PomA (Na+-type stator; Vibrio/marine bacteria)
+Motility	Flagellar, Chemotaxis, Pili	K06554	pomB; flagellar motor protein PomB (Na+-type stator)
+Motility	Flagellar, Chemotaxis, Pili	K03407	cheA; chemotaxis protein histidine kinase CheA (autokinase; phosphorylates CheY and CheB)
+Motility	Flagellar, Chemotaxis, Pili	K03408	cheW; chemotaxis protein CheW (adaptor; links MCP receptor to CheA)
+Motility	Flagellar, Chemotaxis, Pili	K03409	cheV; chemotaxis protein CheV (CheW paralog with response regulator domain)
+Motility	Flagellar, Chemotaxis, Pili	K03412	cheZ; chemotaxis protein CheZ (CheY-P phosphatase; not present in all bacteria)
+Motility	Flagellar, Chemotaxis, Pili	K03413	cheY; chemotaxis protein CheY (response regulator; binds FliM when phosphorylated)
+Motility	Flagellar, Chemotaxis, Pili	K03414	cheB; chemotaxis protein CheB (methylesterase; adaptation; phosphorylated by CheA)
+Motility	Flagellar, Chemotaxis, Pili	K03415	cheR; chemotaxis protein CheR (methyltransferase; constitutive; adaptation)
+Motility	Flagellar, Chemotaxis, Pili	K02668	chpA; chemosensory histidine kinase ChpA (PilJ/CheA-like; controls T4P via PilG/PilH)
+Motility	Flagellar, Chemotaxis, Pili	K02669	chpB; response regulator ChpB (CheY-like; phosphatase activity; T4P chemosensory)
+Motility	Flagellar, Chemotaxis, Pili	K02670	pilG; response regulator PilG (CheY-like activator; promotes type IV pili extension)
+Motility	Flagellar, Chemotaxis, Pili	K02671	pilH; response regulator PilH (CheY-like inhibitor; promotes type IV pili retraction)
+Motility	Flagellar, Chemotaxis, Pili	K02667	pilI; Pil chemoreceptor PilI (MCP-like; ligand sensing for T4P chemosensing)
+Motility	Flagellar, Chemotaxis, Pili	K02672	pilJ; MCP-like chemoreceptor PilJ (T4P chemosensory system ligand sensor)
+Motility	Flagellar, Chemotaxis, Pili	K09773	pixJ; phototaxis sensor kinase PixJ (SyPixJ; bilin photoreceptor GAF domain; cyanobacteria)
+Motility	Flagellar, Chemotaxis, Pili	K09774	pixG; response regulator PixG (CheY-like; promotes positive phototaxis via T4P)
+Motility	Flagellar, Chemotaxis, Pili	K09775	pixH; response regulator PixH (CheY-like; phototaxis signaling)
+Motility	Flagellar, Chemotaxis, Pili	K09776	pixL; histidine kinase PixL (phototaxis signaling; cyanobacteria)
+Motility	Flagellar, Chemotaxis, Pili	K02491	flrC; response regulator FlrC (FleR in Pseudomonas; sigma-54 enhancer-binding; activates class III flagellar genes)
+Motility	Flagellar, Chemotaxis, Pili	K02674	pilS; sensor histidine kinase PilS (membrane-bound; controls pilin expression)
+Motility	Flagellar, Chemotaxis, Pili	K02675	pilR; response regulator PilR (sigma-54 enhancer-binding protein; activates pilA transcription)
+Motility	Flagellar, Chemotaxis, Pili	K02662	pilA; type IV pilin PilA (major pilin subunit; prepilin processed by PilD)
+Motility	Flagellar, Chemotaxis, Pili	K02663	pilB; type IV pili extension ATPase PilB (powers pilin polymerization; hexameric AAA+ ATPase)
+Motility	Flagellar, Chemotaxis, Pili	K02664	pilC; type IV pili inner membrane platform protein PilC
+Motility	Flagellar, Chemotaxis, Pili	K02676	pilQ; type IV pili outer membrane secretin PilQ (multimeric OM channel; GspD-family)
+Motility	Flagellar, Chemotaxis, Pili	K02677	pilT; type IV pili retraction ATPase PilT (powers pilus depolymerization; twitching motility)
+Motility	Flagellar, Chemotaxis, Pili	K02678	pilU; type IV pili retraction ATPase PilU (auxiliary retraction ATPase)
+Motility	Flagellar, Chemotaxis, Pili	K02679	pilM; type IV pili alignment subcomplex protein PilM (cytoplasmic actin-like; interacts with PilN)
+Motility	Flagellar, Chemotaxis, Pili	K02680	pilN; type IV pili alignment subcomplex protein PilN (inner membrane; heterodimerizes with PilO)
+Motility	Flagellar, Chemotaxis, Pili	K02681	pilO; type IV pili alignment subcomplex protein PilO (inner membrane; heterodimerizes with PilN)
+Motility	Flagellar, Chemotaxis, Pili	K02682	pilP; type IV pili alignment subcomplex protein PilP (periplasmic lipoprotein; bridges IM complex to PilQ)
+Motility	Flagellar, Chemotaxis, Pili	K02665	pilD; type IV pilin leader peptidase/N-methyltransferase PilD (prepilin peptidase; cleaves signal peptide and methylates N-terminal Phe)
+Motility	Flagellar, Chemotaxis, Pili	K02666	pilE; type IV pili minor pilin PilE
+Motility	Flagellar, Chemotaxis, Pili	K02683	fimT; minor pilin FimT (tip-associated minor pilin; relevant in Pseudomonas and Neisseria)
 Housekeeping	Ribosomes	K02981	small subunit ribosomal protein S2e
 Housekeeping	Ribosomes	K02985	small subunit ribosomal protein S3e
 Housekeeping	Ribosomes	K02984	small subunit ribosomal protein S3Ae
