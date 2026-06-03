@@ -9,6 +9,7 @@ maxdepth: 2
 installation
 introduction
 usage
+summarize_def
 Parameter API <params_doc>
 output
 rules_parser
