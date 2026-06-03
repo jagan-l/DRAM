@@ -1,6 +1,6 @@
 # DRAM2 Dictionary
 
-**ANNOTATE**: a DRAM@ function that pulls information from multiple databases because each database has different strengths, weaknesses, and purposes. Users are provided with results from all databases in the `raw-annotations.tsv` file, allowing them to use their knowledge of the system, organisms, and research questions to determine the most appropriate annotation for their genomes. This flexibility makes DRAM2 highly customizable to individual research needs. For a complete description of ANNOTATE see here: 
+**ANNOTATE**: a DRAM2 function that pulls information from multiple databases because each database has different strengths, weaknesses, and purposes. Users are provided with results from all databases in the `raw-annotations.tsv` file, allowing them to use their knowledge of the system, organisms, and research questions to determine the most appropriate annotation for their genomes. This flexibility makes DRAM2 highly customizable to individual research needs. For a complete description of ANNOTATE see here: 
 
 **SUMMARIZE**: a DRAM2 function that creates a summary of gene annotations by Topic and Ecosystem. DRAM2 organizes annotations into curated categories that highlight genes most relevant to specific metabolic functions, environments, and research applications. For a complete description of the SUMMARIZE function see here:
 
