@@ -306,7 +306,13 @@
                     "type": "string",
                     "description": "Choose alternative in-built rules for the visualization. This option cannot be specified if `viz_rules_tsv` is specified.",
                     "default": "",
-                    "enum": ["default", "single"]
+                    "enum": ["default", "ag"]
+                },
+                "viz_mapping_file": {
+                    "type": "string",
+                    "description": "Path to metaT mapping file of gene abundances in samples. Must have a column named 'Geneid' that matches the query_id column in the annotations file.",
+                    "default": "",
+                    "enum": ["default", "ag"]
                 }
             }
         },

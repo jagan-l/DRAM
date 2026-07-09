@@ -2,13 +2,30 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2.0.0-beta31 - 2026-07-09
+
+[c065dce](https://github.com/WrightonLabCSU/DRAM/commit/c065dce9a431c6fda55ab0e4a6b464fdbf0c194c)...[ccb7d35](https://github.com/WrightonLabCSU/DRAM/commit/ccb7d35714fd325767a176a6802c75ada613f092)
+
+### Features
+
+- Update Rules and rule parsing ([ccb7d35](https://github.com/WrightonLabCSU/DRAM/commit/ccb7d35714fd325767a176a6802c75ada613f092))
+
+  Update ag rules, ag product
+
+  Update taxonomy parsing to allow taxonomy rules
+
+  Update rule parsing to allow count based rules
+
+  Update visualization to allow metaT mapping input and mapping heatmaps
+
+
 ## 2.0.0-beta30 - 2026-05-28
 
 [c065dce](https://github.com/WrightonLabCSU/DRAM/commit/c065dce9a431c6fda55ab0e4a6b464fdbf0c194c)...[745c873](https://github.com/WrightonLabCSU/DRAM/commit/745c873d3d6842ce4cf8b28dfac5c737a6d93a07)
 
 ### Bug Fixes
 
-- Rgi now passes threads argument fix ([7962c4b](https://github.com/WrightonLabCSU/DRAM/commit/7962c4b017967cfe11a57772e9a339cbd9225ad4))
+- dbcan now passes threads argument fix ([7962c4b](https://github.com/WrightonLabCSU/DRAM/commit/7962c4b017967cfe11a57772e9a339cbd9225ad4))
 
 
 - Add retry on dbcan for io concurrency problem ([7409a1b](https://github.com/WrightonLabCSU/DRAM/commit/7409a1b8952442564d577cf4db0308c0e1bd1b2b))

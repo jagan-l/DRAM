@@ -80,14 +80,13 @@ def make_genome_summary(
         .otherwise(pl.col("gene_id"))
         .alias(COL_RULE)
     )
-
     df = evaluate_rules_on_anno(
         rules=genome_summary_frame,
         # rules_tsv_path="/home/projects-wrighton-2/Pipeline_Development/DRAM2-Nextflow/DRAM/bin/assets/forms/distill_sheets/distill_metals.tsv",
         annotations=annotations,
-        sample_col="query_id",
+        count_col="query_id",
         label_col="gene_id",
-        parent_col=None,
+        alias_col=None,
         rules_col=COL_RULE,
     )
     df = df.join(

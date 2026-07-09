@@ -306,7 +306,10 @@ workflow DRAM {
             ch_viz_rules_tsv = params.viz_rules_tsv ?
                 channel.fromPath(params.viz_rules_tsv, checkIfExists: true) :
                 channel.empty()
-            PRODUCT_HEATMAP( ch_final_annots, params.CONSTANTS.FASTA_COLUMN, ch_viz_rules_tsv.toList(), viz_rules_system )
+            ch_viz_mapping_file = params.viz_mapping_file ?
+                channel.fromPath(params.viz_mapping_file, checkIfExists: true) :
+                channel.empty()
+            PRODUCT_HEATMAP( ch_final_annots, params.CONSTANTS.FASTA_COLUMN, ch_viz_rules_tsv.toList(), ch_viz_mapping_file.toList(), viz_rules_system )
         }
         //
         // ADJECTIVES
