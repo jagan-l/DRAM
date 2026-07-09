@@ -86,7 +86,7 @@ def make_genome_summary(
         annotations=annotations,
         count_col="query_id",
         label_col="gene_id",
-        parent_col=None,
+        alias_col=None,
         rules_col=COL_RULE,
     )
     df = df.join(
