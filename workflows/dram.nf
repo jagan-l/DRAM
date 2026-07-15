@@ -248,29 +248,32 @@ workflow DRAM {
         // Pipeline steps
         //
 
-        ANNOTATE (
-            ch_fasta,
-            default_sheet,
-            call,
-            use_kegg,
-            use_kofam,
-            use_dbcan,
-            use_camper,
-            use_fegenie,
-            use_methyl,
-            use_canthyd,
-            use_sulfur,
-            use_pfam,
-            use_merops,
-            use_uniref,
-            use_metals,
-            use_antismash,
-            use_rgi,
-            use_card,
-            use_tcdb,
-            use_dram_db,
-            use_vog
-        )
+        if (params.input_fasta || params.input_genes) {
+
+            ANNOTATE (
+                ch_fasta,
+                default_sheet,
+                call,
+                use_kegg,
+                use_kofam,
+                use_dbcan,
+                use_camper,
+                use_fegenie,
+                use_methyl,
+                use_canthyd,
+                use_sulfur,
+                use_pfam,
+                use_merops,
+                use_uniref,
+                use_metals,
+                use_antismash,
+                use_rgi,
+                use_card,
+                use_tcdb,
+                use_dram_db,
+                use_vog
+            )
+        }
 
         if (params.annotate){ // If the user has specified --annotate, us the outputted annotations
             ch_final_annots = ANNOTATE.out.ch_combined_annotations

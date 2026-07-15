@@ -31,7 +31,10 @@ To make the DRAM code and processing logic more understandable for new contribut
 1. Define the corresponding input channels and output channels
 1. If your scripts in the `bin` folder need external dependencies (such as from conda), then add a `environment.yml` file in the same directory as your process (in the `module/local/..`) in your process script add `conda "${moduleDir}/environment.yml"` above your input channels. (See other process scripts as examples).
 1. You will now need to install the wave-cli tool to create containers on demand from conda environments. This is how we specify our containers without having to manage docker files or anything else like that. Wave just tells Nextflow how to pull a container on demand from a conda file. You can install wave-cli [here](https://github.com/seqeralabs/wave-cli). Ideally this will be integrated into our CI/CI system in the future.
-1. Once you have wave installed, run `wave --freeze --conda-file modules/local/subdir/environment.yml` which will give you some string that starts something like `community.wave.seqera.io`. Below your `conda "${moduleDir}/environment.yml"`, add `container "YOUR STRING FROM WAVE"`
+1. Once you have Wave installed, create both OCI and native Singularity images from the module environment:
+   - `wave --freeze --conda-file modules/local/subdir/environment.yml`
+   - `wave --singularity --freeze --conda-file modules/local/subdir/environment.yml`
+   Add both returned URIs to the module's `container` directive, selecting the `oras://` URI when `workflow.containerEngine` is `singularity` or `apptainer`.
    - Now users can run DRAM with with `-profile conda` and `-profile singulary/docker/apptainer/etc.` and it will just work without them installing the dependencies
 1. Add a computation label to your process, such as `label 'process_small'`, that tells Nextflow how much resources to use. We have defined defaults for what process_small, process_medium, etc. mean, but users can override this in their own configs, allowing more control. All the options can be found in `conf/base.config`
 1. Add your process by name to `conf/modules.config` if you want to change where your output files get stored in the user's outdir.

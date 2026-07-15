@@ -4,7 +4,9 @@ process PRODUCT_HEATMAP {
     errorStrategy 'finish'
 
     conda "${moduleDir}/environment.yml"
-    container "community.wave.seqera.io/library/python_dram-viz:ac93dd7d16cc1dd4"
+    container "${ workflow.containerEngine in ['singularity', 'apptainer'] ?
+        'oras://community.wave.seqera.io/library/python_dram-viz:cc7711cdb8243f3d' :
+        'community.wave.seqera.io/library/python_dram-viz:576a7b93eb987e56' }"
 
     input:
     path(ch_final_annots, stageAs: "raw-annotations.tsv")
@@ -14,7 +16,7 @@ process PRODUCT_HEATMAP {
     val(rules_system)
 
     output:
-    path( "product.html" ), emit: product_html
+    path( "*.html" ), emit: product_html
 
     script:
     def args = task.ext.args ?: ''

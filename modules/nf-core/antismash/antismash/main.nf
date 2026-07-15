@@ -3,7 +3,9 @@ process ANTISMASH_ANTISMASH {
     label 'process_medium'
 
     conda "${moduleDir}/environment.yml"
-    container "nf-core/antismash:8.0.1--pyhdfd78af_0"
+    container "${ workflow.containerEngine in ['singularity', 'apptainer'] ?
+        'oras://community.wave.seqera.io/library/antismash:8.0.1--752e6d42c01e68b6' :
+        'nf-core/antismash:8.0.1--pyhdfd78af_0' }"
 
     input:
     tuple val(meta), path(sequence_input)

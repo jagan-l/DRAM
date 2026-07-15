@@ -310,9 +310,9 @@
                 },
                 "viz_mapping_file": {
                     "type": "string",
+                    "format": "file-path",
                     "description": "Path to metaT mapping file of gene abundances in samples. Must have a column named 'Geneid' that matches the query_id column in the annotations file.",
-                    "default": "",
-                    "enum": ["default", "ag"]
+                    "fa_icon": "fas fa-cog"
                 }
             }
         },

@@ -4,7 +4,9 @@ process MMSEQS_SEARCH {
     errorStrategy 'finish'
 
     conda "${moduleDir}/environment.yml"
-    container "community.wave.seqera.io/library/python_pandas_polars_hmmer_pruned:6d5bc9dfeca29b70"
+    container "${ workflow.containerEngine in ['singularity', 'apptainer'] ?
+        'oras://community.wave.seqera.io/library/python_pandas_polars_hmmer_pruned:1742d882bc99fed5' :
+        'community.wave.seqera.io/library/python_pandas_polars_hmmer_pruned:6d5bc9dfeca29b70' }"
 
     tag { input_fasta }
 
