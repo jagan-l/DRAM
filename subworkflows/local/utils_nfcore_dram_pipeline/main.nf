@@ -108,7 +108,7 @@ workflow PIPELINE_INITIALISATION {
     if (((params.adjectives || params.traits) || (params.visualize || params.product)) && ((!use_kegg && !use_kofam) || !use_fegenie || !use_sulfur)) {
         // If they are using a premade annotations file, we just trust that they used kegg, fegenies, or sulfur
         if (!params.annotations) {
-            error("When using Traits, make sure you use (Kegg or Kofam), FeGenie, and Sulfur Databases")
+            error("When using Traits or viz, make sure you use (Kegg or Kofam), FeGenie, and Sulfur Databases")
         }
     }
 

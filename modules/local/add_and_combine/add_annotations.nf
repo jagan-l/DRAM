@@ -4,7 +4,9 @@ process ADD_ANNOTATIONS {
     errorStrategy 'finish'
 
     conda "${moduleDir}/environment.yml"
-    container "community.wave.seqera.io/library/python_pandas_biopython:7df21d027f67112e"
+    container "${ workflow.containerEngine in ['singularity', 'apptainer'] ?
+        'oras://community.wave.seqera.io/library/python_pandas_biopython:81f6b2a8fb71cdc6' :
+        'community.wave.seqera.io/library/python_pandas_biopython:7df21d027f67112e' }"
 
     input:
     path( old_annotations, stageAs: "old_annotations.tsv" )

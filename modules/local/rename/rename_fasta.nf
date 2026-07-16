@@ -2,7 +2,9 @@ process RENAME_FASTA {
     label 'process_tiny'
 
     conda "${moduleDir}/environment.yml"
-    container "community.wave.seqera.io/library/bbmap:801715ef64484762"
+    container "${ workflow.containerEngine in ['singularity', 'apptainer'] ?
+        'oras://community.wave.seqera.io/library/bbmap:eecc2d5093684dba' :
+        'community.wave.seqera.io/library/bbmap:801715ef64484762' }"
 
     input:
     tuple val(fasta_names), path(fastas)

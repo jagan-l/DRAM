@@ -80,7 +80,7 @@
                 "input_genes": {
                     "type": "string",
                     "format": "directory-path",
-                    "description": "Directory containing called genes. Only used when not running call. This allows you to provide pre-called genes to the pipeline."
+                    "description": "Directory containing called genes. Only used when not running call. This allows you to provide pre-called genes to the pipeline. This is a PRODIGAL output trans_file format."
                 },
                 "genes_fmt": {
                     "type": "string",
@@ -91,7 +91,7 @@
                 "genes_fna_fmt": {
                     "type": "string",
                     "default": "*.fna",
-                    "description": "Input format for the Genes fna file. Used for certain database searches such as RGI when not running with raw fasta files.",
+                    "description": "Input format for the Genes fna file. Used for certain database searches such as RGI when not running with raw fasta files. This is a PRODIGAL output nuc_file format",
                     "fa_,icon": "fas fa-plus"
                 }
             },
@@ -310,9 +310,9 @@
                 },
                 "viz_mapping_file": {
                     "type": "string",
+                    "format": "file-path",
                     "description": "Path to metaT mapping file of gene abundances in samples. Must have a column named 'Geneid' that matches the query_id column in the annotations file.",
-                    "default": "",
-                    "enum": ["default", "ag"]
+                    "fa_icon": "fas fa-cog"
                 }
             }
         },
