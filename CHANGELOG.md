@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2.0.0-beta32 - 2026-07-16
+
+[42dad45](https://github.com/WrightonLabCSU/DRAM/commit/42dad45e8321853fd58b560966a7481b60725f6c)...[bae4593](https://github.com/WrightonLabCSU/DRAM/commit/bae459344a64b0ad29ad2aac9756dcd8a696bfec)
+
+### Bug Fixes
+
+- Update vix for mapping fixes, and dram cli inputs ([2fc9d76](https://github.com/WrightonLabCSU/DRAM/commit/2fc9d769cd6d1595f2a437a3e024b6ae620bcac8))
+
+  Update DRAM cli inputs for running annotationis stand alone,
+  input genes with mapping options, and mapping option overrides
+
+  Update viz package for bug fixes
+
+  Update NF container tags for updated apptainer and singularity versions.
+  Adds extra apptainer/singularity URIs for container image resolution.
+
+
 ## 2.0.0-beta31 - 2026-07-09
 
 [c065dce](https://github.com/WrightonLabCSU/DRAM/commit/c065dce9a431c6fda55ab0e4a6b464fdbf0c194c)...[ccb7d35](https://github.com/WrightonLabCSU/DRAM/commit/ccb7d35714fd325767a176a6802c75ada613f092)
