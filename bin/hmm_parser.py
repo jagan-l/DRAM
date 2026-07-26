@@ -227,7 +227,7 @@ def main(hmm_domtbl, hmm_info_path, ec_from_info, gene_locs, db_name, output):
             pd.api.types.is_string_dtype(hmm_info.iloc[:, -1])
             and hmm_info.columns[-1] not in merge_cols
         ):  # don't need to worry about description in merge cols, cause already checked
-            hmm_info["deescription"] = hmm_info[hmm_info.columns[-1]].copy()
+            hmm_info["description"] = hmm_info[hmm_info.columns[-1]].copy()
         else:
             raise_on_ec = True
 
