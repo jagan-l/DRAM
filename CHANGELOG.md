@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2.0.0-beta33 - 2026-07-27
+
+[eadadea](https://github.com/WrightonLabCSU/DRAM/commit/eadadeaa4b282e35f1fa779289716e2d188316b5)...[7ae8c45](https://github.com/WrightonLabCSU/DRAM/commit/7ae8c4569b54832fe1585250b3c2ee9b4931ecff)
+
+### Features
+
+- Update and add new ecosystem summaize sheets ([c718b7f](https://github.com/WrightonLabCSU/DRAM/commit/c718b7f4feffe3ce2eccdcab7a4a23a5df54fc4f))
+
+  Update eng_sys sheet
+  Add new gut, marine, and biogeochemical sheets
+
+
+- Add new ecos sheets from viz update ([1ae7ac2](https://github.com/WrightonLabCSU/DRAM/commit/1ae7ac21723468269bc2a23700c188c2b6ed511e))
+
+  Add marine, eng_sys, and bgc to viz sheet options
+
+
+
 ## 2.0.0-beta32 - 2026-07-16
 
 [42dad45](https://github.com/WrightonLabCSU/DRAM/commit/42dad45e8321853fd58b560966a7481b60725f6c)...[bae4593](https://github.com/WrightonLabCSU/DRAM/commit/bae459344a64b0ad29ad2aac9756dcd8a696bfec)
