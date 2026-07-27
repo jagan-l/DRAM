@@ -159,8 +159,11 @@ workflow DRAM {
         }
 
         if (distill_ecosystem != "") {
-            def validEcos = ['eng_sys', 'ag']
+            def validEcos = ['eng_sys', 'ag', 'bgc', 'gut', 'marine']
             def distillEcosystemList = distill_ecosystem.split(',')
+            def vizRulesSystemList = viz_rules_system ?
+                viz_rules_system.split(',').collect { it.trim() } :
+                []
 
             distillEcosystemList.each { ecosysItem ->
                 if (!validEcos.contains(ecosysItem)) {
@@ -170,12 +173,13 @@ workflow DRAM {
                     if (!((use_kegg || use_kofam) && use_metals && use_dbcan)) {
                         error("When sum_ecos ag, you must include (kegg or kofam), metals, and dbcan databases")
                     }
-                    if (!viz_rules_system) {
-                        viz_rules_system = "ag"
-                    }
+                }
+                if (!vizRulesSystemList.contains(ecosysItem) && ecosysItem != "gut") {  // TODO: remove the gut filter once gut viz system works
+                    vizRulesSystemList << ecosysItem
                 }
 
             }
+            viz_rules_system = vizRulesSystemList.join(',')
         }
 
         if (distill_custom != "") {
