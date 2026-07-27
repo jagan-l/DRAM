@@ -255,7 +255,7 @@
             "properties": {
                 "sum_ecos": {
                     "type": "string",
-                    "description": "Ecosystem to distill. Options: <eng_sys|ag> If more than one ecosystem included, they must be seperated by a comma (--sum_ecos eng_sys,ag or --sum_ecos 'eng_sys,ag')."
+                    "description": "Ecosystem to distill. Options: <eng_sys|ag|marine|gut|bgc> If more than one ecosystem included, they must be seperated by a comma (--sum_ecos eng_sys,ag or --sum_ecos 'eng_sys,ag')."
                 },
                 "sum_topics": {
                     "utype": "string",
@@ -304,9 +304,8 @@
                 },
                 "viz_rules_system": {
                     "type": "string",
-                    "description": "Choose alternative in-built rules for the visualization. This option cannot be specified if `viz_rules_tsv` is specified.",
-                    "default": "",
-                    "enum": ["default", "ag"]
+                    "description": "Choose alternative in-built rules for the visualization. This option cannot be specified if `viz_rules_tsv` is specified. comma seperated list with the same options as `sum_ecos`. (ex. `--viz_rules_system ag,bgc`",
+                    "default": ""
                 },
                 "viz_mapping_file": {
                     "type": "string",

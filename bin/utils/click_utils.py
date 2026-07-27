@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 def validate_comma_separated(ctx, param, value, split=(",", " "), converter=None):
-    if not value:
+    if not value or value == "[]":
         return []
     if isinstance(value, (list, tuple)):
         s = split if isinstance(split, str) else split[0]

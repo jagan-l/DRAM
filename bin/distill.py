@@ -29,8 +29,8 @@ logger = get_logger(filename=Path(__file__).stem)
     "pathway",
     "module",
     "topic_ecosystem",
-    "category",
-    "subcategory",
+    "header",
+    "subheader",
     "alias",
     "rule",
 )
@@ -200,7 +200,7 @@ def make_genome_stats(
 )
 @click.option(
     "--distill_ecosystem",
-    default="eng_sys,ag",
+    default="eng_sys,ag,bgc,gut,marine",
     help="Default distillates ecosystems to run.",
 )
 @click.option(
@@ -263,6 +263,12 @@ def distill(
         distill_ecos_sheets.append(DISTILL_DIR / "distill_ag.tsv")
     if "eng_sys" in distill_ecosystem:
         distill_ecos_sheets.append(DISTILL_DIR / "distill_eng_sys.tsv")
+    if "bgc" in distill_ecosystem:
+        distill_ecos_sheets.append(DISTILL_DIR / "distill_bgc.tsv")
+    if "gut" in distill_ecosystem:
+        distill_ecos_sheets.append(DISTILL_DIR / "distill_gut.tsv")
+    if "marine" in distill_ecosystem:
+        distill_ecos_sheets.append(DISTILL_DIR / "distill_marine.tsv")
 
     distill_custom_sheets = []
     if custom_distillate:
