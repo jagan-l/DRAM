@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2.0.0-beta34 - 2026-07-31
+
+[4c469d7](https://github.com/WrightonLabCSU/DRAM/commit/4c469d73a9e1f9dc942802e42d14fcc6255c6fd4)...[4c051ec](https://github.com/WrightonLabCSU/DRAM/commit/4c051ecfd70bdf58a274eee68d06052b140c071d)
+
+### Features
+
+- Update trait rules with tax ([3d54a95](https://github.com/WrightonLabCSU/DRAM/commit/3d54a95560f517e7ad9b5f50d979a5c19093bf9d))
+
+
+- Add gut rules ([4c051ec](https://github.com/WrightonLabCSU/DRAM/commit/4c051ecfd70bdf58a274eee68d06052b140c071d))
+
+
+
 ## 2.0.0-beta33 - 2026-07-27
 
 [eadadea](https://github.com/WrightonLabCSU/DRAM/commit/eadadeaa4b282e35f1fa779289716e2d188316b5)...[7ae8c45](https://github.com/WrightonLabCSU/DRAM/commit/7ae8c4569b54832fe1585250b3c2ee9b4931ecff)

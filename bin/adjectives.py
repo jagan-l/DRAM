@@ -125,7 +125,7 @@ def evaluate(
         dfs[name[0]] = evaluate_rules_on_anno(
             rules=data.lazy(),
             annotations_path=annotations,
-            parent_col="alias",
+            alias_col="alias",
             rules_col="rule",
             count_col="query_id",
             group_col=sample_col,
