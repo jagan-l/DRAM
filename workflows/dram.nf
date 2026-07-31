@@ -174,7 +174,7 @@ workflow DRAM {
                         error("When sum_ecos ag, you must include (kegg or kofam), metals, and dbcan databases")
                     }
                 }
-                if (!vizRulesSystemList.contains(ecosysItem) && ecosysItem != "gut") {  // TODO: remove the gut filter once gut viz system works
+                if (!vizRulesSystemList.contains(ecosysItem)) {
                     vizRulesSystemList << ecosysItem
                 }
 

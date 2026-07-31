@@ -304,7 +304,7 @@
                 },
                 "viz_rules_system": {
                     "type": "string",
-                    "description": "Choose alternative in-built rules for the visualization. This option cannot be specified if `viz_rules_tsv` is specified. comma seperated list with the same options as `sum_ecos`. (ex. `--viz_rules_system ag,bgc`",
+                    "description": "Choose alternative in-built rules for the visualization. This option cannot be specified if `viz_rules_tsv` is specified. comma seperated list with the same options as `sum_ecos`. (ex. `--viz_rules_system ag,bgc`)",
                     "default": ""
                 },
                 "viz_mapping_file": {
