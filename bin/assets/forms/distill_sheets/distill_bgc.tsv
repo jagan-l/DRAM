@@ -10,7 +10,7 @@ Fe@MtrC		Nutrient Cycling , Redox Ladder	Iron Reduction	bgc
 Fe@omcF		Nutrient Cycling , Redox Ladder	Iron Reduction	bgc
 Fe@omcS		Nutrient Cycling , Redox Ladder	Iron Reduction	bgc
 Fe@omcZ		Nutrient Cycling , Redox Ladder	Iron Reduction	bgc
-hgcA	hgcA;Cobalamin-dependent mercury methyltransferase HgcA	Environmental Adaptation	Mercury Methylation	bgc
+HgcA	hgcA;Cobalamin-dependent mercury methyltransferase HgcA	Environmental Adaptation	Mercury Methylation	bgc
 dsrA		Redox Ladder	Sulfate Reduction	bgc
 dsrB		Redox Ladder	Sulfate Reduction	bgc
 AlkB|AlmA_GroupI|AlmA_GroupIII|pBmoA|pBmoB|pBmoC|sBmoX|sBmoY|sBmoZ|CYP153|LadA_alpha|LadA_beta|LadB|PrmA|PrmC|AhyA|AssA		Carbon Transformations	Hydrocarbons (Alkanes)	bgc
