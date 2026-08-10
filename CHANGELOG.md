@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2.0.0-beta35 - 2026-08-10
+
+### Features
+
+- Update to BGC Rules [7607d5c](https://github.com/WrightonLabCSU/DRAM/commit/7607d5c6cc79a32a72c4b23625113263c7ede482)...[b440963](https://github.com/WrightonLabCSU/DRAM/commit/b4409636f80734aa159295d7819680c929a115d0)
+
 ## 2.0.0-beta34 - 2026-07-31
 
 [4c469d7](https://github.com/WrightonLabCSU/DRAM/commit/4c469d73a9e1f9dc942802e42d14fcc6255c6fd4)...[4c051ec](https://github.com/WrightonLabCSU/DRAM/commit/4c051ecfd70bdf58a274eee68d06052b140c071d)
