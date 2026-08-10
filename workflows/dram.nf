@@ -42,7 +42,7 @@ workflow DRAM {
     ch_fasta = channel.empty()
 
     default_sheet = file(params.distill_dummy_sheet)
-    distill_flag = (params.summarize || params.distill_topic != "" || params.distill_ecosystem != "" || params.distill_custom != "" || params.sum_ecos != "")
+    distill_flag = (params.summarize || params.sum_topics != "" || params.distill_topic != "" || params.distill_ecosystem != "" || params.distill_custom != "" || params.sum_ecos != "")
 
     // if annotate with raw fasta but no call, we can infer we need to call genes, so set call to true
     // Also, if call is specified, set call to true
@@ -139,10 +139,14 @@ workflow DRAM {
     else {
         distill_custom = ""
     }
-    distill_topic = params.distill_topic
+    distill_topic = params.sum_topics
+    if (distill_topic == "") {
+        distill_topic = params.distill_topic
+    }
     if (distill_flag) {
+        log.info("distill topic: ${distill_topic}")
         if (distill_topic != "") {
-            def validTopics = ['default', 'carbon', 'energy', 'misc', 'nitrogen', 'transport', 'camper', 'none']
+            def validTopics = ['default', 'assim', 'cell', 'energy', 'env', 'none']
             def topics = distill_topic.split(',')
 
             topics.each { topic ->
@@ -155,8 +159,11 @@ workflow DRAM {
         }
 
         if (distill_ecosystem != "") {
-            def validEcos = ['eng_sys', 'ag']
+            def validEcos = ['eng_sys', 'ag', 'bgc', 'gut', 'marine']
             def distillEcosystemList = distill_ecosystem.split(',')
+            def vizRulesSystemList = viz_rules_system ?
+                viz_rules_system.split(',').collect { it.trim() } :
+                []
 
             distillEcosystemList.each { ecosysItem ->
                 if (!validEcos.contains(ecosysItem)) {
@@ -166,12 +173,13 @@ workflow DRAM {
                     if (!((use_kegg || use_kofam) && use_metals && use_dbcan)) {
                         error("When sum_ecos ag, you must include (kegg or kofam), metals, and dbcan databases")
                     }
-                    if (!viz_rules_system) {
-                        viz_rules_system = "ag"
-                    }
+                }
+                if (!vizRulesSystemList.contains(ecosysItem)) {
+                    vizRulesSystemList << ecosysItem
                 }
 
             }
+            viz_rules_system = vizRulesSystemList.join(',')
         }
 
         if (distill_custom != "") {
@@ -244,29 +252,32 @@ workflow DRAM {
         // Pipeline steps
         //
 
-        ANNOTATE (
-            ch_fasta,
-            default_sheet,
-            call,
-            use_kegg,
-            use_kofam,
-            use_dbcan,
-            use_camper,
-            use_fegenie,
-            use_methyl,
-            use_canthyd,
-            use_sulfur,
-            use_pfam,
-            use_merops,
-            use_uniref,
-            use_metals,
-            use_antismash,
-            use_rgi,
-            use_card,
-            use_tcdb,
-            use_dram_db,
-            use_vog
-        )
+        if (params.input_fasta || params.input_genes) {
+
+            ANNOTATE (
+                ch_fasta,
+                default_sheet,
+                call,
+                use_kegg,
+                use_kofam,
+                use_dbcan,
+                use_camper,
+                use_fegenie,
+                use_methyl,
+                use_canthyd,
+                use_sulfur,
+                use_pfam,
+                use_merops,
+                use_uniref,
+                use_metals,
+                use_antismash,
+                use_rgi,
+                use_card,
+                use_tcdb,
+                use_dram_db,
+                use_vog
+            )
+        }
 
         if (params.annotate){ // If the user has specified --annotate, us the outputted annotations
             ch_final_annots = ANNOTATE.out.ch_combined_annotations
@@ -286,9 +297,7 @@ workflow DRAM {
         if (distill_flag) {
             SUMMARIZE(
                 ch_final_annots,
-                ANNOTATE.out.ch_rrna_collected,
-                ANNOTATE.out.ch_trna_collected,
-                ANNOTATE.out.ch_quast_stats,
+                ANNOTATE.out.ch_trna_combined,
                 distill_topic,
                 distill_ecosystem,
                 distill_custom
@@ -304,7 +313,10 @@ workflow DRAM {
             ch_viz_rules_tsv = params.viz_rules_tsv ?
                 channel.fromPath(params.viz_rules_tsv, checkIfExists: true) :
                 channel.empty()
-            PRODUCT_HEATMAP( ch_final_annots, params.CONSTANTS.FASTA_COLUMN, ch_viz_rules_tsv.toList(), viz_rules_system )
+            ch_viz_mapping_file = params.viz_mapping_file ?
+                channel.fromPath(params.viz_mapping_file, checkIfExists: true) :
+                channel.empty()
+            PRODUCT_HEATMAP( ch_final_annots, params.CONSTANTS.FASTA_COLUMN, ch_viz_rules_tsv.toList(), ch_viz_mapping_file.toList(), viz_rules_system )
         }
         //
         // ADJECTIVES

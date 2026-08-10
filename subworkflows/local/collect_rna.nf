@@ -78,8 +78,8 @@ workflow COLLECT_RNA {
         // Create sheet for rrnas from the collected rRNAs or provided rRNAs
         // Run RRNA_COLLECT to generate a combined TSV for all fastas
         RRNA_COLLECT( ch_collected_rRNAs )
-        ch_rrna_collected = RRNA_COLLECT.out.rrna_collected_out
-        ch_rrna_combined = RRNA_COLLECT.out.rrna_combined_out
+        ch_rrna_collected = RRNA_COLLECT.out.rrna_collected_out.ifEmpty(default_sheet)
+        ch_rrna_combined = RRNA_COLLECT.out.rrna_combined_out.ifEmpty(default_sheet)
     }
     ch_trna_collected = default_sheet
     ch_trna_combined = default_sheet
@@ -87,14 +87,9 @@ workflow COLLECT_RNA {
         // Create sheet for trnas from the collected tRNAs or provided tRNAs
         // Run TRNA_COLLECT to generate a combined TSV for all fastas
         TRNA_COLLECT( ch_collected_tRNAs )
-        ch_trna_collected = TRNA_COLLECT.out.trna_collected_out
-        ch_trna_combined = TRNA_COLLECT.out.trna_combined_out
+        ch_trna_collected = TRNA_COLLECT.out.trna_collected_out.ifEmpty(default_sheet)
+        ch_trna_combined = TRNA_COLLECT.out.trna_combined_out.ifEmpty(default_sheet)
     }
-
-    ch_rrna_collected = ch_rrna_collected.ifEmpty(default_sheet)
-    ch_rrna_combined = ch_rrna_combined.ifEmpty(default_sheet)
-    ch_trna_collected = ch_trna_collected.ifEmpty(default_sheet)
-    ch_trna_combined = ch_trna_combined.ifEmpty(default_sheet)
 
     emit:
     ch_rrna_collected

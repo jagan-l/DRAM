@@ -4,7 +4,9 @@ process ADD_BIN_QUALITY {
     errorStrategy 'finish'
 
     conda "${moduleDir}/environment.yml"
-    container "community.wave.seqera.io/library/python_pandas_biopython:7df21d027f67112e"
+    container "${ workflow.containerEngine in ['singularity', 'apptainer'] ?
+        'oras://community.wave.seqera.io/library/python_pandas_biopython:81f6b2a8fb71cdc6' :
+        'community.wave.seqera.io/library/python_pandas_biopython:7df21d027f67112e' }"
 
     input:
     file( combined_annotations )

@@ -24,7 +24,8 @@ def write_summarized_genomes_to_xlsx(
     with Workbook(output_file) as wb:
         if df is not None and not df.is_empty():
             for sheet, frame in df.group_by(group_by):
-                frame = frame.sort(sort_order_columns)
+                sort_order = [col for col in sort_order_columns if col in frame.columns]
+                frame = frame.sort(sort_order)
                 frame = frame.drop(group_by)
                 frame.write_excel(workbook=wb, worksheet=sheet[0], **format_kw)
         for extra_frame in extra_frames:

@@ -4,29 +4,28 @@ process SUMMARIZE {
     errorStrategy 'finish'
 
     conda "${moduleDir}/environment.yml"
-    container "community.wave.seqera.io/library/python_click_polars_pyarrow_pruned:45e45e8e79698c99"
+    container "${ workflow.containerEngine in ['singularity', 'apptainer'] ?
+        'oras://community.wave.seqera.io/library/python_click_polars_pyarrow_pruned:67e7bc1132e4cf91' :
+        'community.wave.seqera.io/library/python_click_polars_pyarrow_pruned:45e45e8e79698c99' }"
 
     input:
     path( ch_combined_annotations, stageAs: "raw-annotations.tsv" )
-    path( ch_rrna_collected, stageAs: "rrna_combined.tsv" )
-    path( ch_trna_collected, stageAs: "trna_combined.tsv" )
-    path( ch_quast_stats )
+    path( ch_trna_combined)
     val( distill_topic )
     val( distill_ecosystem )
     val( distill_custom )
 
     output:
-    path( "metabolism_summary.xlsx" ), emit: distillate
+    path( "*.xlsx" ), emit: distillate
     path( "*.log" ), emit: log
     path( "summarized_genomes.tsv" ), emit: summarized_genomes
-    path( "genome_stats.tsv" ), emit: genome_stats
 
     script:
     """
     # export constants for script
     export FASTA_COLUMN="${params.CONSTANTS.FASTA_COLUMN}"
 
-    distill.py -i ${ch_combined_annotations} --rrna_path '${ch_rrna_collected}' --trna_path '${ch_trna_collected}' --distil_topics "${distill_topic}" --distil_ecosystem "${distill_ecosystem}" --custom_distillate "${distill_custom}" --quast_path '${ch_quast_stats}'
+    distill.py -i ${ch_combined_annotations} --trna_path '${ch_trna_combined}' --distill_topics "${distill_topic}" --distill_ecosystem "${distill_ecosystem}" --custom_distillate "${distill_custom}"
 
     """
 }

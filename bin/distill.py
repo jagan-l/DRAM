@@ -16,6 +16,7 @@ logger = get_logger(filename=Path(__file__).stem)
 (
     COL_GENE_ID,
     COL_GENE_DESCRIPTION,
+    COL_PATHWAY,
     COL_MODULE,
     COL_SHEET,
     COL_HEADER,
@@ -26,9 +27,10 @@ logger = get_logger(filename=Path(__file__).stem)
     "gene_id",
     "gene_description",
     "pathway",
+    "module",
     "topic_ecosystem",
-    "category",
-    "subcategory",
+    "header",
+    "subheader",
     "alias",
     "rule",
 )
@@ -51,6 +53,7 @@ EXCEL_MAX_CELL_SIZE = 32767
 
 FASTA_COLUMN = os.getenv("FASTA_COLUMN", "input_fasta")
 DISTILL_DIR = Path(__file__).parent / "assets/forms/distill_sheets"
+DEFAULT_GROUPBY_COLUMN = COL_SHEET
 
 
 def check_columns(data, logger):
@@ -64,7 +67,7 @@ def check_columns(data, logger):
 
 
 def make_genome_summary(
-    annotations, genome_summary_frame: pl.LazyFrame, logger, groupby_column=FASTA_COLUMN
+    annotations, genome_summary_frame: pl.LazyFrame, logger, fasta_column=FASTA_COLUMN
 ):
     if COL_RULE not in genome_summary_frame.collect_schema().names():
         genome_summary_frame = genome_summary_frame.with_columns(
@@ -77,23 +80,22 @@ def make_genome_summary(
         .otherwise(pl.col("gene_id"))
         .alias(COL_RULE)
     )
-
     df = evaluate_rules_on_anno(
         rules=genome_summary_frame,
         # rules_tsv_path="/home/projects-wrighton-2/Pipeline_Development/DRAM2-Nextflow/DRAM/bin/assets/forms/distill_sheets/distill_metals.tsv",
         annotations=annotations,
-        sample_col="query_id",
+        count_col="query_id",
         label_col="gene_id",
-        parent_col=None,
+        alias_col=None,
         rules_col=COL_RULE,
     )
     df = df.join(
-        annotations.select([pl.col("query_id"), pl.col("input_fasta")]), on="query_id"
+        annotations.select([pl.col("query_id"), pl.col(fasta_column)]), on="query_id"
     ).drop("query_id")
-    df = df.group_by("input_fasta").agg(pl.exclude("input_fasta").sum())
+    df = df.group_by(fasta_column).agg(pl.exclude(fasta_column).sum())
 
-    df = df.select(pl.exclude("input_fasta")).transpose(
-        include_header=True, header_name="gene_id", column_names=df["input_fasta"]
+    df = df.select(pl.exclude(fasta_column)).transpose(
+        include_header=True, header_name="gene_id", column_names=df[fasta_column]
     )
 
     df = genome_summary_frame.collect().join(df, on="gene_id", how="left")
@@ -109,7 +111,7 @@ def make_genome_stats(
     rrna_frame: pl.DataFrame = None,
     trna_frame: pl.DataFrame = None,
     quast_frame: pl.DataFrame = None,
-    groupby_column: str = FASTA_COLUMN,
+    fasta_column: str = FASTA_COLUMN,
 ):
     rows = list()
     columns = ["genome"]
@@ -121,7 +123,7 @@ def make_genome_stats(
         columns.append("completeness score")
     if "bin_contamination" in annotations.columns:
         columns.append("contamination score")
-    for genome, frame in annotations.group_by(groupby_column):
+    for genome, frame in annotations.group_by(fasta_column):
         row = [genome[0]]
         if "scaffold" in frame.columns:
             row.append(len(set(frame["scaffold"])))
@@ -174,7 +176,7 @@ def make_genome_stats(
         genome_stats = genome_stats.join(df_trna, on="genome", how="inner")
 
     if quast_frame is not None:
-        quast_frame = quast_frame.rename({groupby_column: "genome"}).drop("no. contigs")
+        quast_frame = quast_frame.rename({fasta_column: "genome"}).drop("no. contigs")
 
         genome_stats = genome_stats.join(quast_frame, on="genome", how="inner")
         assert genome_stats.shape[0] == quast_frame.shape[0], (
@@ -187,20 +189,18 @@ def make_genome_stats(
 @click.command()
 @click.option("-i", "--input_file", required=True, help="Annotations path")
 # @click.option("-o", "--output_dir", required=True, help="Directory to write summarized genomes")
-@click.option("--rrna_path", help="rRNA output from annotation")
-@click.option("--trna_path", help="tRNA output from annotation")
-@click.option("--quast_path", help="Quast summary TSV from the quast step")
+@click.option("--trna_path", help="tRNA scan raw output from annotation")
 @click.option(
-    "--groupby_column",
-    help="Column from annotations to group as organism units",
+    "--fasta_column",
+    help="Column from annotations to use as fasta names",
     default=FASTA_COLUMN,
 )
 @click.option(
-    "--distil_topics", default="default", help="Default distillates topics to run."
+    "--distill_topics", default="default", help="Default distillates topics to run."
 )
 @click.option(
-    "--distil_ecosystem",
-    default="eng_sys,ag",
+    "--distill_ecosystem",
+    default="eng_sys,ag,bgc,gut,marine",
     help="Default distillates ecosystems to run.",
 )
 @click.option(
@@ -209,15 +209,21 @@ def make_genome_stats(
     callback=validate_comma_separated,
     help="Custom distillate forms to add your own modules, comma separated. ",
 )
+@click.option(
+    "--group_column",
+    "-g",
+    type=str,
+    help="Column in rules/summarize files to group by in in the Summarize sheets (creates separate excel sheets)",
+    default=DEFAULT_GROUPBY_COLUMN,
+)
 def distill(
     input_file,
-    rrna_path=None,
     trna_path=None,
-    quast_path=None,
-    groupby_column=FASTA_COLUMN,
-    distil_topics=None,
-    distil_ecosystem=None,
+    fasta_column=FASTA_COLUMN,
+    distill_topics=None,
+    distill_ecosystem=None,
     custom_distillate=None,
+    group_column=None,
 ):
     """Summarize metabolic content of annotated genomes"""
 
@@ -235,95 +241,117 @@ def distill(
     check_columns(annotations, logger)
 
     trna_frame = read_csv(trna_path)
-    rrna_frame = read_csv(rrna_path)
-    quast_frame = read_csv(quast_path)
 
-    distil_sheets_names = []
-    if "default" in distil_topics:
-        distil_sheets_names = [
-            DISTILL_DIR / "distill_carbon.tsv",
-            DISTILL_DIR / "distill_energy.tsv",
-            DISTILL_DIR / "distill_misc.tsv",
-            DISTILL_DIR / "distill_nitrogen.tsv",
-            DISTILL_DIR / "distill_transport.tsv",
-            DISTILL_DIR / "distill_metals.tsv",
-        ]
-    else:
-        if "carbon" in distil_topics:
-            distil_sheets_names.append(DISTILL_DIR / "distill_carbon.tsv")
-        if "energy" in distil_topics:
-            distil_sheets_names.append(DISTILL_DIR / "distill_energy.tsv")
-        if "misc" in distil_topics:
-            distil_sheets_names.append(DISTILL_DIR / "distill_misc.tsv")
-        if "nitrogen" in distil_topics:
-            distil_sheets_names.append(DISTILL_DIR / "distill_nitrogen.tsv")
-        if "transport" in distil_topics:
-            distil_sheets_names.append(DISTILL_DIR / "distill_transport.tsv")
-        if "metals" in distil_topics:
-            distil_sheets_names.append(DISTILL_DIR / "distill_metals.tsv")
+    distill_topic_sheets = []
+    if ("assim" in distill_topics) or ("default" in distill_topics):
+        distill_topic_sheets.append(
+            DISTILL_DIR / "assimilation_and_cofactor_metabolism.tsv"
+        )
+    if ("cell" in distill_topics) or ("default" in distill_topics):
+        distill_topic_sheets.append(DISTILL_DIR / "cellular_machinery.tsv")
+    if ("energy" in distill_topics) or ("default" in distill_topics):
+        distill_topic_sheets.append(
+            DISTILL_DIR / "energy_acquisition_bioenergetics.tsv"
+        )
+    if ("env" in distill_topics) or ("default" in distill_topics):
+        distill_topic_sheets.append(
+            DISTILL_DIR / "environmental_interaction_and_adaptation.tsv"
+        )
 
-    if "ag" in distil_ecosystem:
-        distil_sheets_names.append(DISTILL_DIR / "distill_ag.tsv")
-    if "eng_sys" in distil_ecosystem:
-        distil_sheets_names.append(DISTILL_DIR / "distill_eng_sys.tsv")
+    distill_ecos_sheets = []
+    if "ag" in distill_ecosystem:
+        distill_ecos_sheets.append(DISTILL_DIR / "distill_ag.tsv")
+    if "eng_sys" in distill_ecosystem:
+        distill_ecos_sheets.append(DISTILL_DIR / "distill_eng_sys.tsv")
+    if "bgc" in distill_ecosystem:
+        distill_ecos_sheets.append(DISTILL_DIR / "distill_bgc.tsv")
+    if "gut" in distill_ecosystem:
+        distill_ecos_sheets.append(DISTILL_DIR / "distill_gut.tsv")
+    if "marine" in distill_ecosystem:
+        distill_ecos_sheets.append(DISTILL_DIR / "distill_marine.tsv")
 
-    if "camper_id" in annotations and (
-        "default" in distil_topics or "camper" in distil_topics
-    ):
-        distil_sheets_names.append(DISTILL_DIR / "distill_camper.tsv")
-
-    logger.info(f"Distillate dir: {DISTILL_DIR}")
-    logger.info(f"Distillate sheets to be used: {distil_sheets_names}")
+    distill_custom_sheets = []
     if custom_distillate:
         for custom_sheet in custom_distillate:
-            distil_sheets_names.append(custom_sheet)
+            distill_custom_sheets.append(Path(custom_sheet))
 
     genome_summary_form = pl.concat(
         [
-            pl.scan_csv(s, separator="\t").select(
-                [
-                    c
-                    for c in FRAME_COLUMNS
-                    if c in pl.scan_csv(s, separator="\t", n_rows=0).columns
-                ]
-            )
-            for s in distil_sheets_names
+            *[
+                pl.scan_csv(s, separator="\t")
+                .select(
+                    [
+                        c
+                        for c in FRAME_COLUMNS
+                        if c in pl.scan_csv(s, separator="\t", n_rows=0).columns
+                    ]
+                )
+                .with_columns(
+                    workbook=pl.lit(s.stem + "_summary"),
+                )
+                for s in distill_topic_sheets
+            ],
+            *[
+                pl.scan_csv(s, separator="\t")
+                .select(
+                    [
+                        c
+                        for c in FRAME_COLUMNS
+                        if c in pl.scan_csv(s, separator="\t", n_rows=0).columns
+                    ]
+                )
+                .with_columns(
+                    workbook=pl.lit("ecosystem_summary"),
+                )
+                for s in distill_ecos_sheets
+            ],
+            *[
+                pl.scan_csv(s, separator="\t")
+                .select(
+                    [
+                        c
+                        for c in FRAME_COLUMNS
+                        if c in pl.scan_csv(s, separator="\t", n_rows=0).columns
+                    ]
+                )
+                .with_columns(
+                    workbook=pl.lit("custom_summary"),
+                )
+                for s in distill_custom_sheets
+            ],
         ],
         how="diagonal",
     )
 
     logger.info("Retrieved distillate genome summary form")
 
-    # make genome stats
-    genome_stats = make_genome_stats(
-        annotations,
-        rrna_frame,
-        trna_frame,
-        quast_frame=quast_frame,
-        groupby_column=groupby_column,
-    )
-    genome_stats.write_csv("genome_stats.tsv", separator="\t")
-    logger.info("Calculated genome statistics")
+    if trna_frame is not None:
+        annotations = pl.concat(
+            [
+                annotations,
+                trna_frame.select(
+                    ["input_fasta", "query_id", pl.col("gene_id").alias("trna_id")]
+                ),
+            ],
+            how="diagonal",
+        )
 
     # make genome metabolism summary
-    genome_summary = "metabolism_summary.xlsx"
     logger.info("Giving counts for genome metabolism summary")
     summarized_genomes = make_genome_summary(
-        annotations, genome_summary_form, logger, groupby_column
+        annotations, genome_summary_form, logger, fasta_column
     )
     summarized_genomes.write_csv("summarized_genomes.tsv", separator="\t")
     kw = {"extra_frames": []}
-    if rrna_frame is not None:
-        kw["extra_frames"].append(rrna_frame)
-    if trna_frame is not None:
-        kw["extra_frames"].append(trna_frame)
-    write_summarized_genomes_to_xlsx(
-        df=summarized_genomes,
-        output_file=genome_summary,
-        group_by=COL_SHEET,
-        sort_order_columns=DISTILATE_SORT_ORDER_COLUMNS,
-        **kw,
-    )
+    for workbook_name, df in summarized_genomes.group_by("workbook"):
+        workbook_name = workbook_name[0]
+        write_summarized_genomes_to_xlsx(
+            df=df,
+            output_file=workbook_name + ".xlsx",
+            group_by=group_column,
+            sort_order_columns=DISTILATE_SORT_ORDER_COLUMNS,
+            **kw,
+        )
     logger.info("Generated genome metabolism summary")
 
 

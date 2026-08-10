@@ -4,7 +4,9 @@ process ADJECTIVES {
     errorStrategy 'finish'
 
     conda "${moduleDir}/environment.yml"
-    container "community.wave.seqera.io/library/python_click_polars_pyarrow_pruned:45e45e8e79698c99"
+    container "${ workflow.containerEngine in ['singularity', 'apptainer'] ?
+        'oras://community.wave.seqera.io/library/python_click_polars_pyarrow_pruned:67e7bc1132e4cf91' :
+        'community.wave.seqera.io/library/python_click_polars_pyarrow_pruned:45e45e8e79698c99' }"
 
     input:
     path( ch_combined_annotations, stageAs: "raw-annotations.tsv" )

@@ -80,7 +80,7 @@
                 "input_genes": {
                     "type": "string",
                     "format": "directory-path",
-                    "description": "Directory containing called genes. Only used when not running call. This allows you to provide pre-called genes to the pipeline."
+                    "description": "Directory containing called genes. Only used when not running call. This allows you to provide pre-called genes to the pipeline. This is a PRODIGAL output trans_file format."
                 },
                 "genes_fmt": {
                     "type": "string",
@@ -91,7 +91,7 @@
                 "genes_fna_fmt": {
                     "type": "string",
                     "default": "*.fna",
-                    "description": "Input format for the Genes fna file. Only needed if you are not running call and you are passing `--generate_gff` or `--generate_gbk`.",
+                    "description": "Input format for the Genes fna file. Used for certain database searches such as RGI when not running with raw fasta files. This is a PRODIGAL output nuc_file format",
                     "fa_,icon": "fas fa-plus"
                 }
             },
@@ -224,19 +224,6 @@
                     "type": "number",
                     "description": "Minimum BitScore of reverse best hits to retain hits",
                     "default": 350.0
-                },
-                "database_list": {
-                    "type": "string",
-                    "description": "Database list for generating GFF and GBK. Comma sepeterated list of databases to include in the annotates. Use `all` for all. Example: 'kegg,dbcan,kofam,merops,viral,camper,canthyd,fegenie,sulfur,methyl,uniref,pfam,vogdb'",
-                    "default": "all"
-                },
-                "generate_gff": {
-                    "type": "boolean",
-                    "description": "Generate GFF output for each input_fasta. This option is in development right now and may not work properly, and may not work with large numbers of inputs."
-                },
-                "generate_gbk": {
-                    "type": "boolean",
-                    "description": "Generate GBK output for each input_fasta. This option is in development right now and may not work properly, and may not work with large numbers of inputs."
                 }
             }
         },
@@ -268,11 +255,11 @@
             "properties": {
                 "sum_ecos": {
                     "type": "string",
-                    "description": "Ecosystem to distill. Options: <eng_sys|ag> If more than one ecosystem included, they must be seperated by a comma (--sum_ecos eng_sys,ag or --sum_ecos 'eng_sys,ag')."
+                    "description": "Ecosystem to distill. Options: <eng_sys|ag|marine|gut|bgc> If more than one ecosystem included, they must be seperated by a comma (--sum_ecos eng_sys,ag or --sum_ecos 'eng_sys,ag')."
                 },
-                "distill_topic": {
-                    "type": "string",
-                    "description": "A way to specify a subset of topics instead of all topics. By default, if `--sumarize` is specified, all topics are included. Options:  <carbon|energy|misc|nitrogen|transport|camper|none> OR <default = carbon,energy,misc,nitrogen,transport,camper> if `--use_camper` is used, else <default = carbon,energy,misc,nitrogen,transport>. If more than one topic included, they must be seperated by a comma (--distill_topic carbon,energy or --distill_topic 'carbon,energy'). Use `none` to skip topic distillation."
+                "sum_topics": {
+                    "utype": "string",
+                    "description": "A way to specify a subset of topics instead of all topics. By default, if `--sumarize` is specified, all topics are included. Options:  <assim|cell|energy|env|none> OR <default = assim,cell,energy,env>. If more than one topic included, they must be seperated by a comma (--sum_topics assim,energy or --distill_topic 'assim,energy'). Use `none` to skip topic distillation."
                 },
                 "sum_custom": {
                     "type": "string",
@@ -317,9 +304,14 @@
                 },
                 "viz_rules_system": {
                     "type": "string",
-                    "description": "Choose alternative in-built rules for the visualization. This option cannot be specified if `viz_rules_tsv` is specified.",
-                    "default": "",
-                    "enum": ["default", "single"]
+                    "description": "Choose alternative in-built rules for the visualization. This option cannot be specified if `viz_rules_tsv` is specified. comma seperated list with the same options as `sum_ecos`. (ex. `--viz_rules_system ag,bgc`)",
+                    "default": ""
+                },
+                "viz_mapping_file": {
+                    "type": "string",
+                    "format": "file-path",
+                    "description": "Path to metaT mapping file of gene abundances in samples. Must have a column named 'Geneid' that matches the query_id column in the annotations file.",
+                    "fa_icon": "fas fa-cog"
                 }
             }
         },
@@ -711,6 +703,10 @@
                 "adjectives": {
                     "type": "boolean",
                     "description": "alias for traits."
+                },
+                "distill_topic": {
+                    "type": "string",
+                    "description": "alias for sum_topics"
                 },
                 "distill_ecosystem": {
                     "type": "string",
