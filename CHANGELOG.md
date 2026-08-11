@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2.0.0-beta36 - 2026-08-11
+
+[144002b](https://github.com/WrightonLabCSU/DRAM/commit/144002b7b7938db8c1d51f0559641585fb706376)...[98a3adc](https://github.com/WrightonLabCSU/DRAM/commit/98a3adcc19926e53da38b0831ee14e0a384d7e7a)
+
+### Bug Fixes
+
+- Update diamond to fix hang problem ([1c4a8cf](https://github.com/WrightonLabCSU/DRAM/commit/1c4a8cfcecf9b7268fffe1513819870b872e22ee))
+
+  Update rundbcan easysubstrate and pin diamond to 2.2.5.
+  In diamond 2.2.3 they mention fixing a problem with hanging sometimes,
+  pinning diamond above that seems to eliminate the occassional dbcan
+  hang problem.
+
+
+
+### Features
+
+- Update BGC rules ([5f1747b](https://github.com/WrightonLabCSU/DRAM/commit/5f1747b31852e3fd53d1157e0a6b2f4b1190aaa7))
+
+
+
 ## 2.0.0-beta35 - 2026-08-10
 
 ### Features
