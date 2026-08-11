@@ -1,6 +1,9 @@
-# WrightonLabCSU/dram: Documentation
+# DRAM2 Documentation
 
-The WrightonLabCSU/dram documentation is split into the following pages:
+Distilled and Refined Annotations of Metabolism
+
+DRAM2 annotates microbial genomes, metagenome-assembled genomes, assemblies, and predicted genes, then organizes those annotations into interpretable metabolic summaries, organism-level traits, and interactive visualizations.
+
 
 ```{toctree}
 ---
