@@ -26,6 +26,7 @@ Parameter API <params_doc>
 output
 rules_parser
 contributing
+ecosystems
 dram2_dictionary
 changelog_include
 ```
