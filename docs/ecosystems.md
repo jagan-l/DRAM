@@ -24,13 +24,6 @@ the biological questions being asked. Some metabolic processes occur in
 multiple ecosystems, but each ecosystem organizes and interprets these
 functions in a different biological context.
 
-!!! note
-    DRAM2 Ecosystem outputs describe **genetic or metabolic potential**.
-    Detection of a metabolic trait does not demonstrate that the corresponding
-    process is active under the sampled conditions. Where possible, ecosystem
-    outputs should be interpreted alongside environmental measurements and
-    other -omics data.
-
 ---
 
 # Biogeochemical Cycling
@@ -65,8 +58,17 @@ engineered environment.
 
 ## Databases Required
 
-The final database requirements for this ecosystem should be taken directly
-from the finalized Biogeochemical Cycling ruleset.
+- KEGG
+- dbCAN
+- MEROPS
+- CAMPER
+- FeGenie
+- Sulfur
+- Methyl
+- Metals
+- CARD
+- dram_db
+- TCDB
 
 ## Major Metabolic Processes
 
@@ -116,10 +118,6 @@ availability, and the presence of appropriate electron donors and acceptors.
 Multiple organisms may also contribute different steps of the same
 biogeochemical transformation, so community-level interpretation should not
 assume that every pathway must occur within a single genome.
-
-Where available, metatranscriptomic, metabolomic, geochemical, and process-rate
-measurements can be integrated with DRAM2 predictions to determine whether
-predicted metabolic potential corresponds with active ecosystem processes.
 
 ---
 
