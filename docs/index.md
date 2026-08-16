@@ -26,8 +26,8 @@ Parameter API <params_doc>
 output
 rules_parser
 contributing
-changelog_include
 dram2_dictionary
+changelog_include
 ```
 
 # Indices and tables
