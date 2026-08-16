@@ -26,9 +26,9 @@ functions in a different biological context.
 
 ---
 
-# Biogeochemical Cycling
+## Biogeochemical Cycling
 
-## Ecosystem Overview
+### Ecosystem Overview
 
 The Biogeochemical Cycling ecosystem is designed to characterize microbial
 metabolic potential involved in the transformation of carbon, nitrogen,
@@ -56,7 +56,7 @@ understand microbial contributions to elemental cycling and environmental
 metabolism rather than processes specific to a host, agricultural system, or
 engineered environment.
 
-## Databases Required
+### Databases Required
 
 - KEGG
 - dbCAN
@@ -70,7 +70,7 @@ engineered environment.
 - dram_db
 - TCDB
 
-## Major Metabolic Processes
+### Major Metabolic Processes
 
 | Major Process | Included Subtopics |
 | --- | --- |
@@ -90,7 +90,7 @@ engineered environment.
 For the exact genes, identifiers, and rules used to define each metabolic
 trait, consult the Biogeochemical Cycling ecosystem ruleset.
 
-## Interpretation Guidance
+### Interpretation Guidance
 
 DRAM2 Biogeochemical Cycling outputs summarize genomic evidence for metabolic
 processes involved in environmental element and energy cycling. Positive trait
@@ -121,9 +121,9 @@ assume that every pathway must occur within a single genome.
 
 ---
 
-# Agricultural Systems
+## Agricultural Systems
 
-## Ecosystem Overview
+### Ecosystem Overview
 
 Agricultural ecosystems are managed environments in which plant productivity,
 livestock, soil properties, climate, and management practices interact to
@@ -153,7 +153,7 @@ particularly when questions related to nutrient cycling, carbon
 transformation, plant-associated functions, or microbial responses to
 management are central to the study.
 
-## Databases Required
+### Databases Required
 
 - KEGG
 - dbCAN
@@ -167,7 +167,7 @@ management are central to the study.
 - dram_db
 - TCDB
 
-## Major Metabolic Processes
+### Major Metabolic Processes
 
 | Major Process | Included Subtopics |
 | --- | --- |
@@ -186,7 +186,7 @@ management are central to the study.
 For the exact genes, identifiers, and rules used to define each metabolic
 trait, consult the Agricultural Systems ecosystem ruleset.
 
-## Interpretation Guidance
+### Interpretation Guidance
 
 DRAM2 Agricultural Systems outputs summarize genes and gene combinations
 associated with agriculturally relevant microbial functions. A positive result
@@ -218,9 +218,9 @@ interactions, and soil responses to agricultural management.
 
 ---
 
-# Engineered Systems
+## Engineered Systems
 
-## Ecosystem Overview
+### Ecosystem Overview
 
 Engineered systems are human-designed or human-managed environments such as
 energy extraction operations, including hydrocarbon and geothermal systems,
@@ -255,7 +255,7 @@ Use the **Engineered Systems** ecosystem when analyzing -omics data from
 managed or industrial microbial systems where the goal is to link microbial
 metabolic potential to system performance, troubleshooting, or optimization.
 
-## Databases Required
+### Databases Required
 
 - KEGG
 - Cant-Hyd
@@ -265,7 +265,7 @@ metabolic potential to system performance, troubleshooting, or optimization.
 - dbCAN
 - TCDB
 
-## Major Metabolic Processes
+### Major Metabolic Processes
 
 | Major Process | Included Subtopics |
 | --- | --- |
@@ -282,7 +282,7 @@ metabolic potential to system performance, troubleshooting, or optimization.
 For the exact genes, identifiers, and rules used to define each metabolic
 trait, consult the Engineered Systems ecosystem ruleset.
 
-## Interpretation Guidance
+### Interpretation Guidance
 
 DRAM2 Engineered Systems outputs summarize genomic evidence for metabolic
 functions relevant to managed and industrial microbial systems. In the
@@ -313,9 +313,9 @@ microbial metabolic potential with engineered-system performance.
 
 ---
 
-# Gut
+## Gut
 
-## Ecosystem Overview
+### Ecosystem Overview
 
 Gut ecosystems are internal, host-regulated environments in which host diet,
 physiology, immune activity, and microbial community interactions shape
@@ -346,7 +346,7 @@ useful for comparing functional capabilities across genomes, identifying
 host-relevant traits, and summarizing host-microbe and microbe-microbe
 interactions.
 
-## Databases Required
+### Databases Required
 
 - KEGG
 - dbCAN
@@ -357,7 +357,7 @@ interactions.
 - MEROPS
 - dram_db
 
-## Major Metabolic Processes
+### Major Metabolic Processes
 
 | Major Process | Included Subtopics |
 | --- | --- |
@@ -371,7 +371,7 @@ interactions.
 For the exact genes, identifiers, and rules used to define each metabolic
 trait, consult the Gut ecosystem ruleset.
 
-## Interpretation Guidance
+### Interpretation Guidance
 
 DRAM2 Gut outputs summarize potential metabolic functions based on genes and
 gene combinations detected within a genome or MAG. Some rules use individual
