@@ -18,19 +18,49 @@ BOUTFMT6_COLUMNS = ['qId', 'tId', 'seqIdentity', 'alnLen', 'mismatchCnt', 'gapOp
 
 
 def download_file(url: str, output_file: str, logger: logging.Logger, alt_urls: list = None, verbose = True):
-    # TODO: catching error 4 and give error message to retry or retry automatically
+    # PATCH 2026-08: also reject HTML responses masquerading as data (urlretrieve treats a
+    # 302 redirect + 200 HTML body as success, which is how dead-mirror URLs silently save
+    # landing pages as "databases" and crash downstream tools like hmmpress.
+    # Additionally reject short plain-text error responses (e.g. the univie fileshare
+    # occasionally serves 'DNS resolution failed (transient resolver error)' as a 48-byte
+    # 200-OK body instead of the real tarball).
+    _ERROR_TEXT_MARKERS = (
+        b'dns resolution', b'connection refused', b'not found', b'error',
+        b'failed', b'unavailable', b'timeout', b'service unavailable',
+        b'bad gateway', b'gateway timeout', b'internal server error',
+    )
     links = [url] if alt_urls is None else [url] + alt_urls
-    for l in links: 
+    for l in links:
         if verbose:
-            print('downloading %s' % url)
+            print('downloading %s' % l)
         try:
             urlretrieve(l, output_file)
-            return
         except BaseException as error:
-            # BaseException is good http was to exact
             logger.warning(f"Something went wrong with the download of the url: {l}")
             logger.warning(error)
-    raise URLError("DRAM whas not able to download a key database, check the logg for details")
+            continue
+        # Sniff first bytes to catch silent-success failures.
+        try:
+            fsize = path.getsize(output_file)
+            with open(output_file, 'rb') as fh:
+                head = fh.read(512)
+        except OSError:
+            fsize = 0
+            head = b''
+        head_lc = head.lstrip().lower()
+        if head_lc.startswith(b'<!doctype') or head_lc.startswith(b'<html') or head_lc.startswith(b'<?xml'):
+            logger.warning(f"URL {l} returned HTML instead of the expected file; source likely moved.")
+            continue
+        # Any file under 1 KiB whose readable head contains an error keyword is almost
+        # certainly an upstream error page served with 200 OK, not a real database file.
+        if fsize < 1024 and any(m in head_lc for m in _ERROR_TEXT_MARKERS):
+            logger.warning(
+                f"URL {l} returned {fsize} bytes containing error text ({head!r:.80}); "
+                "upstream is unhealthy or the URL has moved."
+            )
+            continue
+        return
+    raise URLError("DRAM was not able to download a key database, check the log for details")
     # run_process(['wget', '-O', output_file, url], verbose=verbose)
 
 
