@@ -491,24 +491,30 @@ class DatabaseHandler:
             for i in mmseqs_database
             if self.config["search_databases"][i] is not None
         }
+        # PATCH 2026-08: only add pfam/dbcan/vogdb description processors when the
+        # underlying description files are actually configured. Upstream code always
+        # added them, which crashed process_*_descriptions with AttributeError on
+        # None.endswith() when any of these DBs weren't set up (common when running
+        # update_description_db after a partial prepare_databases). Matches the
+        # existing safety filter used for mmseqs entries just above.
+        _desc = self.config.get("database_descriptions") or {}
         # Use table names
-        process_functions.update(
-            {
-                "pfam": partial(
-                    self.process_pfam_descriptions,
-                    self.config.get("database_descriptions")["pfam_hmm"],
-                ),
-                "dbcan": partial(
-                    self.process_dbcan_descriptions,
-                    self.config.get("database_descriptions")["dbcan_fam_activities"],
-                    self.config.get("database_descriptions")["dbcan_subfam_ec"],
-                ),
-                "vogdb": partial(
-                    self.process_vogdb_descriptions,
-                    self.config.get("database_descriptions")["vog_annotations"],
-                ),
-            }
-        )
+        optional_processors = {}
+        if _desc.get("pfam_hmm") is not None:
+            optional_processors["pfam"] = partial(
+                self.process_pfam_descriptions, _desc["pfam_hmm"]
+            )
+        if _desc.get("dbcan_fam_activities") is not None and _desc.get("dbcan_subfam_ec") is not None:
+            optional_processors["dbcan"] = partial(
+                self.process_dbcan_descriptions,
+                _desc["dbcan_fam_activities"],
+                _desc["dbcan_subfam_ec"],
+            )
+        if _desc.get("vog_annotations") is not None:
+            optional_processors["vogdb"] = partial(
+                self.process_vogdb_descriptions, _desc["vog_annotations"]
+            )
+        process_functions.update(optional_processors)
         if select_db is not None:
             process_functions = {
                 i: k for i, k in process_functions.items() if i in select_db
