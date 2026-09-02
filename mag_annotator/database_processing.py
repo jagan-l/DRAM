@@ -1,7 +1,7 @@
 """
 Contains most of the backend for the DRAM_setup.py script, used to setup databases for each user.
 """
-from os import path, mkdir
+from os import path, mkdir, makedirs
 from datetime import datetime
 from shutil import move, rmtree, copyfile
 from glob import glob
@@ -160,11 +160,9 @@ def download_pfam_hmm(output_dir='.', logger=LOGGER, verbose=True):
 
 def download_dbcan(output_dir='.', logger=LOGGER, dbcan_hmm=None, version=DEFAULT_DBCAN_RELEASE, verbose=True):
     dbcan_hmm = path.join(output_dir, f"dbCAN-HMMdb-V{version}.txt" )
-    if int(version) < int(DEFAULT_DBCAN_RELEASE):
-        link_path = f"http://bcb.unl.edu/dbCAN2/download/Databases/dbCAN-HMMdb-V{version}.txt"
-    else:
-        link_path = f"http://bcb.unl.edu/dbCAN2/download/dbCAN-HMMdb-V{version}.txt"
-
+    # PATCH 2026-08: bcb.unl.edu redirects all V-dir file requests to an HTML landing page.
+    # The real files now live at pro.unl.edu, and every version lives under /Databases/V<n>/.
+    link_path = f"https://pro.unl.edu/dbCAN2/download/Databases/V{version}/dbCAN-HMMdb-V{version}.txt"
     logger.debug(f"Downloading dbCAN from: {link_path}")
     download_file(link_path, dbcan_hmm, logger, verbose=verbose)
     return dbcan_hmm
@@ -173,7 +171,8 @@ def download_dbcan(output_dir='.', logger=LOGGER, dbcan_hmm=None, version=DEFAUL
 def download_dbcan_fam_activities (output_dir='.', logger=LOGGER, version=DEFAULT_DBCAN_RELEASE, upload_date=DEFAULT_DBCAN_DATE,
                                 verbose=True):
     dbcan_fam_activities = path.join(output_dir, f'CAZyDB.{upload_date}.fam-activities.txt')
-    url = f"https://bcb.unl.edu/dbCAN2/download/Databases/V{version}/CAZyDB.{upload_date}.fam-activities.txt"
+    # PATCH 2026-08: bcb.unl.edu redirects to HTML landing page; use pro.unl.edu mirror.
+    url = f"https://pro.unl.edu/dbCAN2/download/Databases/V{version}/CAZyDB.{upload_date}.fam-activities.txt"
     logger.info(f"Downloading dbCAN family activities from : {url}")
     download_file(url, dbcan_fam_activities, logger, verbose=verbose)
     return dbcan_fam_activities
@@ -181,7 +180,8 @@ def download_dbcan_fam_activities (output_dir='.', logger=LOGGER, version=DEFAUL
 
 def download_dbcan_subfam_ec(output_dir='.', logger=LOGGER, version=DEFAULT_DBCAN_RELEASE, upload_date=DEFAULT_DBCAN_DATE, verbose=True):
     dbcan_subfam_ec = path.join(output_dir, f"CAZyDB.{upload_date}.fam.subfam.ec.txt")
-    url = (f"https://bcb.unl.edu/dbCAN2/download/Databases/"
+    # PATCH 2026-08: bcb.unl.edu redirects to HTML landing page; use pro.unl.edu mirror.
+    url = (f"https://pro.unl.edu/dbCAN2/download/Databases/"
                  f"V{version}/CAZyDB.{upload_date}.fam.subfam.ec.txt")
     logger.info(f"Downloading dbCAN sub-family encumber from : {url}")
     download_file(url, dbcan_subfam_ec, logger, verbose=verbose)
@@ -302,8 +302,12 @@ def download_peptidase(output_dir='.', logger=LOGGER, verbose=True):
 
 def download_vogdb(output_dir='.', logger=LOGGER, version=DEFAULT_VOGDB_VERSION, verbose=True):
     vog_hmm_targz = path.join(output_dir, 'vog.hmm.tar.gz')
-    vogdb_url = f'http://fileshare.csb.univie.ac.at/vog/{version}/vog.hmm.tar.gz'
-    download_file(vogdb_url, vog_hmm_targz, logger, verbose=verbose)
+    # PATCH 2026-08: fileshare.csb.univie.ac.at 301-redirects to fileshare.lisc.univie.ac.at.
+    # Point at the new host directly, keep the old one as fallback in case the LISC host
+    # has an outage (both are the same institution, but the redirect at CSB adds a hop).
+    vogdb_url = f'https://fileshare.lisc.univie.ac.at/vog/{version}/vog.hmm.tar.gz'
+    vogdb_url_fallback = f'https://fileshare.csb.univie.ac.at/vog/{version}/vog.hmm.tar.gz'
+    download_file(vogdb_url, vog_hmm_targz, logger, alt_urls=[vogdb_url_fallback], verbose=verbose)
     return vog_hmm_targz
 
 
@@ -369,11 +373,24 @@ def process_peptidase(peptidase_faa, output_dir='.', logger=LOGGER, threads=10, 
 
 def process_vogdb(vog_hmm_targz, output_dir='.', logger=LOGGER, version=DEFAULT_VOGDB_VERSION, threads=1, verbose=True):
     hmm_dir = path.join(output_dir, 'vogdb_hmms')
-    mkdir(hmm_dir)
+    # PATCH 2026-08: makedirs+exist_ok so retries after a partial extraction don't crash.
+    makedirs(hmm_dir, exist_ok=True)
     vogdb_targz = tarfile.open(vog_hmm_targz)
     vogdb_targz.extractall(hmm_dir)
     vog_hmms = path.join(output_dir, f'vog_{version}_hmms.txt')
-    merge_files(glob(path.join(hmm_dir, 'VOG*.hmm')), vog_hmms)
+    # PATCH 2026-08: recent VOGDB releases (vog227+) pack HMMs under a hmm/ subdir inside
+    # the tarball, so extracted files live at vogdb_hmms/hmm/VOG*.hmm instead of
+    # vogdb_hmms/VOG*.hmm. Recursive glob handles both flat (older) and nested (current)
+    # layouts. If nothing matches we fail loudly instead of writing an empty file that
+    # crashes hmmpress with a misleading "File exists, but appears to be empty" error.
+    hmm_files = glob(path.join(hmm_dir, '**', 'VOG*.hmm'), recursive=True)
+    if not hmm_files:
+        raise FileNotFoundError(
+            f"No VOG*.hmm files found under {hmm_dir} after extracting {vog_hmm_targz}. "
+            "Tarball layout may have changed upstream; inspect the archive contents."
+        )
+    logger.info(f"Merging {len(hmm_files)} VOG HMM files into {vog_hmms}")
+    merge_files(hmm_files, vog_hmms)
     run_process(['hmmpress', '-f', vog_hmms], logger, verbose=verbose)
     LOGGER.info('VOGdb database processed')
     return {'vogdb': vog_hmms}
@@ -381,8 +398,12 @@ def process_vogdb(vog_hmm_targz, output_dir='.', logger=LOGGER, version=DEFAULT_
 
 def download_vog_annotations(output_dir, logger=LOGGER, version=DEFAULT_VOGDB_VERSION, verbose=True):
     vog_annotations = path.join(output_dir, 'vog_annotations_%s.tsv.gz' % version)
-    download_file('http://fileshare.csb.univie.ac.at/vog/%s/vog.annotations.tsv.gz' % version,
-                  vog_annotations, logger, verbose=verbose)
+    # PATCH 2026-08: fileshare.csb.univie.ac.at 301-redirects to fileshare.lisc.univie.ac.at.
+    # Target the new host directly; keep the old CSB URL as a fallback.
+    download_file('https://fileshare.lisc.univie.ac.at/vog/%s/vog.annotations.tsv.gz' % version,
+                  vog_annotations, logger,
+                  alt_urls=['https://fileshare.csb.univie.ac.at/vog/%s/vog.annotations.tsv.gz' % version],
+                  verbose=verbose)
     return vog_annotations
 
 
@@ -522,10 +543,11 @@ def prepare_databases(output_dir, loggpath=None, kegg_loc=None, gene_ko_link_loc
     }
 
     # setup temp, logging, and db_handler
-    if not path.isdir(output_dir):
-        mkdir(output_dir)
+    # PATCH 2026-08: exist_ok so resumed runs (e.g. after a crash + --select_db) don't
+    # crash on FileExistsError from a leftover database_files/ tmp dir.
+    makedirs(output_dir, exist_ok=True)
     temporary = path.join(output_dir, 'database_files')
-    mkdir(temporary)
+    makedirs(temporary, exist_ok=True)
     main_log = path.join(output_dir, 'database_processing.log')
     setup_logger(LOGGER, *[(main_log, loggpath) if loggpath is not None else main_log])
     db_handler = DatabaseHandler(logger=LOGGER)
